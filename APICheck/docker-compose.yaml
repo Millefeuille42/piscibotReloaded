@@ -1,0 +1,26 @@
+version: "3"
+services:
+  db:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+  api:
+    image: 42api
+    restart: always
+    links:
+      - db
+    ports:
+      - 3000:3000
+    environment:
+      - DB_NAME=users
+      - DB_URL=db
+      - UID=${UID}
+      - SECRET=${SECRET}
+      - PORT=3000
+  checker:
+    image: checker
+    restart: always
+    links:
+      - db
+      - api

@@ -1,0 +1,8 @@
+[EVENTS]
+
+- Connecté en cluster
+- Deconnection
+- Change de place
+
+- Inscription projet
+- Validation projet
