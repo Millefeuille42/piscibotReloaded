@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/joho/godotenv"
+
 	apiclient "github.com/BoyerDamien/42APIClient"
 )
 
@@ -21,7 +23,7 @@ func checkEnvVariables() {
 
 func checkAuth(api *apiclient.APIClient) error {
 	token := api.Token()
-	timestamp := time.Now().Sub(token.LastUpdate).Seconds()
+	timestamp := time.Since(token.LastUpdate).Seconds()
 	if timestamp > float64(token.ExpiresIn) {
 		log.Println("Refreshing auth token...")
 		if err := api.Auth(); err != nil {
@@ -33,6 +35,11 @@ func checkAuth(api *apiclient.APIClient) error {
 }
 
 func main() {
+	err := godotenv.Load("api.env")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	checkEnvVariables()
 
 	url := "https://api.intra.42.fr"
