@@ -26,7 +26,7 @@ func userRouter(session *discordgo.Session, message *discordgo.MessageCreate) bo
 	case strings.HasPrefix(message.Content, "!start"):
 		initUser(session, message)
 		return true
-	case strings.HasPrefix(message.Content, "!register"):
+	case strings.HasPrefix(message.Content, "!track"):
 		registerTarget(session, message)
 		return true
 	case strings.HasPrefix(message.Content, "!ping"):

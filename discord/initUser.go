@@ -15,16 +15,16 @@ type userSettings struct {
 }
 
 type UserData struct {
-	UserID string
-	//	Targets  []string
-	Settings userSettings
+	UserID       string
+	GuildTargets map[string]string
+	Settings     userSettings
 }
 
 /*
 func deleteUser(session *discordgo.Session, message *discordgo.MessageCreate) {
 	path := fmt.Sprintf("./data/users/%s.json", message.Author.ID)
 
-	err := os.Remov&e(path)
+	err := os.Remove(path)
 	if err != nil {
 		logErrorToChan(session, message, err)
 		return
@@ -51,8 +51,8 @@ func initUser(session *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 
 	data := UserData{
-		UserID: message.Author.ID,
-		//		Targets: make([]string, 0),
+		UserID:       message.Author.ID,
+		GuildTargets: make(map[string]string),
 		Settings: userSettings{
 			Leaderboard: "none",
 			Success:     "none",

@@ -75,9 +75,20 @@ func registerTarget(session *discordgo.Session, message *discordgo.MessageCreate
 	if !userInitialCheck(session, message) {
 		return
 	}
+	user, err := loadUserFile("", session, message)
+	if err != nil {
+		return
+	}
+	if _, isExist := user.GuildTargets[message.GuildID]; !isExist {
+		settings.GuildUsers[message.GuildID] = message.Author.ID
+	} else {
+		_, _ = session.ChannelMessageSend(message.ChannelID, "You are already tracking someone on this"+
+			" server")
+		return
+	}
 
 	path := fmt.Sprintf("./data/targets/%s.json", args[1])
-	err := loadOrCreate(path, args[1], &settings, message)
+	err = loadOrCreate(path, args[1], &settings, message)
 	if err != nil {
 		if err == os.ErrExist {
 			_, _ = session.ChannelMessageSend(message.ChannelID, "Someone is already tracking this person"+
@@ -92,8 +103,12 @@ func registerTarget(session *discordgo.Session, message *discordgo.MessageCreate
 			return
 		}
 	*/
-
 	settingsBytes, err := json.MarshalIndent(settings, "", "\t")
+	if err != nil {
+		logErrorToChan(session, message, err)
+		return
+	}
+
 	err = ioutil.WriteFile(path, settingsBytes, 0677)
 	if err != nil {
 		logErrorToChan(session, message, err)
