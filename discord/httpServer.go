@@ -7,7 +7,7 @@ import (
 )
 
 type Message struct {
-	Data    string `json:"data"`
+	Message string `json:"data"`
 	Channel string `json:"channel"`
 	Login   string `json:"login"`
 }
@@ -15,8 +15,7 @@ type Message struct {
 func sendHandler(w http.ResponseWriter, r *http.Request) {
 	var data []byte
 
-	switch r.Method {
-	case "POST":
+	if r.Method == "POST" {
 		_, err := r.Body.Read(data)
 		if err != nil {
 			w.WriteHeader(500)
