@@ -16,7 +16,7 @@ type userSettings struct {
 
 type UserData struct {
 	UserID   string
-	settings userSettings
+	Settings userSettings
 }
 
 func initUser(session *discordgo.Session, message *discordgo.MessageCreate) {
@@ -38,7 +38,7 @@ func initUser(session *discordgo.Session, message *discordgo.MessageCreate) {
 
 	data := UserData{
 		UserID: message.Author.ID,
-		settings: userSettings{
+		Settings: userSettings{
 			Leaderboard: "none",
 			Success:     "none",
 			Started:     "none",
