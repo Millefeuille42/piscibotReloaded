@@ -1,0 +1,1 @@
+[![DeepSource](https://deepsource.io/gh/Millefeuille42/piscibotReloaded.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/Millefeuille42/piscibotReloaded/?ref=repository-badge)
