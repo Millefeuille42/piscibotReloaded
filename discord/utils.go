@@ -22,9 +22,9 @@ func getChannelName(session *discordgo.Session, id string) string {
 	return ret.Name
 }
 
-func logErrorToChan(session *discordgo.Session, message *discordgo.MessageCreate, err error) {
+func logErrorToChan(agent discordAgent, err error) {
 	logError(err)
-	_, _ = session.ChannelMessageSend(message.ChannelID,
+	_, _ = agent.session.ChannelMessageSend(agent.channel,
 		fmt.Sprintf("An Error Occured, Please Try Again Later {%s}", err.Error()))
 }
 
