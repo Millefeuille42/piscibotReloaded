@@ -6,6 +6,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/joho/godotenv"
+
 	apiclient "github.com/BoyerDamien/42APIClient"
 )
 
@@ -33,6 +35,11 @@ func checkAuth(api *apiclient.APIClient) error {
 }
 
 func main() {
+	err := godotenv.Load("api.env")
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	checkEnvVariables()
 
 	url := "https://api.intra.42.fr"
