@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"io/ioutil"
 )
 
 type userSettings struct {
@@ -20,20 +18,7 @@ type UserData struct {
 	Settings     userSettings
 }
 
-/*
-func deleteUser(session *discordgo.Session, message *discordgo.MessageCreate) {
-	path := fmt.Sprintf("./data/users/%s.json", message.Author.ID)
-
-	err := os.Remove(path)
-	if err != nil {
-		logErrorToChan(session, message, err)
-		return
-	}
-	_, _ = session.ChannelMessageSend(message.ChannelID, "User successfully deleted")
-}
-*/
-
-func initUser(session *discordgo.Session, message *discordgo.MessageCreate) {
+func userInit(session *discordgo.Session, message *discordgo.MessageCreate) {
 	path := fmt.Sprintf("./data/users/%s.json", message.Author.ID)
 
 	if !guildInitialCheck(session, message) {
@@ -61,14 +46,7 @@ func initUser(session *discordgo.Session, message *discordgo.MessageCreate) {
 		},
 	}
 
-	jsonUser, err := json.MarshalIndent(data, "", "\t")
-	if err != nil {
-		logErrorToChan(session, message, err)
-		return
-	}
-	err = ioutil.WriteFile(path, jsonUser, 0677)
-	if err != nil {
-		logErrorToChan(session, message, err)
+	if userWriteFile(data, session, message) != nil {
 		return
 	}
 	_, _ = session.ChannelMessageSend(message.ChannelID, "You are now registered")

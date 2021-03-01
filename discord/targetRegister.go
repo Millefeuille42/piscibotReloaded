@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-type TargetSettings struct {
+type TargetData struct {
 	Login      string
 	GuildUsers map[string]string
 }
@@ -35,7 +35,7 @@ func makeApiReq(path, login string, session *discordgo.Session, message *discord
 	return nil
 }
 
-func loadOrCreate(path, login string, settings *TargetSettings, message *discordgo.MessageCreate) error {
+func loadOrCreate(path, login string, settings *TargetData, message *discordgo.MessageCreate) error {
 	exists, err := createFileIfNotExist(path)
 	if err != nil {
 		_ = os.Remove(path)
@@ -52,7 +52,7 @@ func loadOrCreate(path, login string, settings *TargetSettings, message *discord
 			return err
 		}
 	} else {
-		*settings = TargetSettings{
+		*settings = TargetData{
 			Login:      login,
 			GuildUsers: make(map[string]string),
 		}
@@ -66,29 +66,17 @@ func loadOrCreate(path, login string, settings *TargetSettings, message *discord
 }
 
 func registerTarget(session *discordgo.Session, message *discordgo.MessageCreate) {
-	settings := TargetSettings{}
+	settings := TargetData{}
 	args := strings.Split(message.Content, "-")
 	if len(args) < 2 {
 		return
 	}
-
-	if !userInitialCheck(session, message) {
-		return
-	}
-	user, err := loadUserFile("", session, message)
-	if err != nil {
-		return
-	}
-	if _, isExist := user.GuildTargets[message.GuildID]; !isExist {
-		settings.GuildUsers[message.GuildID] = message.Author.ID
-	} else {
-		_, _ = session.ChannelMessageSend(message.ChannelID, "You are already tracking someone on this"+
-			" server")
+	if userCheckTarget(session, message) != nil {
 		return
 	}
 
 	path := fmt.Sprintf("./data/targets/%s.json", args[1])
-	err = loadOrCreate(path, args[1], &settings, message)
+	err := loadOrCreate(path, args[1], &settings, message)
 	if err != nil {
 		if err == os.ErrExist {
 			_, _ = session.ChannelMessageSend(message.ChannelID, "Someone is already tracking this person"+
@@ -98,22 +86,15 @@ func registerTarget(session *discordgo.Session, message *discordgo.MessageCreate
 		logErrorToChan(session, message, err)
 		return
 	}
+
 	/*
-		if err := makeApiReq(path, args[1], session, message); err != nil {
-			return
-		}
-	*/
-	settingsBytes, err := json.MarshalIndent(settings, "", "\t")
-	if err != nil {
-		logErrorToChan(session, message, err)
+	**	if makeApiReq(path, args[1], session, message) != nil {
+	**		return
+	**	}
+	 */
+
+	if targetWriteFile(settings, session, message) != nil {
 		return
 	}
-
-	err = ioutil.WriteFile(path, settingsBytes, 0677)
-	if err != nil {
-		logErrorToChan(session, message, err)
-		return
-	}
-
 	_, _ = session.ChannelMessageSend(message.ChannelID, "You are now tracking "+args[1])
 }

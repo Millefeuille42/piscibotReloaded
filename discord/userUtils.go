@@ -8,7 +8,37 @@ import (
 	"os"
 )
 
-func loadUserFile(id string, session *discordgo.Session, message *discordgo.MessageCreate) (UserData, error) {
+func userCheckTarget(session *discordgo.Session, message *discordgo.MessageCreate) error {
+	if !userInitialCheck(session, message) {
+		return os.ErrNotExist
+	}
+	user, err := userLoadFile("", session, message)
+	if err != nil {
+		return err
+	}
+	if _, isExist := user.GuildTargets[message.GuildID]; isExist {
+		_, _ = session.ChannelMessageSend(message.ChannelID, "You are already tracking someone on this"+
+			" server!")
+		return os.ErrExist
+	}
+	return nil
+}
+
+func userWriteFile(data UserData, session *discordgo.Session, message *discordgo.MessageCreate) error {
+	dataBytes, err := json.MarshalIndent(data, "", "\t")
+	if err != nil {
+		logErrorToChan(session, message, err)
+		return err
+	}
+	err = ioutil.WriteFile(fmt.Sprintf("./data/users/%s.json", message.Author.ID), dataBytes, 0677)
+	if err != nil {
+		logErrorToChan(session, message, err)
+		return err
+	}
+	return nil
+}
+
+func userLoadFile(id string, session *discordgo.Session, message *discordgo.MessageCreate) (UserData, error) {
 	user := UserData{}
 	if id == "" {
 		id = message.Author.ID
@@ -26,7 +56,7 @@ func loadUserFile(id string, session *discordgo.Session, message *discordgo.Mess
 		return UserData{}, err
 	}
 
-	return user, err
+	return user, nil
 }
 
 func userInitialCheck(session *discordgo.Session, message *discordgo.MessageCreate) bool {

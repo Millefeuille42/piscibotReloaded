@@ -24,7 +24,7 @@ func adminRouter(session *discordgo.Session, message *discordgo.MessageCreate) {
 func userRouter(session *discordgo.Session, message *discordgo.MessageCreate) bool {
 	switch {
 	case strings.HasPrefix(message.Content, "!start"):
-		initUser(session, message)
+		userInit(session, message)
 		return true
 	case strings.HasPrefix(message.Content, "!track"):
 		registerTarget(session, message)
