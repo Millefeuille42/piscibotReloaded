@@ -1,33 +1,63 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
+	"os"
+	"time"
 
 	apiclient "github.com/BoyerDamien/42APIClient"
 )
 
-type Checker struct {
-	UserList []apiclient.User
+func checkEnvVariables() {
+	envVariables := []string{"USER_API_URL", "UID", "SECRET"}
+	for _, val := range envVariables {
+		if os.Getenv(val) == "" {
+			log.Fatalf("Missing %s env variable", val)
+		}
+		log.Printf("%s env variable [OK]", val)
+	}
+}
+
+func checkAuth(api *apiclient.APIClient) error {
+	token := api.Token()
+	timestamp := time.Now().Sub(token.LastUpdate).Seconds()
+	if timestamp > float64(token.ExpiresIn) {
+		log.Println("Refreshing auth token...")
+		if err := api.Auth(); err != nil {
+			return err
+		}
+	}
+	log.Println("Auth token [OK]")
+	return nil
 }
 
 func main() {
-	//url := "https://api.intra.42.fr"
-	//api := &apiclient.APIClient{Url: url, Uid: uid, Secret: secret}
+	checkEnvVariables()
 
-	response, err := http.Get("http://localhost:3000/users")
-	if err != nil {
+	url := "https://api.intra.42.fr"
+	api := &apiclient.APIClient{Url: url, Uid: os.Getenv("UID"), Secret: os.Getenv("SECRET")}
+	checker := &CheckerImpl{UserAPIURL: os.Getenv("USER_API_URL")}
+
+	if err := api.Auth(); err != nil {
 		log.Fatal(err.Error())
 	}
 
-	body, err := apiclient.ReadHTTPResponse(response)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	var result []apiclient.User
-	json.Unmarshal(body, &result)
+	for {
+		if err := checkAuth(api); err != nil {
+			log.Fatal(err.Error())
+		}
 
-	fmt.Println(result)
+		if err := checker.FetchUsers(); err != nil {
+			log.Fatal(err.Error())
+		}
+
+		if checker.Length() > 0 {
+			log.Printf("%d users detected\nAnalysis begin...", checker.Length())
+			for _, val := range checker.UserList() {
+				fmt.Println(val)
+				time.Sleep(time.Second * 3)
+			}
+		}
+	}
 }
