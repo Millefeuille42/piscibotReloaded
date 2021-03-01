@@ -21,7 +21,7 @@ func checkEnvVariables() {
 
 func checkAuth(api *apiclient.APIClient) error {
 	token := api.Token()
-	timestamp := time.Now().Sub(token.LastUpdate).Seconds()
+	timestamp := time.Since(token.LastUpdate).Seconds()
 	if timestamp > float64(token.ExpiresIn) {
 		log.Println("Refreshing auth token...")
 		if err := api.Auth(); err != nil {
