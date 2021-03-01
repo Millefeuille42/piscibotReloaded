@@ -3,12 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
 	"os"
 )
 
-func createRoles(session *discordgo.Session, message *discordgo.MessageCreate, data *GuildData) error {
+func createRoles(agent discordAgent, data *GuildData) error {
 	names := []string{
 		"SegBot - Admin",
 		"SegBot - Registered",
@@ -17,12 +16,12 @@ func createRoles(session *discordgo.Session, message *discordgo.MessageCreate, d
 	}
 
 	for _, name := range names {
-		role, err := session.GuildRoleCreate(message.GuildID)
+		role, err := agent.session.GuildRoleCreate(agent.message.GuildID)
 		if err != nil {
 			return err
 		}
-		role, err = session.GuildRoleEdit(
-			message.GuildID, role.ID,
+		role, err = agent.session.GuildRoleEdit(
+			agent.message.GuildID, role.ID,
 			name, role.Color, false, role.Permissions, true,
 		)
 		if err != nil {
@@ -42,18 +41,18 @@ func createRoles(session *discordgo.Session, message *discordgo.MessageCreate, d
 	return nil
 }
 
-func createData(session *discordgo.Session, message *discordgo.MessageCreate) GuildData {
+func createData(agent discordAgent) GuildData {
 
 	data := GuildData{
-		GuildID: message.GuildID,
-		Admins:  append(make([]string, 0), message.Author.ID),
+		GuildID: agent.message.GuildID,
+		Admins:  append(make([]string, 0), agent.message.Author.ID),
 		Settings: guildSettings{
 			Channels: guildSettingsChannels{
-				Commands:    message.ChannelID,
-				Leaderboard: message.ChannelID,
-				Success:     message.ChannelID,
-				Started:     message.ChannelID,
-				Location:    message.ChannelID,
+				Commands:    agent.message.ChannelID,
+				Leaderboard: agent.message.ChannelID,
+				Success:     agent.message.ChannelID,
+				Started:     agent.message.ChannelID,
+				Location:    agent.message.ChannelID,
 			},
 			Roles: guildSettingsRoles{
 				Admin:        "none",
@@ -63,47 +62,47 @@ func createData(session *discordgo.Session, message *discordgo.MessageCreate) Gu
 			},
 		},
 	}
-	if createRoles(session, message, &data) != nil {
-		_, _ = session.ChannelMessageSend(message.ChannelID,
+	if createRoles(agent, &data) != nil {
+		_, _ = agent.session.ChannelMessageSend(agent.channel,
 			"Failed to create roles, you'll have to create and configure the missing ones")
 		return GuildData{GuildID: ""}
 	}
 	return data
 }
 
-func writeData(session *discordgo.Session, message *discordgo.MessageCreate, data GuildData) error {
-	path := fmt.Sprintf("./data/guilds/%s.json", message.GuildID)
+func writeData(agent discordAgent, data GuildData) error {
+	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
 
 	exists, err := createFileIfNotExist(path)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return err
 	}
 	if exists {
-		_, _ = session.ChannelMessageSend(message.ChannelID, "This Guild is already registered!")
+		_, _ = agent.session.ChannelMessageSend(agent.channel, "This Guild is already registered!")
 		return os.ErrExist
 	}
 	jsonGuild, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return err
 	}
 	err = ioutil.WriteFile(path, jsonGuild, 0677)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return err
 	}
 	return nil
 }
 
 // Create guild's data file
-func initGuild(session *discordgo.Session, message *discordgo.MessageCreate) {
-	data := createData(session, message)
+func initGuild(agent discordAgent) {
+	data := createData(agent)
 	if data.GuildID == "" {
 		return
 	}
-	if writeData(session, message, data) != nil {
+	if writeData(agent, data) != nil {
 		return
 	}
-	_, _ = session.ChannelMessageSend(message.ChannelID, "Guild registered successfully!")
+	_, _ = agent.session.ChannelMessageSend(agent.channel, "Guild registered successfully!")
 }

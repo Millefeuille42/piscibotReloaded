@@ -15,20 +15,20 @@ type TargetData struct {
 	GuildUsers map[string]string
 }
 
-func makeApiReq(path, login string, session *discordgo.Session, message *discordgo.MessageCreate) error {
+func makeApiReq(path, login string, agent discordAgent) error {
 	uri := fmt.Sprintf("%s:%s/user/%s", os.Getenv("42API"), os.Getenv("42PORT"), login)
 	req, err := http.NewRequest("POST", uri, nil)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return err
 	}
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return err
 	}
 	if res.StatusCode == 404 {
-		_, _ = session.ChannelMessageSend(message.ChannelID, "This login doesn't exist")
+		_, _ = agent.session.ChannelMessageSend(agent.channel, "This login doesn't exist")
 		_ = os.Remove(path)
 		return os.ErrNotExist
 	}
@@ -65,36 +65,36 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 	return nil
 }
 
-func registerTarget(session *discordgo.Session, message *discordgo.MessageCreate) {
+func registerTarget(agent discordAgent) {
 	settings := TargetData{}
-	args := strings.Split(message.Content, "-")
+	args := strings.Split(agent.message.Content, "-")
 	if len(args) < 2 {
 		return
 	}
-	if userCheckTarget(session, message) != nil {
+	if userCheckTarget(agent) != nil {
 		return
 	}
 
 	path := fmt.Sprintf("./data/targets/%s.json", args[1])
-	err := loadOrCreate(path, args[1], &settings, message)
+	err := loadOrCreate(path, args[1], &settings, agent.message)
 	if err != nil {
 		if err == os.ErrExist {
-			_, _ = session.ChannelMessageSend(message.ChannelID, "Someone is already tracking this person"+
+			_, _ = agent.session.ChannelMessageSend(agent.channel, "Someone is already tracking this person"+
 				" on this server!")
 			return
 		}
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return
 	}
 
 	/*
-	**	if makeApiReq(path, args[1], session, message) != nil {
+	**	if makeApiReq(path, args[1], agent) != nil {
 	**		return
 	**	}
 	 */
 
-	if targetWriteFile(settings, session, message) != nil {
+	if targetWriteFile(settings, agent) != nil {
 		return
 	}
-	_, _ = session.ChannelMessageSend(message.ChannelID, "You are now tracking "+args[1])
+	_, _ = agent.session.ChannelMessageSend(agent.channel, "You are now tracking "+args[1])
 }

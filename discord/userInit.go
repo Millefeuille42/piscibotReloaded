@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 )
 
 type userSettings struct {
@@ -18,36 +17,36 @@ type UserData struct {
 	Settings     userSettings
 }
 
-func userUnTrack(session *discordgo.Session, message *discordgo.MessageCreate) {
-	if !userTrackCheck(session, message) {
+func userUnTrack(agent discordAgent) {
+	if !userTrackCheck(agent) {
 		return
 	}
-	user, err := userLoadFile("", session, message)
+	user, err := userLoadFile("", agent)
 	if err != nil {
 		return
 	}
-	delete(user.GuildTargets, message.GuildID)
+	delete(user.GuildTargets, agent.message.GuildID)
 }
 
-func userInit(session *discordgo.Session, message *discordgo.MessageCreate) {
-	path := fmt.Sprintf("./data/users/%s.json", message.Author.ID)
+func userInit(agent discordAgent) {
+	path := fmt.Sprintf("./data/users/%s.json", agent.message.Author.ID)
 
-	if !guildInitialCheck(session, message) {
+	if !guildInitialCheck(agent) {
 		return
 	}
 
 	exists, err := createFileIfNotExist(path)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return
 	}
 	if exists {
-		_, _ = session.ChannelMessageSend(message.ChannelID, "You are already registered!")
+		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are already registered!")
 		return
 	}
 
 	data := UserData{
-		UserID:       message.Author.ID,
+		UserID:       agent.message.Author.ID,
 		GuildTargets: make(map[string]string),
 		Settings: userSettings{
 			Leaderboard: "none",
@@ -57,8 +56,8 @@ func userInit(session *discordgo.Session, message *discordgo.MessageCreate) {
 		},
 	}
 
-	if userWriteFile(data, session, message) != nil {
+	if userWriteFile(data, agent) != nil {
 		return
 	}
-	_, _ = session.ChannelMessageSend(message.ChannelID, "You are now registered")
+	_, _ = agent.session.ChannelMessageSend(agent.channel, "You are now registered")
 }

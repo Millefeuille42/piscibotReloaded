@@ -3,26 +3,25 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
 )
 
-func sendAdminSettings(session *discordgo.Session, message *discordgo.MessageCreate) {
-	path := fmt.Sprintf("./data/guilds/%s.json", message.GuildID)
+func sendAdminSettings(agent discordAgent) {
+	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
 	settings := GuildData{}
 
-	if !guildInitialCheck(session, message) {
+	if !guildInitialCheck(agent) {
 		return
 	}
 
 	fileData, err := ioutil.ReadFile(path)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return
 	}
 	err = json.Unmarshal(fileData, &settings)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return
 	}
 
@@ -35,19 +34,19 @@ func sendAdminSettings(session *discordgo.Session, message *discordgo.MessageCre
 			"    Started:      #%s\n"+
 			"    Location:     #%s\n\n"+
 			"Admins:           ",
-		getChannelName(session, settings.Settings.Channels.Commands),
-		getChannelName(session, settings.Settings.Channels.Leaderboard),
-		getChannelName(session, settings.Settings.Channels.Success),
-		getChannelName(session, settings.Settings.Channels.Started),
-		getChannelName(session, settings.Settings.Channels.Location),
+		getChannelName(agent.session, settings.Settings.Channels.Commands),
+		getChannelName(agent.session, settings.Settings.Channels.Leaderboard),
+		getChannelName(agent.session, settings.Settings.Channels.Success),
+		getChannelName(agent.session, settings.Settings.Channels.Started),
+		getChannelName(agent.session, settings.Settings.Channels.Location),
 	)
 
 	for i, admin := range settings.Admins {
 		if i == len(settings.Admins)-1 {
-			mess = fmt.Sprintf("%s@%s\n```", mess, getUser(session, admin))
+			mess = fmt.Sprintf("%s@%s\n```", mess, getUser(agent.session, admin))
 			break
 		}
-		mess = fmt.Sprintf("%s@%s, ", mess, getUser(session, admin))
+		mess = fmt.Sprintf("%s@%s, ", mess, getUser(agent.session, admin))
 	}
-	_, _ = session.ChannelMessageSend(message.ChannelID, mess)
+	_, _ = agent.session.ChannelMessageSend(agent.channel, mess)
 }

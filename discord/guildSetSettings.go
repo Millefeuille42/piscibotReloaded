@@ -3,37 +3,36 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
 	"strings"
 )
 
-func setAdmin(session *discordgo.Session, message *discordgo.MessageCreate) {
-	path := fmt.Sprintf("./data/guilds/%s.json", message.GuildID)
+func setAdmin(agent discordAgent) {
+	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
 	settings := GuildData{}
 
-	if !guildInitialCheck(session, message) {
+	if !guildInitialCheck(agent) {
 		return
 	}
 
-	args := strings.Split(message.Content, "-")
+	args := strings.Split(agent.message.Content, "-")
 	if len(args) <= 1 {
 		return
 	}
 
 	fileData, err := ioutil.ReadFile(path)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return
 	}
 	err = json.Unmarshal(fileData, &settings)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return
 	}
 
-	if !Find(settings.Admins, message.Author.ID) {
-		_, _ = session.ChannelMessageSend(message.ChannelID, "You are not an admin")
+	if !Find(settings.Admins, agent.message.Author.ID) {
+		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}
 
@@ -47,47 +46,47 @@ func setAdmin(session *discordgo.Session, message *discordgo.MessageCreate) {
 			settings.Admins = append(settings.Admins, user)
 		}
 	}
-	_ = writeGuildSettings(session, message, settings)
+	_ = writeGuildData(agent, settings)
 }
 
-func setChan(session *discordgo.Session, message *discordgo.MessageCreate) {
-	path := fmt.Sprintf("./data/guilds/%s.json", message.GuildID)
+func setChan(agent discordAgent) {
+	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
 	settings := GuildData{}
 
-	if !guildInitialCheck(session, message) {
+	if !guildInitialCheck(agent) {
 		return
 	}
 
-	args := strings.Split(message.Content, "-")
+	args := strings.Split(agent.message.Content, "-")
 	fileData, err := ioutil.ReadFile(path)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return
 	}
 	err = json.Unmarshal(fileData, &settings)
 	if err != nil {
-		logErrorToChan(session, message, err)
+		logErrorToChan(agent, err)
 		return
 	}
 
-	if !Find(settings.Admins, message.Author.ID) {
-		_, _ = session.ChannelMessageSend(message.ChannelID, "You are not an admin")
+	if !Find(settings.Admins, agent.message.Author.ID) {
+		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}
 
 	for _, channel := range args {
 		switch channel {
 		case "command":
-			settings.Settings.Channels.Commands = message.ChannelID
+			settings.Settings.Channels.Commands = agent.message.ChannelID
 		case "leaderboard":
-			settings.Settings.Channels.Leaderboard = message.ChannelID
+			settings.Settings.Channels.Leaderboard = agent.message.ChannelID
 		case "success":
-			settings.Settings.Channels.Success = message.ChannelID
+			settings.Settings.Channels.Success = agent.message.ChannelID
 		case "started":
-			settings.Settings.Channels.Started = message.ChannelID
+			settings.Settings.Channels.Started = agent.message.ChannelID
 		case "location":
-			settings.Settings.Channels.Location = message.ChannelID
+			settings.Settings.Channels.Location = agent.message.ChannelID
 		}
 	}
-	_ = writeGuildSettings(session, message, settings)
+	_ = writeGuildData(agent, settings)
 }
