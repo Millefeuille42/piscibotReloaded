@@ -61,7 +61,7 @@ func main() {
 
 		if checker.Length() > 0 {
 			log.Printf("%d users detected\nAnalysis begin...", checker.Length())
-			for _, val := range checker.UserList() {
+			for _, val := range checker.UserList {
 				fmt.Println(val)
 				time.Sleep(time.Second * 3)
 			}

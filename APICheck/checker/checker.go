@@ -10,14 +10,13 @@ import (
 
 // Checker interface
 type Checker interface {
-	UserList() []apiclient.User
 	FetchUsers() error
 	Length() int
 }
 
 // CheckerImpl implements checker interface
 type CheckerImpl struct {
-	userList   []apiclient.User
+	UserList   []apiclient.User
 	UserAPIURL string
 }
 
@@ -31,16 +30,11 @@ func (s *CheckerImpl) FetchUsers() error {
 	if err != nil {
 		return err
 	}
-	json.Unmarshal(body, &s.userList)
+	json.Unmarshal(body, &s.UserList)
 	return nil
-}
-
-// UserList returns a list of fetched users
-func (s *CheckerImpl) UserList() []apiclient.User {
-	return s.userList
 }
 
 // Length returns the number of fetched users
 func (s *CheckerImpl) Length() int {
-	return len(s.UserList())
+	return len(s.UserList)
 }
