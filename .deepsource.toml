@@ -5,8 +5,9 @@ name = "go"
 enabled = true
 
   [analyzers.meta]
-  import_paths = ["github.com/Millefeuille42/piscibotReloaded"]
-
-[[analyzers]]
-name = "docker"
-enabled = true
+  import_paths = [
+    "github.com/Millefeuille42/piscibotReloaded/42API",
+    "github.com/Millefeuille42/piscibotReloaded/APICheck",
+    "github.com/Millefeuille42/piscibotReloaded/discord",
+  ]
+  import_root = "github.com/Millefeuille42/piscibotReloaded"
