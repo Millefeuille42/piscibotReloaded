@@ -14,7 +14,7 @@ func writeGuildSettings(session *discordgo.Session, message *discordgo.MessageCr
 		logErrorToChan(session, message, err)
 		return err
 	}
-	err = ioutil.WriteFile(fmt.Sprintf("./data/guilds/%d.json", data.GuildID), jsonGuild, 0677)
+	err = ioutil.WriteFile(fmt.Sprintf("./data/guilds/%s.json", data.GuildID), jsonGuild, 0677)
 	if err != nil {
 		logErrorToChan(session, message, err)
 		return err
