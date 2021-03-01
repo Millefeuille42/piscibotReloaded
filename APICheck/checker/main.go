@@ -34,6 +34,22 @@ func checkAuth(api *apiclient.APIClient) error {
 	return nil
 }
 
+func CompareLocation(apiUser apiclient.User, dbUser apiclient.User) (string, error) {
+	if apiUser.Location != dbUser.Location {
+		if apiUser.Location == nil {
+			return fmt.Sprintf("%s s'est déconnecté", apiUser.Login), nil
+		} else if apiUser.Location != nil {
+			return fmt.Sprintf("%s s'est connecté en %s", apiUser.Login, apiUser.Location), nil
+		}
+	}
+	return string(""), fmt.Errorf("No changes for user %s", apiUser.Login)
+}
+
+/*
+func CompareProjects(apiUser apiclient.User, dbUser apiclient.User) (string, error){
+	if apiUser.ProjectsUsers
+}*/
+
 func main() {
 	err := godotenv.Load("api.env")
 	if err != nil {
@@ -54,17 +70,28 @@ func main() {
 		if err := checkAuth(api); err != nil {
 			log.Fatal(err.Error())
 		}
-
 		if err := checker.FetchUsers(); err != nil {
 			log.Fatal(err.Error())
 		}
-
 		if checker.Length() > 0 {
 			log.Printf("%d users detected\nAnalysis begin...", checker.Length())
 			for _, val := range checker.UserList {
-				fmt.Println(val)
+				apiUser, err := api.GetUser(val.Login)
+				if err != nil {
+					log.Printf("Error: Cannot fetch user %s data", val.Login)
+				} else {
+					msg, err := CompareLocation(apiUser, val)
+					if err != nil {
+						log.Println(err.Error())
+					} else {
+						log.Println(msg)
+					}
+				}
 				time.Sleep(time.Second * 3)
 			}
+		} else {
+			log.Println("No tracked users")
+			time.Sleep(time.Second * 3)
 		}
 	}
 }
