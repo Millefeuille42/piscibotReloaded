@@ -29,6 +29,9 @@ func userRouter(session *discordgo.Session, message *discordgo.MessageCreate) bo
 	case strings.HasPrefix(message.Content, "!track"):
 		registerTarget(session, message)
 		return true
+	case strings.HasPrefix(message.Content, "!untrack"):
+		userUnTrack(session, message)
+		return true
 	case strings.HasPrefix(message.Content, "!ping"):
 		// editPings
 		fmt.Println("PING")

@@ -18,6 +18,17 @@ type UserData struct {
 	Settings     userSettings
 }
 
+func userUnTrack(session *discordgo.Session, message *discordgo.MessageCreate) {
+	if !userTrackCheck(session, message) {
+		return
+	}
+	user, err := userLoadFile("", session, message)
+	if err != nil {
+		return
+	}
+	delete(user.GuildTargets, message.GuildID)
+}
+
 func userInit(session *discordgo.Session, message *discordgo.MessageCreate) {
 	path := fmt.Sprintf("./data/users/%s.json", message.Author.ID)
 

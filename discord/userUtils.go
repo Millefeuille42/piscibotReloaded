@@ -59,6 +59,18 @@ func userLoadFile(id string, session *discordgo.Session, message *discordgo.Mess
 	return user, nil
 }
 
+func userTrackCheck(session *discordgo.Session, message *discordgo.MessageCreate) bool {
+	user, err := userLoadFile("", session, message)
+	if err != nil {
+		return false
+	}
+	if _, isExist := user.GuildTargets[message.GuildID]; isExist {
+		return true
+	}
+	_, _ = session.ChannelMessageSend(message.ChannelID, "You are not tracking anyone on this server!")
+	return false
+}
+
 func userInitialCheck(session *discordgo.Session, message *discordgo.MessageCreate) bool {
 	_, err := os.Stat(fmt.Sprintf("./data/users/%s.json", message.Author.ID))
 	if !os.IsNotExist(err) {
