@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// userCheckTarget Check if someone is already tracking this target on guild
 func userCheckTarget(agent discordAgent) error {
 	if !userInitialCheck(agent) {
 		return os.ErrNotExist
@@ -23,6 +24,7 @@ func userCheckTarget(agent discordAgent) error {
 	return nil
 }
 
+// userWriteFile Writes user data to file
 func userWriteFile(data UserData, agent discordAgent) error {
 	dataBytes, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
@@ -37,6 +39,7 @@ func userWriteFile(data UserData, agent discordAgent) error {
 	return nil
 }
 
+// userLoadFile Returns user data from file
 func userLoadFile(id string, agent discordAgent) (UserData, error) {
 	user := UserData{}
 	if id == "" {
@@ -58,6 +61,7 @@ func userLoadFile(id string, agent discordAgent) (UserData, error) {
 	return user, nil
 }
 
+// userTrackCheck Checks if user is tracking someone on guild
 func userTrackCheck(agent discordAgent) bool {
 	user, err := userLoadFile("", agent)
 	if err != nil {
@@ -70,6 +74,7 @@ func userTrackCheck(agent discordAgent) bool {
 	return false
 }
 
+// userInitialCheck Checks if user is registered
 func userInitialCheck(agent discordAgent) bool {
 	_, err := os.Stat(fmt.Sprintf("./data/users/%s.json", agent.message.Author.ID))
 	if !os.IsNotExist(err) {

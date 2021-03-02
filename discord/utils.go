@@ -9,26 +9,7 @@ import (
 	"syscall"
 )
 
-func getUser(session *discordgo.Session, id string) string {
-	ret, err := session.User(id)
-	if err != nil {
-		return ""
-	}
-	return ret.Username
-}
-
-func getChannelName(session *discordgo.Session, id string) string {
-	ret, _ := session.Channel(id)
-	return ret.Name
-}
-
-func logErrorToChan(agent discordAgent, err error) {
-	logError(err)
-	_, _ = agent.session.ChannelMessageSend(agent.channel,
-		fmt.Sprintf("An Error Occured, Please Try Again Later {%s}", err.Error()))
-}
-
-// Check if dir exists, if not create it
+// createDirIfNotExist Check if dir exists, if not create it
 func createDirIfNotExist(path string) error {
 	_, err := os.Stat(path)
 	if err != nil {
@@ -44,7 +25,7 @@ func createDirIfNotExist(path string) error {
 	return nil
 }
 
-// Check if file exists, if not create it
+// createFileIfNotExist Check if file exists, if not create it
 func createFileIfNotExist(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
@@ -58,6 +39,7 @@ func createFileIfNotExist(path string) (bool, error) {
 	return true, nil
 }
 
+// Find Check if val exists in slice, true if it exists
 func Find(slice []string, val string) bool {
 	for _, item := range slice {
 		if item == val {
@@ -67,21 +49,21 @@ func Find(slice []string, val string) bool {
 	return false
 }
 
-// Prints error + StackTrace to stderr if error
+// logError Prints error + StackTrace to stderr if error
 func logError(err error) {
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err, debug.Stack())
 	}
 }
 
-// Panic if error
+// checkError Panic if error
 func checkError(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
 
-// Setup an handler for Ctrl+C and closing the bot
+// setupCloseHandler Setup an handler for Ctrl+C and closing the bot
 func setupCloseHandler(session *discordgo.Session) {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)

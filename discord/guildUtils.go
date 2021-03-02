@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// guildGetChannel Returns guild's command channel
 func guildGetChannel(agent discordAgent) string {
 	guild, err := guildLoadFile(agent, true)
 	if err != nil {
@@ -15,6 +16,7 @@ func guildGetChannel(agent discordAgent) string {
 	return guild.Settings.Channels.Commands
 }
 
+// guildLoadFile Returns guild data from file
 func guildLoadFile(agent discordAgent, silent bool) (GuildData, error) {
 	data := GuildData{}
 
@@ -37,7 +39,8 @@ func guildLoadFile(agent discordAgent, silent bool) (GuildData, error) {
 	return data, nil
 }
 
-func writeGuildData(agent discordAgent, data GuildData) error {
+// guildWriteFile Writes guild data to file
+func guildWriteFile(agent discordAgent, data GuildData) error {
 	jsonGuild, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
 		logErrorToChan(agent, err)
@@ -51,6 +54,7 @@ func writeGuildData(agent discordAgent, data GuildData) error {
 	return nil
 }
 
+// guildInitialCheck Required before guild related actions, checks if guild exists
 func guildInitialCheck(agent discordAgent) bool {
 	_, err := os.Stat(fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID))
 	if !os.IsNotExist(err) {

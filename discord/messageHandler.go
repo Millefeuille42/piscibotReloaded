@@ -6,51 +6,51 @@ import (
 	"strings"
 )
 
+// discordAgent Contains discord's session and message structs and the guild's command channel
 type discordAgent struct {
 	session *discordgo.Session
 	message *discordgo.MessageCreate
 	channel string
 }
 
-// Router for admin
+// adminRouter Router for admin
 func adminRouter(agent discordAgent) {
 	switch {
 	case strings.HasPrefix(agent.message.Content, "!init"):
-		initGuild(agent)
+		guildInit(agent)
 	case strings.HasPrefix(agent.message.Content, "!chan"):
-		setChan(agent)
+		adminSetChan(agent)
 	case strings.HasPrefix(agent.message.Content, "!admin"):
-		setAdmin(agent)
+		adminSet(agent)
 	case agent.message.Content == "!params":
-		sendAdminSettings(agent)
+		adminSendSettings(agent)
 	}
 }
 
-// Router for user commands, returns true if a command was found
+// userRouter Router for user commands, returns true if a command was found
 func userRouter(agent discordAgent) bool {
 	switch {
 	case strings.HasPrefix(agent.message.Content, "!start"):
 		userInit(agent)
 		return true
 	case strings.HasPrefix(agent.message.Content, "!track"):
-		registerTarget(agent)
+		targetRegister(agent)
 		return true
 	case strings.HasPrefix(agent.message.Content, "!ping"):
 		// editPings
 		fmt.Println("PING")
 		return true
 	case agent.message.Content == "!settings":
-		// getUserSettings
-		fmt.Println("USER SETTINGS")
+		userSendSettings(agent)
 		return true
 	case agent.message.Content == "!untrack":
-		userUnTrack(agent)
+		targetUntrack(agent)
 		return true
 	}
 	return false
 }
 
-// Discord bot message handler
+// messageHandler Discord bot message handler
 func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate) {
 	botID, _ := session.User("@me")
 	agent := discordAgent{
