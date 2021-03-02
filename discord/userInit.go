@@ -6,7 +6,7 @@ import (
 
 // targetUntrack Un-tracks target for user on guild
 func targetUntrack(agent discordAgent) {
-	if !userTrackCheck(agent) {
+	if !userIsTrackingCheck(agent) {
 		return
 	}
 
@@ -46,7 +46,7 @@ func userInit(agent discordAgent) {
 		return
 	}
 	if exists {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are already registered!")
+		sendMessageWithMention("You are already registered!", "", agent)
 		return
 	}
 
@@ -64,5 +64,5 @@ func userInit(agent discordAgent) {
 	if userWriteFile(data, agent) != nil {
 		return
 	}
-	_, _ = agent.session.ChannelMessageSend(agent.channel, "You are now registered")
+	sendMessageWithMention("You are now registered", "", agent)
 }

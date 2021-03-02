@@ -7,23 +7,6 @@ import (
 	"os"
 )
 
-// userCheckTarget Check if someone is already tracking this target on guild
-func userCheckTarget(agent discordAgent) error {
-	if !userInitialCheck(agent) {
-		return os.ErrNotExist
-	}
-	user, err := userLoadFile("", agent)
-	if err != nil {
-		return err
-	}
-	if _, isExist := user.GuildTargets[agent.message.GuildID]; isExist {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are already tracking someone on this"+
-			" server!")
-		return os.ErrExist
-	}
-	return nil
-}
-
 // userWriteFile Writes user data to file
 func userWriteFile(data UserData, agent discordAgent) error {
 	dataBytes, err := json.MarshalIndent(data, "", "\t")
@@ -61,8 +44,27 @@ func userLoadFile(id string, agent discordAgent) (UserData, error) {
 	return user, nil
 }
 
-// userTrackCheck Checks if user is tracking someone on guild
-func userTrackCheck(agent discordAgent) bool {
+// userCheckHasTarget Check if user is already a this target on guild
+func userCheckHasTarget(agent discordAgent) error {
+	if !userInitialCheck(agent) {
+		return os.ErrNotExist
+	}
+	user, err := userLoadFile("", agent)
+	if err != nil {
+		return err
+	}
+	if _, isExist := user.GuildTargets[agent.message.GuildID]; isExist {
+		sendMessageWithMention("You are already tracking someone on this server!", "", agent)
+		return os.ErrExist
+	}
+	return nil
+}
+
+// userIsTrackingCheck Checks if user is tracking someone on guild
+func userIsTrackingCheck(agent discordAgent) bool {
+	if !userInitialCheck(agent) {
+		return false
+	}
 	user, err := userLoadFile("", agent)
 	if err != nil {
 		return false
@@ -70,17 +72,19 @@ func userTrackCheck(agent discordAgent) bool {
 	if _, isExist := user.GuildTargets[agent.message.GuildID]; isExist {
 		return true
 	}
-	_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not tracking anyone on this server!")
+	sendMessageWithMention("You are not tracking anyone on this server!", "", agent)
 	return false
 }
 
 // userInitialCheck Checks if user is registered
 func userInitialCheck(agent discordAgent) bool {
+	if !guildInitialCheck(agent) {
+		return false
+	}
 	_, err := os.Stat(fmt.Sprintf("./data/users/%s.json", agent.message.Author.ID))
 	if !os.IsNotExist(err) {
 		return true
 	}
-	_, _ = agent.session.ChannelMessageSend(agent.channel, "This user doesn't exists, "+
-		"create it with !start")
+	sendMessageWithMention("You are not registered, register with !start", "", agent)
 	return false
 }

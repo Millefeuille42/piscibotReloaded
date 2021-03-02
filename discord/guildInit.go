@@ -110,7 +110,7 @@ func writeData(agent discordAgent, data GuildData) error {
 		return err
 	}
 	if exists {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "This Guild is already registered!")
+		sendMessageWithMention("This Guild is already registered!", "", agent)
 		return os.ErrExist
 	}
 	if guildWriteFile(agent, data) != nil {
@@ -128,5 +128,5 @@ func guildInit(agent discordAgent) {
 	if writeData(agent, data) != nil {
 		return
 	}
-	_, _ = agent.session.ChannelMessageSend(agent.channel, "Guild registered successfully!")
+	sendMessageWithMention("Guild registered successfully!", "", agent)
 }

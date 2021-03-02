@@ -7,7 +7,7 @@ import (
 
 // userSetPings Sets user ping
 func userSetPings(agent discordAgent) {
-	if !userInitialCheck(agent) || !guildInitialCheck(agent) {
+	if !userInitialCheck(agent) {
 		return
 	}
 	user, err := userLoadFile("", agent)
@@ -17,11 +17,11 @@ func userSetPings(agent discordAgent) {
 	args := strings.Split(agent.message.Content, "-")
 
 	for _, channel := range args {
-		subArgs := strings.Split(agent.message.Content, ":")
+		subArgs := strings.Split(channel, ":")
 		if len(subArgs) <= 1 || !Find([]string{"all", "none", "dm", "channel"}, subArgs[1]) {
 			continue
 		}
-		switch channel {
+		switch subArgs[0] {
 		case "leaderboard":
 			user.Settings.Leaderboard = subArgs[1]
 		case "success":
@@ -32,11 +32,14 @@ func userSetPings(agent discordAgent) {
 			user.Settings.Location = subArgs[1]
 		}
 	}
+	if userWriteFile(user, agent) == nil {
+		sendMessageWithMention("Ping settings updated", "", agent)
+	}
 }
 
 // userSendSettings Send user's ping related settings to the channel
 func userSendSettings(agent discordAgent) {
-	if !userInitialCheck(agent) || !guildInitialCheck(agent) {
+	if !userInitialCheck(agent) {
 		return
 	}
 	user, err := userLoadFile("", agent)
