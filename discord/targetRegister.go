@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// TargetData Contains target's Login and a GuildUsers map
+// TargetData Contains a target Login, and a GuildUsers map
 type TargetData struct {
 	Login      string
 	GuildUsers map[string]string
@@ -41,13 +41,11 @@ func makeApiReq(path, login string, agent discordAgent) error {
 func loadOrCreate(path, login string, settings *TargetData, message *discordgo.MessageCreate) error {
 	exists, err := createFileIfNotExist(path)
 	if err != nil {
-		_ = os.Remove(path)
 		return err
 	}
 	if exists {
 		data, err := ioutil.ReadFile(path)
 		if err != nil {
-			_ = os.Remove(path)
 			return err
 		}
 		err = json.Unmarshal(data, settings)
@@ -72,10 +70,11 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 func targetRegister(agent discordAgent) {
 	settings := TargetData{}
 	args := strings.Split(agent.message.Content, "-")
-	if len(args) < 2 {
+	if userCheckHasTarget(agent) != nil {
 		return
 	}
-	if userCheckTarget(agent) != nil {
+	if len(args) < 2 {
+		sendMessageWithMention("I need more arguments!", "", agent)
 		return
 	}
 
@@ -83,8 +82,8 @@ func targetRegister(agent discordAgent) {
 	err := loadOrCreate(path, args[1], &settings, agent.message)
 	if err != nil {
 		if err == os.ErrExist {
-			_, _ = agent.session.ChannelMessageSend(agent.channel, "Someone is already tracking this person"+
-				" on this server!")
+			sendMessageWithMention("Someone is already tracking this person"+
+				" on this server!", "", agent)
 			return
 		}
 		logErrorToChan(agent, err)
@@ -97,8 +96,13 @@ func targetRegister(agent discordAgent) {
 	**	}
 	 */
 
-	if targetWriteFile(settings, agent) != nil {
+	user, err := userLoadFile("", agent)
+	if err != nil {
 		return
 	}
-	_, _ = agent.session.ChannelMessageSend(agent.channel, "You are now tracking "+args[1])
+	user.GuildTargets[agent.message.GuildID] = agent.message.Author.ID
+
+	if targetWriteFile(settings, agent) == nil && userWriteFile(user, agent) == nil {
+		sendMessageWithMention("You are now tracking "+args[1], "", agent)
+	}
 }

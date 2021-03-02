@@ -20,7 +20,7 @@ func guildGetChannel(agent discordAgent) string {
 func guildLoadFile(agent discordAgent, silent bool) (GuildData, error) {
 	data := GuildData{}
 
-	fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/guild/%s.json", agent.message.GuildID))
+	fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID))
 	if err != nil {
 		if !silent {
 			logErrorToChan(agent, err)
@@ -60,7 +60,6 @@ func guildInitialCheck(agent discordAgent) bool {
 	if !os.IsNotExist(err) {
 		return true
 	}
-	_, _ = agent.session.ChannelMessageSend(agent.channel, "This guild doesn't exists, "+
-		"create it with !init")
+	sendMessageWithMention("This guild doesn't exist, create it with !init", "", agent)
 	return false
 }

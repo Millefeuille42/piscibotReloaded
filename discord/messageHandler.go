@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"strings"
 )
 
-// discordAgent Contains discord's session and message structs and the guild's command channel
+// discordAgent Contains discord's session and message structs, and the guild's command channel
 type discordAgent struct {
 	session *discordgo.Session
 	message *discordgo.MessageCreate
@@ -37,8 +36,7 @@ func userRouter(agent discordAgent) bool {
 		targetRegister(agent)
 		return true
 	case strings.HasPrefix(agent.message.Content, "!ping"):
-		// editPings
-		fmt.Println("PING")
+		userSetPings(agent)
 		return true
 	case agent.message.Content == "!settings":
 		userSendSettings(agent)

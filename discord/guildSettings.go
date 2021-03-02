@@ -1,33 +1,21 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"strings"
 )
 
-// adminSendSettings Send guild's settings, admin rights are not required for this
+// adminSendSettings Send a guild settings, admin rights are not required for this
 func adminSendSettings(agent discordAgent) {
-	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
-	settings := GuildData{}
-
 	if !guildInitialCheck(agent) {
 		return
 	}
-
-	fileData, err := ioutil.ReadFile(path)
+	settings, err := guildLoadFile(agent, false)
 	if err != nil {
-		logErrorToChan(agent, err)
-		return
-	}
-	err = json.Unmarshal(fileData, &settings)
-	if err != nil {
-		logErrorToChan(agent, err)
 		return
 	}
 
-	mess := fmt.Sprintf(
+	message := fmt.Sprintf(
 		"```\n"+
 			"Channels:\n"+
 			"    Commands:     #%s\n"+
@@ -45,36 +33,25 @@ func adminSendSettings(agent discordAgent) {
 
 	for i, admin := range settings.Admins {
 		if i == len(settings.Admins)-1 {
-			mess = fmt.Sprintf("%s@%s\n```", mess, getUser(agent.session, admin))
+			message = fmt.Sprintf("%s@%s\n```", message, getUser(agent.session, admin))
 			break
 		}
-		mess = fmt.Sprintf("%s@%s, ", mess, getUser(agent.session, admin))
+		message = fmt.Sprintf("%s@%s, ", message, getUser(agent.session, admin))
 	}
-	_, _ = agent.session.ChannelMessageSend(agent.channel, mess)
+	sendMessageWithMention(message, "", agent)
 }
 
 // adminSet Add provided admins to the guild
 func adminSet(agent discordAgent) {
-	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
-	settings := GuildData{}
-
 	if !guildInitialCheck(agent) {
 		return
 	}
-
 	args := strings.Split(agent.message.Content, "-")
 	if len(args) <= 1 {
 		return
 	}
-
-	fileData, err := ioutil.ReadFile(path)
+	settings, err := guildLoadFile(agent, false)
 	if err != nil {
-		logErrorToChan(agent, err)
-		return
-	}
-	err = json.Unmarshal(fileData, &settings)
-	if err != nil {
-		logErrorToChan(agent, err)
 		return
 	}
 
@@ -93,27 +70,21 @@ func adminSet(agent discordAgent) {
 			settings.Admins = append(settings.Admins, user)
 		}
 	}
-	_ = guildWriteFile(agent, settings)
+	if guildWriteFile(agent, settings) == nil {
+		sendMessageWithMention("Successfully added user(s) as admin", "", agent)
+	}
 }
 
 // adminSetChan Set provided channels to the originating channel
 func adminSetChan(agent discordAgent) {
-	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
-	settings := GuildData{}
 
 	if !guildInitialCheck(agent) {
 		return
 	}
 
 	args := strings.Split(agent.message.Content, "-")
-	fileData, err := ioutil.ReadFile(path)
+	settings, err := guildLoadFile(agent, false)
 	if err != nil {
-		logErrorToChan(agent, err)
-		return
-	}
-	err = json.Unmarshal(fileData, &settings)
-	if err != nil {
-		logErrorToChan(agent, err)
 		return
 	}
 
@@ -136,5 +107,7 @@ func adminSetChan(agent discordAgent) {
 			settings.Settings.Channels.Location = agent.message.ChannelID
 		}
 	}
-	_ = guildWriteFile(agent, settings)
+	if guildWriteFile(agent, settings) == nil {
+		sendMessageWithMention("Successfully changed channels", "", agent)
+	}
 }

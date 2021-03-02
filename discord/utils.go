@@ -39,7 +39,7 @@ func createFileIfNotExist(path string) (bool, error) {
 	return true, nil
 }
 
-// Find Check if val exists in slice, true if it exists
+// Find Check if val exists in Slice, true if it exists
 func Find(slice []string, val string) bool {
 	for _, item := range slice {
 		if item == val {
@@ -63,8 +63,8 @@ func checkError(err error) {
 	}
 }
 
-// setupCloseHandler Setup an handler for Ctrl+C and closing the bot
-func setupCloseHandler(session *discordgo.Session) {
+// setUpCloseHandler Set up a handler for Ctrl+C and closing the bot
+func setUpCloseHandler(session *discordgo.Session) {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
