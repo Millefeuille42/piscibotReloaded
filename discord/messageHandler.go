@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// discordAgent Contains discord's session and message structs and the guild's command channel
+// discordAgent Contains discord's session and message structs, and the guild's command channel
 type discordAgent struct {
 	session *discordgo.Session
 	message *discordgo.MessageCreate

@@ -60,6 +60,6 @@ func guildInitialCheck(agent discordAgent) bool {
 	if !os.IsNotExist(err) {
 		return true
 	}
-	sendMessageWithMention("This guild doesn't exists, create it with !init", "", agent)
+	sendMessageWithMention("This guild doesn't exist, create it with !init", "", agent)
 	return false
 }

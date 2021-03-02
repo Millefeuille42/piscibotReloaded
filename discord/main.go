@@ -26,7 +26,7 @@ func startBot() *discordgo.Session {
 	checkError(err)
 	fmt.Println("Discord bot created")
 
-	setupCloseHandler(discordBot)
+	setUpCloseHandler(discordBot)
 
 	return discordBot
 }

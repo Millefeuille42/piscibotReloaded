@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// adminSendSettings Send guild's settings, admin rights are not required for this
+// adminSendSettings Send a guild settings, admin rights are not required for this
 func adminSendSettings(agent discordAgent) {
 	if !guildInitialCheck(agent) {
 		return

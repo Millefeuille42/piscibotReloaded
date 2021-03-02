@@ -44,7 +44,7 @@ func userLoadFile(id string, agent discordAgent) (UserData, error) {
 	return user, nil
 }
 
-// userCheckHasTarget Check if user is already a this target on guild
+// userCheckHasTarget Check if user has already a target on guild
 func userCheckHasTarget(agent discordAgent) error {
 	if !userInitialCheck(agent) {
 		return os.ErrNotExist

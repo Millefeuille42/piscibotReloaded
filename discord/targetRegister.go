@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// TargetData Contains target's Login and a GuildUsers map
+// TargetData Contains a target Login, and a GuildUsers map
 type TargetData struct {
 	Login      string
 	GuildUsers map[string]string
