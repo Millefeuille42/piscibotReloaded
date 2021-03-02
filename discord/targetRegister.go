@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -15,7 +16,6 @@ type TargetData struct {
 	GuildUsers map[string]string
 }
 
-/*
 // makeApiReq Internal, Make calls to the 42API module to start data collecting and check if user exists
 func makeApiReq(path, login string, agent discordAgent) error {
 	uri := fmt.Sprintf("%s:%s/user/%s", os.Getenv("42API"), os.Getenv("42PORT"), login)
@@ -36,7 +36,6 @@ func makeApiReq(path, login string, agent discordAgent) error {
 	}
 	return nil
 }
-*/
 
 // loadOrCreate Internal, Loads or creates Target file
 func loadOrCreate(path, login string, settings *TargetData, message *discordgo.MessageCreate) error {
