@@ -4,30 +4,35 @@ import (
 	"fmt"
 )
 
-type userSettings struct {
-	Leaderboard string
-	Success     string
-	Started     string
-	Location    string
-}
-
-type UserData struct {
-	UserID       string
-	GuildTargets map[string]string
-	Settings     userSettings
-}
-
-func userUnTrack(agent discordAgent) {
+// targetUntrack Un-tracks target for user on guild
+func targetUntrack(agent discordAgent) {
 	if !userTrackCheck(agent) {
 		return
 	}
+
 	user, err := userLoadFile("", agent)
 	if err != nil {
 		return
 	}
+	targetName := user.GuildTargets[agent.message.GuildID]
 	delete(user.GuildTargets, agent.message.GuildID)
+	err = userWriteFile(user, agent)
+	if err != nil {
+		return
+	}
+
+	target, err := targetLoadFile(targetName, agent)
+	if err != nil {
+		return
+	}
+	delete(target.GuildUsers, agent.message.GuildID)
+	err = targetWriteFile(target, agent)
+	if err != nil {
+		return
+	}
 }
 
+// userInit Initializes user
 func userInit(agent discordAgent) {
 	path := fmt.Sprintf("./data/users/%s.json", agent.message.Author.ID)
 

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 )
 
+// targetWriteFile Writes target data to file
 func targetWriteFile(data TargetData, agent discordAgent) error {
 	dataBytes, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
@@ -20,6 +21,7 @@ func targetWriteFile(data TargetData, agent discordAgent) error {
 	return nil
 }
 
+// targetLoadFile Returns target data from file
 func targetLoadFile(id string, agent discordAgent) (TargetData, error) {
 	target := TargetData{}
 

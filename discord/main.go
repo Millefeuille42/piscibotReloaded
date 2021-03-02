@@ -10,14 +10,14 @@ import (
 
 var gBot *discordgo.Session
 
-// Load env based on provided file
+// loadEnv Load env based on provided file
 func loadEnv() {
 	err := godotenv.Load(os.Args[1])
 	checkError(err)
 	fmt.Println("Loaded Env")
 }
 
-// Starts discord bot
+// startBot Starts discord bot
 func startBot() *discordgo.Session {
 	discordBot, err := discordgo.New("Bot " + os.Getenv("BOTTOKEN"))
 	checkError(err)
@@ -31,7 +31,7 @@ func startBot() *discordgo.Session {
 	return discordBot
 }
 
-// Create required directories
+// prepFileSystem Create required directories
 func prepFileSystem() error {
 	err := createDirIfNotExist("./data")
 	if err != nil {

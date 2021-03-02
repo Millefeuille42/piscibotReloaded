@@ -1,12 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
+// createRoles Internal, Creates appropriate roles, and associate them to data
 func createRoles(agent discordAgent, data *GuildData) error {
 	names := []string{
 		"SegBot - Admin",
@@ -41,8 +40,8 @@ func createRoles(agent discordAgent, data *GuildData) error {
 	return nil
 }
 
+// createData Internal, creates and returns data file
 func createData(agent discordAgent) GuildData {
-
 	data := GuildData{
 		GuildID: agent.message.GuildID,
 		Admins:  append(make([]string, 0), agent.message.Author.ID),
@@ -65,11 +64,11 @@ func createData(agent discordAgent) GuildData {
 	if createRoles(agent, &data) != nil {
 		_, _ = agent.session.ChannelMessageSend(agent.channel,
 			"Failed to create roles, you'll have to create and configure the missing ones")
-		return GuildData{GuildID: ""}
 	}
 	return data
 }
 
+// writeData Internal, checks if guild registered, if not registers guild
 func writeData(agent discordAgent, data GuildData) error {
 	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
 
@@ -82,21 +81,14 @@ func writeData(agent discordAgent, data GuildData) error {
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "This Guild is already registered!")
 		return os.ErrExist
 	}
-	jsonGuild, err := json.MarshalIndent(data, "", "\t")
-	if err != nil {
-		logErrorToChan(agent, err)
-		return err
-	}
-	err = ioutil.WriteFile(path, jsonGuild, 0677)
-	if err != nil {
-		logErrorToChan(agent, err)
+	if guildWriteFile(agent, data) != nil {
 		return err
 	}
 	return nil
 }
 
-// Create guild's data file
-func initGuild(agent discordAgent) {
+// guildInit Create guild's data file
+func guildInit(agent discordAgent) {
 	data := createData(agent)
 	if data.GuildID == "" {
 		return
