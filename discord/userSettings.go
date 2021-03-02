@@ -1,9 +1,44 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
+
+// userSetPings Sets user ping
+func userSetPings(agent discordAgent) {
+	if !userInitialCheck(agent) || !guildInitialCheck(agent) {
+		return
+	}
+	user, err := userLoadFile("", agent)
+	if err != nil {
+		return
+	}
+	args := strings.Split(agent.message.Content, "-")
+
+	for _, channel := range args {
+		subArgs := strings.Split(agent.message.Content, ":")
+		if len(subArgs) <= 1 || !Find([]string{"all", "none", "dm", "channel"}, subArgs[1]) {
+			continue
+		}
+		switch channel {
+		case "leaderboard":
+			user.Settings.Leaderboard = subArgs[1]
+		case "success":
+			user.Settings.Success = subArgs[1]
+		case "started":
+			user.Settings.Started = subArgs[1]
+		case "location":
+			user.Settings.Location = subArgs[1]
+		}
+	}
+}
 
 // userSendSettings Send user's ping related settings to the channel
 func userSendSettings(agent discordAgent) {
+	if !userInitialCheck(agent) || !guildInitialCheck(agent) {
+		return
+	}
 	user, err := userLoadFile("", agent)
 	if err != nil {
 		return

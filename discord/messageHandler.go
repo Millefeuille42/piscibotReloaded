@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"strings"
 )
@@ -37,8 +36,7 @@ func userRouter(agent discordAgent) bool {
 		targetRegister(agent)
 		return true
 	case strings.HasPrefix(agent.message.Content, "!ping"):
-		// editPings
-		fmt.Println("PING")
+		userSetPings(agent)
 		return true
 	case agent.message.Content == "!settings":
 		userSendSettings(agent)
