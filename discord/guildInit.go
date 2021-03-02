@@ -2,10 +2,43 @@ package main
 
 import (
 	"fmt"
+	"github.com/bwmarrin/discordgo"
 	"os"
 )
 
-// createRoles Internal, Creates appropriate roles, and associate them to data
+// createRoles Internal, Creates or get appropriate role
+func getOrCreateRole(name string, roles *[]*discordgo.Role, agent discordAgent) (*discordgo.Role, error) {
+	var role *discordgo.Role
+	skip := false
+
+	for _, rl := range *roles {
+		if rl.Name == name {
+			skip = true
+			role = rl
+			break
+		}
+	}
+	if !skip {
+		role, err := agent.session.GuildRoleCreate(agent.message.GuildID)
+		if err != nil {
+			return nil, err
+		}
+		role, err = agent.session.GuildRoleEdit(
+			agent.message.GuildID, role.ID,
+			name, role.Color, false, role.Permissions, true,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if role == nil {
+		return nil, os.ErrInvalid
+	}
+	return role, nil
+}
+
+// createRoles Internal, Creates or get appropriate roles, and associate them to data
 func createRoles(agent discordAgent, data *GuildData) error {
 	names := []string{
 		"SegBot - Admin",
@@ -13,18 +46,17 @@ func createRoles(agent discordAgent, data *GuildData) error {
 		"SegBot - Unregistered",
 		"SegBot - Spectator",
 	}
+	roles, err := agent.session.GuildRoles(agent.message.GuildID) // Set roles list here so not queried every time
+	checkRoles := err == nil
 
 	for _, name := range names {
-		role, err := agent.session.GuildRoleCreate(agent.message.GuildID)
-		if err != nil {
-			return err
-		}
-		role, err = agent.session.GuildRoleEdit(
-			agent.message.GuildID, role.ID,
-			name, role.Color, false, role.Permissions, true,
-		)
-		if err != nil {
-			return err
+		var role *discordgo.Role
+
+		if checkRoles {
+			role, err = getOrCreateRole(name, &roles, agent) // Pass roles as pointer reason is, as above
+			if err != nil {
+				return err
+			}
 		}
 		switch name {
 		case "SegBot - Admin":
