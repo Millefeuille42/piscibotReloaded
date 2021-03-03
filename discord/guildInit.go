@@ -23,8 +23,9 @@ func getOrCreateRole(name string, roles *[]*discordgo.Role, agent discordAgent) 
 		if err != nil {
 			return nil, err
 		}
+		id := role.ID // If I don't do this, causes SCC-SA4006
 		role, err = agent.session.GuildRoleEdit(
-			agent.message.GuildID, role.ID,
+			agent.message.GuildID, id,
 			name, role.Color, false, role.Permissions, true,
 		)
 		if err != nil {
