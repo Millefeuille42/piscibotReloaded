@@ -45,10 +45,12 @@ func CompareLocation(apiUser apiclient.User, dbUser apiclient.User) (string, err
 	return string(""), fmt.Errorf("No changes for user %s", apiUser.Login)
 }
 
-/*
-func CompareProjects(apiUser apiclient.User, dbUser apiclient.User) (string, error){
-	if apiUser.ProjectsUsers
-}*/
+func CompareProjects(apiUser apiclient.User, dbUser apiclient.User) (string, error) {
+	for _, val := range apiUser.ProjectsUsers {
+		fmt.Println(val)
+	}
+	return "ok", nil
+}
 
 func main() {
 	err := godotenv.Load("api.env")
@@ -81,6 +83,7 @@ func main() {
 					log.Printf("Error: Cannot fetch user %s data", val.Login)
 				} else {
 					msg, err := CompareLocation(apiUser, val)
+					CompareProjects(apiUser, val)
 					if err != nil {
 						log.Println(err.Error())
 					} else {
