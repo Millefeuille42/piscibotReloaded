@@ -26,8 +26,6 @@ func userSetPings(agent discordAgent) {
 			continue
 		}
 		switch subArgs[0] {
-		case "leaderboard":
-			user.Settings.Leaderboard = subArgs[1]
 		case "success":
 			user.Settings.Success = subArgs[1]
 		case "started":
@@ -53,10 +51,9 @@ func userSendSettings(agent discordAgent) {
 	}
 
 	message := fmt.Sprintf("```\n"+
-		"Leaderboard: %s\n"+
 		"Success:     %s\n"+
 		"Started:     %s\n"+
 		"Location     %s\n"+
-		"```", user.Settings.Leaderboard, user.Settings.Success, user.Settings.Started, user.Settings.Location)
+		"```", user.Settings.Success, user.Settings.Started, user.Settings.Location)
 	sendMessageWithMention(message, "", agent)
 }
