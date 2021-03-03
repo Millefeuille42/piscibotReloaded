@@ -82,7 +82,7 @@ func sendHandler(w http.ResponseWriter, r *http.Request) {
 func startServer() {
 	http.HandleFunc("/discord", sendHandler)
 	fmt.Println("Starting server")
-	if err := http.ListenAndServe(":3000", nil); err != nil {
+	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
 	}
 }
