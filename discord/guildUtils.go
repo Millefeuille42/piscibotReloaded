@@ -9,7 +9,7 @@ import (
 
 // guildGetChannel Returns guild's command channel
 func guildGetChannel(agent discordAgent) string {
-	guild, err := guildLoadFile(agent, true)
+	guild, err := guildLoadFile(agent, true, "")
 	if err != nil {
 		return agent.message.ChannelID
 	}
@@ -17,10 +17,13 @@ func guildGetChannel(agent discordAgent) string {
 }
 
 // guildLoadFile Returns guild data from file
-func guildLoadFile(agent discordAgent, silent bool) (GuildData, error) {
+func guildLoadFile(agent discordAgent, silent bool, id string) (GuildData, error) {
 	data := GuildData{}
 
-	fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID))
+	if id == "" {
+		id = agent.message.GuildID
+	}
+	fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/guilds/%s.json", id))
 	if err != nil {
 		if !silent {
 			logErrorToChan(agent, err)

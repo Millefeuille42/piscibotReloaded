@@ -18,7 +18,7 @@ type TargetData struct {
 
 // makeApiReq Internal, Make calls to the 42API module to start data collecting and check if user exists
 func makeApiReq(path, login string, agent discordAgent) error {
-	uri := fmt.Sprintf("%s:%s/user/%s", os.Getenv("42API"), os.Getenv("42PORT"), login)
+	uri := fmt.Sprintf("http://%s:%s/user/%s", os.Getenv("42API"), os.Getenv("42PORT"), login)
 	req, err := http.NewRequest("POST", uri, nil)
 	if err != nil {
 		logErrorToChan(agent, err)
@@ -90,17 +90,15 @@ func targetRegister(agent discordAgent) {
 		return
 	}
 
-	/*
-	**	if makeApiReq(path, args[1], agent) != nil {
-	**		return
-	**	}
-	 */
+	if makeApiReq(path, args[1], agent) != nil {
+		return
+	}
 
 	user, err := userLoadFile("", agent)
 	if err != nil {
 		return
 	}
-	user.GuildTargets[agent.message.GuildID] = agent.message.Author.ID
+	user.GuildTargets[agent.message.GuildID] = settings.Login
 
 	if targetWriteFile(settings, agent) == nil && userWriteFile(user, agent) == nil {
 		sendMessageWithMention("You are now tracking "+args[1], "", agent)

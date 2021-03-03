@@ -15,6 +15,10 @@ func userSetPings(agent discordAgent) {
 		return
 	}
 	args := strings.Split(agent.message.Content, "-")
+	if len(args) <= 1 {
+		sendMessageWithMention("I need more arguments", "", agent)
+		return
+	}
 
 	for _, channel := range args {
 		subArgs := strings.Split(channel, ":")
@@ -22,8 +26,6 @@ func userSetPings(agent discordAgent) {
 			continue
 		}
 		switch subArgs[0] {
-		case "leaderboard":
-			user.Settings.Leaderboard = subArgs[1]
 		case "success":
 			user.Settings.Success = subArgs[1]
 		case "started":
@@ -31,9 +33,10 @@ func userSetPings(agent discordAgent) {
 		case "location":
 			user.Settings.Location = subArgs[1]
 		}
+		_, _ = agent.session.ChannelMessageSend(agent.channel, "Ping settings updated for "+subArgs[0])
 	}
 	if userWriteFile(user, agent) == nil {
-		sendMessageWithMention("Ping settings updated", "", agent)
+		sendMessageWithMention("Ping settings saved", "", agent)
 	}
 }
 
@@ -48,10 +51,9 @@ func userSendSettings(agent discordAgent) {
 	}
 
 	message := fmt.Sprintf("```\n"+
-		"Leaderboard: %s\n"+
 		"Success:     %s\n"+
 		"Started:     %s\n"+
 		"Location     %s\n"+
-		"```", user.Settings.Leaderboard, user.Settings.Success, user.Settings.Started, user.Settings.Location)
+		"```", user.Settings.Success, user.Settings.Started, user.Settings.Location)
 	sendMessageWithMention(message, "", agent)
 }

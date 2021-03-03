@@ -54,10 +54,9 @@ func userInit(agent discordAgent) {
 		UserID:       agent.message.Author.ID,
 		GuildTargets: make(map[string]string),
 		Settings: userSettings{
-			Leaderboard: "none",
-			Success:     "none",
-			Started:     "none",
-			Location:    "none",
+			Success:  "none",
+			Started:  "none",
+			Location: "none",
 		},
 	}
 
