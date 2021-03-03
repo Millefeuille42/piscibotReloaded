@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+// sendMessageWithMention Sends a discord message according to user params
 func sendMessageToUser(message, channel, userID, chanParam string, agent discordAgent) {
 	switch chanParam {
 	case "none":

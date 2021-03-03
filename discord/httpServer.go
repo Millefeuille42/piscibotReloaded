@@ -14,6 +14,7 @@ type Message struct {
 	Login   string `json:"login"`
 }
 
+// sendMessage Internal, sends the message to concerned user
 func sendMessage(message Message) error {
 	agent := discordAgent{
 		session: gBot,
@@ -56,6 +57,7 @@ func sendMessage(message Message) error {
 	return err
 }
 
+// sendHandler Internal, the handler for the endpoint
 func sendHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		data, err := ioutil.ReadAll(r.Body)
@@ -79,6 +81,7 @@ func sendHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
+// startServer Starts the http endpoint for sending messages
 func startServer() {
 	http.HandleFunc("/discord", sendHandler)
 	fmt.Println("Starting server")
