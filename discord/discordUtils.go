@@ -5,6 +5,19 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+func sendMessageToUser(message, channel, userID, chanParam string, agent discordAgent) {
+	switch chanParam {
+	case "none":
+		_, _ = agent.session.ChannelMessageSend(channel, message)
+	case "channel":
+		_, _ = agent.session.ChannelMessageSend(channel, fmt.Sprintf("<@%s>\n%s", userID, message))
+	case "dm":
+
+	case "all":
+		_, _ = agent.session.ChannelMessageSend(channel, fmt.Sprintf("<@%s>\n%s", userID, message))
+	}
+}
+
 // sendMessageWithMention Sends a discord message prepending a mention + \n to the message, if id == "", id becomes the message author
 func sendMessageWithMention(message, id string, agent discordAgent) {
 	if id == "" {
