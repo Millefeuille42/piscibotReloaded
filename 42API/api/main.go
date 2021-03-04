@@ -40,7 +40,7 @@ func main() {
 	// Auth token refresh middleware
 	App.Use(func(c *fiber.Ctx) error {
 		token := Client.Token()
-		timestamp := time.Now().Sub(token.LastUpdate).Seconds()
+		timestamp := time.Since(token.LastUpdate).Seconds()
 		if timestamp > float64(token.ExpiresIn) {
 			err := Client.Auth()
 			if err != nil {
