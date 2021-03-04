@@ -50,6 +50,7 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 		}
 		err = json.Unmarshal(data, settings)
 		if err != nil {
+			_ = os.Remove(path)
 			return err
 		}
 	} else {
