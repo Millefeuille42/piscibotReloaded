@@ -1,0 +1,40 @@
+version: "3"
+services:
+  db:
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+  api:
+    image: 42api
+    restart: always
+    links:
+      - db
+    ports:
+      - ${API_PORT}:3000
+    environment:
+      - DB_NAME=users
+      - DB_URL=db
+      - UID=${UID}
+      - SECRET=${SECRET}
+      - PORT=${API_PORT}
+  segbot:
+    image: segbot
+    restart: always
+    links:
+      - api
+    ports:
+      - ${SEGBOT_PORT}:8000
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - BOT_DEV_CHANNEL=${BOT_DEV_CHANNEL}
+      - API_PORT=${API_PORT}
+      - API_HOST=api
+  checker:
+    image: checker
+    restart: always
+    links:
+      - api
+      - segbot
+    environment:
+      - SEGBOT_URL="http://segbot:${SEGBOT_PORT}"
