@@ -6,12 +6,12 @@ import (
 )
 
 // parseMessage Unmarshal the message
-func parseMessage(data []byte) Message {
-	ret := Message{}
+func parseMessage(data []byte) MessageList {
+	ret := MessageList{}
 
 	err := json.Unmarshal(data, &ret)
 	if err != nil {
-		return Message{}
+		return MessageList{}
 	}
 	return ret
 }
