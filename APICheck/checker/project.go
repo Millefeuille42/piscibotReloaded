@@ -1,18 +1,27 @@
 package main
 
-import "fmt"
-
+// Project model
 type Project struct {
 	Name      string
 	Status    string
+	FinalMark float64
 	Validated bool
 }
 
-func BuildProject(descriptions []map[string]interface{}) Project {
-	/*rawProject := descriptions[2]["Value"].([]map[string]interface{})
-	name := rawProject[3]["Value"].(string)
-	status := descriptions[6]["Value"].(string)
-	validated := descriptions[7]["Value"].(bool)*/
-	fmt.Println(len(descriptions))
-	return Project{Name: "test", Status: "ok", Validated: true}
+// BuildProject builds a project structure form project raw data
+func BuildProject(descriptions map[string]interface{}) Project {
+	rawProject := descriptions["project"].(map[string]interface{})
+	name := rawProject["name"].(string)
+	status := descriptions["status"].(string)
+
+	var finalMark float64
+	var validated bool
+	if descriptions["validated?"] == nil {
+		validated = false
+		finalMark = 0
+	} else {
+		validated = descriptions["validated?"].(bool)
+		finalMark = descriptions["final_mark"].(float64)
+	}
+	return Project{Name: name, Status: status, FinalMark: finalMark, Validated: validated}
 }

@@ -34,24 +34,6 @@ func checkAuth(api *apiclient.APIClient) error {
 	return nil
 }
 
-func CompareLocation(apiUser apiclient.User, dbUser apiclient.User) (string, error) {
-	if apiUser.Location != dbUser.Location {
-		if apiUser.Location == nil {
-			return fmt.Sprintf("%s s'est déconnecté", apiUser.Login), nil
-		} else if apiUser.Location != nil {
-			return fmt.Sprintf("%s s'est connecté en %s", apiUser.Login, apiUser.Location), nil
-		}
-	}
-	return string(""), fmt.Errorf("No changes for user %s", apiUser.Login)
-}
-
-func CompareProjects(apiUser apiclient.User, dbUser apiclient.User) (string, error) {
-	for _, val := range apiUser.ProjectsUsers {
-		fmt.Println(val)
-	}
-	return "ok", nil
-}
-
 func main() {
 	err := godotenv.Load("api.env")
 	if err != nil {
@@ -62,7 +44,7 @@ func main() {
 
 	url := "https://api.intra.42.fr"
 	api := &apiclient.APIClient{Url: url, Uid: os.Getenv("UID"), Secret: os.Getenv("SECRET")}
-	checker := &CheckerImpl{UserAPIURL: os.Getenv("USER_API_URL")}
+	checker := Checker{UserAPIURL: os.Getenv("USER_API_URL")}
 
 	if err := api.Auth(); err != nil {
 		log.Fatal(err.Error())
@@ -82,14 +64,10 @@ func main() {
 				if err != nil {
 					log.Printf("Error: Cannot fetch user %s data", val.Login)
 				} else {
-					msg, err := CompareLocation(apiUser, val)
-					CompareProjects(apiUser, val)
-					if err != nil {
-						log.Println(err.Error())
-					} else {
-						log.Println(msg)
-					}
+					result := checker.Check(&val, &apiUser)
+					fmt.Println(result)
 				}
+				checker.UpdateDB(&apiUser)
 				time.Sleep(time.Second * 3)
 			}
 		} else {

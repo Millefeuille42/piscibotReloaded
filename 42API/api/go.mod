@@ -3,7 +3,7 @@ module github.com/Millefeuille42/piscibotReloaded/42API
 go 1.15
 
 require (
-	github.com/BoyerDamien/42APIClient v0.0.0-20210302100418-741d635bd19b
+	github.com/BoyerDamien/42APIClient v0.0.0-20210302105521-d8e8b21171a2
 	github.com/BoyerDamien/mongodbWrapper v0.0.0-20201204095351-7c6d7ec92dfe
 	github.com/aws/aws-sdk-go v1.37.21 // indirect
 	github.com/gofiber/fiber/v2 v2.5.0

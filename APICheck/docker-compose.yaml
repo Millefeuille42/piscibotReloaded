@@ -15,7 +15,7 @@ services:
     environment:
       - DB_NAME=users
       - DB_URL=db
-      - UID=${UID}
+      - UID=${DUID}
       - SECRET=${SECRET}
       - PORT=3000
   checker:
