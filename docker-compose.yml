@@ -41,3 +41,5 @@ services:
       - segbot
     environment:
       - SEGBOT_URL="http://segbot:${SEGBOT_PORT}"
+    volumes:
+      - segbotData:/segbot/data
