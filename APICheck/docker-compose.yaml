@@ -15,7 +15,7 @@ services:
     environment:
       - DB_NAME=users
       - DB_URL=db
-      - UID=${DUID}
+      - UID=${APPUID}
       - SECRET=${SECRET}
       - PORT=3000
   checker:
@@ -24,3 +24,7 @@ services:
     links:
       - db
       - api
+    environment: 
+      - UID=${APPUID}
+      - SECRET=${SECRET}
+      - USER_API_URL=http://api:3000

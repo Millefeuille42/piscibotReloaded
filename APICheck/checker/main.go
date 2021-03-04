@@ -58,8 +58,9 @@ func main() {
 				if err != nil {
 					log.Printf("Error: Cannot fetch user %s data", checker.UserList[i].Login)
 				} else {
-					result := checker.Check(&checker.UserList[i], &apiUser)
-					fmt.Println(result)
+					messages := checker.Check(&checker.UserList[i], &apiUser)
+					fmt.Println(messages)
+
 				}
 				checker.UpdateDB(&apiUser)
 				time.Sleep(time.Second * 3)
