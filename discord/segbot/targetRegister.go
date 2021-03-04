@@ -18,7 +18,7 @@ type TargetData struct {
 
 // makeApiReq Internal, Make calls to the 42API module to start data collecting and check if user exists
 func makeApiReq(path, login string, agent discordAgent) error {
-	uri := fmt.Sprintf("http://%s:%s/user/%s", os.Getenv("42API"), os.Getenv("42PORT"), login)
+	uri := fmt.Sprintf("http://%s:%s/user/%s", os.Getenv("API_HOST"), os.Getenv("API_PORT"), login)
 	req, err := http.NewRequest("POST", uri, nil)
 	if err != nil {
 		logErrorToChan(agent, err)
