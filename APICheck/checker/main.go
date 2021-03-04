@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -10,7 +9,7 @@ import (
 )
 
 func checkEnvVariables() {
-	envVariables := []string{"USER_API_URL", "UID", "SECRET"}
+	envVariables := []string{"USER_API_URL", "UID", "SECRET", "SEGBOT_URL"}
 	for _, val := range envVariables {
 		if os.Getenv(val) == "" {
 			log.Fatalf("Missing %s env variable", val)
@@ -38,6 +37,7 @@ func main() {
 	url := "https://api.intra.42.fr"
 	api := &apiclient.APIClient{Url: url, Uid: os.Getenv("UID"), Secret: os.Getenv("SECRET")}
 	checker := Checker{UserAPIURL: os.Getenv("USER_API_URL")}
+	segbotURL := os.Getenv("SEGBOT_URL")
 
 	if err := api.Auth(); err != nil {
 		log.Fatal(err.Error())
@@ -56,11 +56,17 @@ func main() {
 			for i := 0; i < checker.Length(); i++ {
 				apiUser, err := api.GetUser(checker.UserList[i].Login)
 				if err != nil {
-					log.Printf("Error: Cannot fetch user %s data", checker.UserList[i].Login)
+					log.Fatalf("Error: Cannot fetch user %s data\n", checker.UserList[i].Login)
+				}
+				messages := checker.Check(&checker.UserList[i], &apiUser)
+				if len(messages) > 0 {
+					if err := checker.Send(segbotURL, messages); err != nil {
+						log.Println(err.Error())
+					} else {
+						log.Printf("Messages sent for %s\n", apiUser.Login)
+					}
 				} else {
-					messages := checker.Check(&checker.UserList[i], &apiUser)
-					fmt.Println(messages)
-
+					log.Printf("No messages sent for %s\n", apiUser.Login)
 				}
 				checker.UpdateDB(&apiUser)
 				time.Sleep(time.Second * 3)

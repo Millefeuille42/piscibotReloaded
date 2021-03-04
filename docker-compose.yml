@@ -32,6 +32,8 @@ services:
       - BOT_DEV_CHANNEL=${BOT_DEV_CHANNEL}
       - API_PORT=${API_PORT}
       - API_HOST=api
+    volumes:
+      - segbotData:/segbot/data
   checker:
     build: APICheck/
     image: checker
@@ -40,9 +42,9 @@ services:
       - api
       - segbot
     environment:
-      - SEGBOT_URL="http://segbot:${SEGBOT_PORT}"
+      - SEGBOT_URL=http://segbot:${SEGBOT_PORT}
       - UID=${APPUID}
       - SECRET=${SECRET}
       - USER_API_URL=http://api:${API_PORT}
-    volumes:
-      - segbotData:/segbot/data
+volumes:
+  segbotData: {}
