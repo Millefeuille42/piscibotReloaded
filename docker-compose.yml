@@ -16,7 +16,7 @@ services:
     environment:
       - DB_NAME=users
       - DB_URL=db
-      - UID=${UID}
+      - UID=${APPUID}
       - SECRET=${SECRET}
       - PORT=${API_PORT}
   segbot:
