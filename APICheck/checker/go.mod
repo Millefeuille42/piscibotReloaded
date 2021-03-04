@@ -1,8 +1,8 @@
-module github.com/Millefeuille42/piscibotReloaded/ApiCheck/checker
+module github.com/Millefeuille42/piscibotReloaded/APICheck
 
-go 1.15
+go 1.16
 
 require (
-	github.com/BoyerDamien/42APIClient v0.0.0-20210226103648-f3f09af7da68
+	github.com/BoyerDamien/42APIClient v0.0.0-20210302105521-d8e8b21171a2
 	github.com/joho/godotenv v1.3.0
 )

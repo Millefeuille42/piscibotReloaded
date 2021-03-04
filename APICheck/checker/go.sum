@@ -1,4 +1,4 @@
-github.com/BoyerDamien/42APIClient v0.0.0-20210226103648-f3f09af7da68 h1:U/KL7JKRQdvHTtp7pC9f7fd6Xlrdw19UCEQL/pJyGRw=
-github.com/BoyerDamien/42APIClient v0.0.0-20210226103648-f3f09af7da68/go.mod h1:YifNxHiYJ4aNZjDekK2J79J1ABMlwuDYG07dBoXz7+I=
+github.com/BoyerDamien/42APIClient v0.0.0-20210302105521-d8e8b21171a2 h1:jrUMjblZ89Na/ptNZbmdr8gp5RNmp/f81BiUuSeCLI8=
+github.com/BoyerDamien/42APIClient v0.0.0-20210302105521-d8e8b21171a2/go.mod h1:YifNxHiYJ4aNZjDekK2J79J1ABMlwuDYG07dBoXz7+I=
 github.com/joho/godotenv v1.3.0 h1:Zjp+RcGpHhGlrMbJzXTrZZPrWj+1vfm90La1wgB6Bhc=
 github.com/joho/godotenv v1.3.0/go.mod h1:7hK45KPybAkOC6peb+G5yklZfMxEjkZhHbwpqxOKXbg=
