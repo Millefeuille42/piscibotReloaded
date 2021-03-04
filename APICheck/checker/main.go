@@ -59,12 +59,13 @@ func main() {
 		}
 		if checker.Length() > 0 {
 			log.Printf("%d users detected\nAnalysis begin...", checker.Length())
-			for _, val := range checker.UserList {
-				apiUser, err := api.GetUser(val.Login)
+
+			for i := 0; i < checker.Length(); i++ {
+				apiUser, err := api.GetUser(checker.UserList[i].Login)
 				if err != nil {
-					log.Printf("Error: Cannot fetch user %s data", val.Login)
+					log.Printf("Error: Cannot fetch user %s data", checker.UserList[i].Login)
 				} else {
-					result := checker.Check(&val, &apiUser)
+					result := checker.Check(&checker.UserList[i], &apiUser)
 					fmt.Println(result)
 				}
 				checker.UpdateDB(&apiUser)

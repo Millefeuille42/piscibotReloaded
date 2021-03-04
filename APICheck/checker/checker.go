@@ -47,20 +47,21 @@ func (s *Checker) Check(dbUser *apiclient.User, apiUser *apiclient.User) []strin
 		messages = append(messages, err.Error())
 	}
 
-	for i := 0; i < len(dbUser.ProjectsUsers); i++ {
+	dbUserProjectsLen := len(dbUser.ProjectsUsers)
+	for i := 0; i < dbUserProjectsLen; i++ {
 		p1 := BuildProject(dbUser.ProjectsUsers[i])
-		if !p1.Validated {
-			p2Index := sort.Search(len(apiUser.ProjectsUsers), func(i int) bool {
-				return BuildProject(apiUser.ProjectsUsers[i]).Name == p1.Name
-			})
-			if p2Index < len(apiUser.ProjectsUsers) {
-				p2 := BuildProject(apiUser.ProjectsUsers[p2Index])
-				if err := CheckProjectStatus(dbUser.Login, &p1, &p2); err != nil {
-					messages = append(messages, err.Error())
-				}
+		if p1.Validated {
+			return messages
+		}
+		p2Index := sort.Search(len(apiUser.ProjectsUsers), func(i int) bool {
+			return BuildProject(apiUser.ProjectsUsers[i]).Name == p1.Name
+		})
+		if p2Index < len(apiUser.ProjectsUsers) {
+			p2 := BuildProject(apiUser.ProjectsUsers[p2Index])
+			if err := CheckProjectStatus(dbUser.Login, &p1, &p2); err != nil {
+				messages = append(messages, err.Error())
 			}
 		}
-		return messages
 	}
 	return messages
 }

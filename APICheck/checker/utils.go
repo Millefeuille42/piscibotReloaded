@@ -15,7 +15,7 @@ func CheckProjectStatus(username string, p1, p2 *Project) error {
 }
 
 // CheckProjectSubscribed checks whetehr the user has subscribed to a new project or not
-func CheckProjectSubscribed(dbUser *apiclient.User, apiUser *apiclient.User) error {
+func CheckProjectSubscribed(dbUser, apiUser *apiclient.User) error {
 	dbUserProjectsLen := len(dbUser.ProjectsUsers)
 	apiUserProjectsLen := len(apiUser.ProjectsUsers)
 	if dbUserProjectsLen > 0 && dbUserProjectsLen < apiUserProjectsLen {
@@ -26,7 +26,7 @@ func CheckProjectSubscribed(dbUser *apiclient.User, apiUser *apiclient.User) err
 }
 
 // CheckUserLocation checks whether a user is login in a cluster or not
-func CheckUserLocation(dbUser *apiclient.User, apiUser *apiclient.User) error {
+func CheckUserLocation(dbUser, apiUser *apiclient.User) error {
 	if apiUser.Location != dbUser.Location {
 		if apiUser.Location == nil {
 			return fmt.Errorf("%s s'est déconnecté", apiUser.Login)
