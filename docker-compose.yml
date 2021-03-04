@@ -6,6 +6,7 @@ services:
     ports:
       - 27017:27017
   api:
+    build: 42API/
     image: 42api
     restart: always
     links:
@@ -19,6 +20,7 @@ services:
       - SECRET=${SECRET}
       - PORT=${API_PORT}
   segbot:
+    build: discord/
     image: segbot
     restart: always
     links:
@@ -31,6 +33,7 @@ services:
       - API_PORT=${API_PORT}
       - API_HOST=api
   checker:
+    build: APICheck/
     image: checker
     restart: always
     links:
