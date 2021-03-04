@@ -43,6 +43,6 @@ services:
       - SEGBOT_URL="http://segbot:${SEGBOT_PORT}"
       - UID=${APPUID}
       - SECRET=${SECRET}
-      - USER_API_URL=http://api:3000
+      - USER_API_URL=http://api:${API_PORT}
     volumes:
       - segbotData:/segbot/data
