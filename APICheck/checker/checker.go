@@ -11,10 +11,17 @@ import (
 	apiclient "github.com/BoyerDamien/42APIClient"
 )
 
-// Checker implements checker interface
+// Checker model
 type Checker struct {
 	UserList   []apiclient.User
 	UserAPIURL string
+}
+
+// Message model for discord API
+type Message struct {
+	Message string `json:"message"`
+	Channel string `json:"channel"`
+	Login   string `json:"login"`
 }
 
 // FetchUsers retrieve 42 users stored in user database
@@ -37,14 +44,16 @@ func (s *Checker) Length() int {
 }
 
 // Check does all checks between old and new user data
-func (s *Checker) Check(dbUser, apiUser *apiclient.User) []string {
-	var messages []string
+func (s *Checker) Check(dbUser, apiUser *apiclient.User) []Message {
+	var messages []Message
 
 	if err := CheckProjectSubscribed(dbUser, apiUser); err != nil {
-		messages = append(messages, err.Error())
+		message := Message{Message: err.Error(), Channel: "started", Login: dbUser.Login}
+		messages = append(messages, message)
 	}
 	if err := CheckUserLocation(dbUser, apiUser); err != nil {
-		messages = append(messages, err.Error())
+		message := Message{Message: err.Error(), Channel: "location", Login: dbUser.Login}
+		messages = append(messages, message)
 	}
 
 	dbUserProjectsLen := len(dbUser.ProjectsUsers)
@@ -59,7 +68,8 @@ func (s *Checker) Check(dbUser, apiUser *apiclient.User) []string {
 		if p2Index < len(apiUser.ProjectsUsers) {
 			p2 := BuildProject(apiUser.ProjectsUsers[p2Index])
 			if err := CheckProjectStatus(dbUser.Login, &p1, &p2); err != nil {
-				messages = append(messages, err.Error())
+				message := Message{Message: err.Error(), Channel: "success", Login: dbUser.Login}
+				messages = append(messages, message)
 			}
 		}
 	}
@@ -86,4 +96,21 @@ func (s *Checker) UpdateDB(apiUser *apiclient.User) {
 	if resp.StatusCode != 200 {
 		log.Fatalf("Status code: %d\n", resp.StatusCode)
 	}
+}
+
+// Send sends a list of messages to discord API
+func (s *Checker) Send(apiURL string, messages []Message) error {
+	url := fmt.Sprintf("%s/discord", apiURL)
+	body, err := json.Marshal(messages)
+	if err != nil {
+		return err
+	}
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("Error: Cannot send %v to %s", messages, apiURL)
+	}
+	return nil
 }
