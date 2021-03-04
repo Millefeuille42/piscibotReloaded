@@ -24,7 +24,7 @@ type Message struct {
 func sendMessage(message Message) error {
 	agent := discordAgent{
 		session: gBot,
-		channel: os.Getenv("BOTDEVCHANNEL"),
+		channel: os.Getenv("BOT_DEV_CHANNEL"),
 	}
 
 	target, err := targetLoadFile(message.Login, agent)

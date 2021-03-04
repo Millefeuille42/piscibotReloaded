@@ -3,23 +3,15 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
 	"os"
 	"time"
 )
 
 var gBot *discordgo.Session
 
-// loadEnv Load env based on provided file
-func loadEnv() {
-	err := godotenv.Load(os.Args[1])
-	checkError(err)
-	fmt.Println("Loaded Env")
-}
-
 // startBot Starts discord bot
 func startBot() *discordgo.Session {
-	discordBot, err := discordgo.New("Bot " + os.Getenv("BOTTOKEN"))
+	discordBot, err := discordgo.New("Bot " + os.Getenv("BOT_TOKEN"))
 	checkError(err)
 	discordBot.AddHandler(messageHandler)
 	err = discordBot.Open()
@@ -56,7 +48,6 @@ func main() {
 	}
 
 	checkError(prepFileSystem())
-	loadEnv()
 	gBot = startBot()
 	startServer()
 
