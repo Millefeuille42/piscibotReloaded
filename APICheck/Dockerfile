@@ -6,4 +6,4 @@ WORKDIR /checker
 
 RUN go install .
 
-CMD ["checker"]
+CMD ["APICheck"]
