@@ -8,6 +8,12 @@ import (
 	"os"
 )
 
+type MessageList []struct {
+	Message string `json:"message"`
+	Channel string `json:"channel"`
+	Login   string `json:"login"`
+}
+
 type Message struct {
 	Message string `json:"message"`
 	Channel string `json:"channel"`
@@ -67,15 +73,21 @@ func sendHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		defer r.Body.Close()
 
-		message := parseMessage(data)
-		if message.Message == "" {
-			w = writeErrorToResponse(w, 500, "Error parsing the message")
+		messages := parseMessage(data)
+		if len(messages) <= 0 {
+			w = writeErrorToResponse(w, 400, "No messages")
 			return
 		}
+		for _, message := range messages {
+			if message.Message == "" {
+				w = writeErrorToResponse(w, 500, "Error parsing the message")
+				return
+			}
 
-		if err = sendMessage(message); err != nil {
-			w = writeErrorToResponse(w, 500, "Error sending the message\n"+err.Error())
-			return
+			if err = sendMessage(message); err != nil {
+				w = writeErrorToResponse(w, 500, "Error sending the message\n"+err.Error())
+				return
+			}
 		}
 	}
 	w.WriteHeader(200)

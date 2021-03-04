@@ -1,4 +1,4 @@
-module piscibotReloaded/discord
+module piscibotReloaded/discord/segbot
 
 go 1.16
 
