@@ -37,7 +37,7 @@ func (s *Checker) Length() int {
 }
 
 // Check does all checks between old and new user data
-func (s *Checker) Check(dbUser *apiclient.User, apiUser *apiclient.User) []string {
+func (s *Checker) Check(dbUser, apiUser *apiclient.User) []string {
 	var messages []string
 
 	if err := CheckProjectSubscribed(dbUser, apiUser); err != nil {
