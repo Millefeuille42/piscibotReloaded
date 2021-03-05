@@ -50,6 +50,12 @@ func userInit(agent discordAgent) {
 		return
 	}
 
+	link := authLinkCreator()
+	if link == "" {
+		sendMessageWithMention("Could not generate oauth link", "", agent)
+		return
+	}
+
 	data := UserData{
 		UserID:       agent.message.Author.ID,
 		GuildTargets: make(map[string]string),
@@ -63,5 +69,7 @@ func userInit(agent discordAgent) {
 	if userWriteFile(data, agent) != nil {
 		return
 	}
-	sendMessageWithMention("You are now registered", "", agent)
+	sendMessageWithMention("You are now registered,"+
+		" validate your profile with the link below", "", agent)
+	_, _ = agent.session.ChannelMessageSend(agent.channel, link)
 }
