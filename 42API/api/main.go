@@ -14,7 +14,7 @@ import (
 )
 
 func checkEnvVariables() {
-	envVariables := []string{"DB_NAME", "DB_URL", "UID", "SECRET", "PORT"}
+	envVariables := []string{"DB_NAME", "DB_URL", "UID", "SECRET", "PORT", "DB_USERNAME", "DB_PASSWORD"}
 	for _, val := range envVariables {
 		if os.Getenv(val) == "" {
 			log.Fatalf("Missing %s env variable", val)
