@@ -50,6 +50,7 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 		}
 		err = json.Unmarshal(data, settings)
 		if err != nil {
+			_ = os.Remove(path)
 			return err
 		}
 	} else {
@@ -100,7 +101,7 @@ func targetRegister(agent discordAgent) {
 	}
 	user.GuildTargets[agent.message.GuildID] = settings.Login
 
-	if targetWriteFile(settings, agent) == nil && userWriteFile(user, agent) == nil {
+	if targetWriteFile(settings, agent) == nil && userWriteFile(user, agent, "") == nil {
 		sendMessageWithMention("You are now tracking "+args[1], "", agent)
 	}
 }

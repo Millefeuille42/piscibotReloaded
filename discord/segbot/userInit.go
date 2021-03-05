@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/bwmarrin/discordgo"
 )
 
 // targetUntrack Un-tracks target for user on guild
@@ -16,7 +17,7 @@ func targetUntrack(agent discordAgent) {
 	}
 	targetName := user.GuildTargets[agent.message.GuildID]
 	delete(user.GuildTargets, agent.message.GuildID)
-	err = userWriteFile(user, agent)
+	err = userWriteFile(user, agent, "")
 	if err != nil {
 		return
 	}
@@ -50,18 +51,36 @@ func userInit(agent discordAgent) {
 		return
 	}
 
+	link, state := authLinkCreator(agent)
+	if link == "" {
+		sendMessageWithMention("Could not generate oauth link", "", agent)
+		return
+	}
+
 	data := UserData{
 		UserID:       agent.message.Author.ID,
+		State:        state,
 		GuildTargets: make(map[string]string),
 		Settings: userSettings{
 			Success:  "none",
 			Started:  "none",
 			Location: "none",
 		},
+		Verified: false,
 	}
-
-	if userWriteFile(data, agent) != nil {
+	if userWriteFile(data, agent, "") != nil {
 		return
 	}
-	sendMessageWithMention("You are now registered", "", agent)
+
+	sendMessageWithMention("", "", agent)
+	_, err = agent.session.ChannelMessageSendEmbed(agent.channel, &discordgo.MessageEmbed{
+		URL:   link,
+		Type:  "link",
+		Title: "Verification Link",
+		Description: "You are now registered, validate your profile with the link provided.\n" +
+			"You will not be able to perform actions until you validate your profile through 42",
+		Thumbnail: &discordgo.MessageEmbedThumbnail{
+			URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/1200px-42_Logo.svg.png",
+		},
+	})
 }

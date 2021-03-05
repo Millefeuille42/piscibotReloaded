@@ -96,6 +96,7 @@ func sendHandler(w http.ResponseWriter, r *http.Request) {
 // startServer Starts the http endpoint for sending messages
 func startServer() {
 	http.HandleFunc("/discord", sendHandler)
+	http.HandleFunc("/auth", authHandler)
 	fmt.Println("Starting server")
 	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
