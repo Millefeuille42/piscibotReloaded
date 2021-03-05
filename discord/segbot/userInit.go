@@ -50,7 +50,7 @@ func userInit(agent discordAgent) {
 		return
 	}
 
-	link := authLinkCreator(agent.message.Author.ID)
+	link, state := authLinkCreator(agent.message.Author.ID)
 	if link == "" {
 		sendMessageWithMention("Could not generate oauth link", "", agent)
 		return
@@ -58,6 +58,7 @@ func userInit(agent discordAgent) {
 
 	data := UserData{
 		UserID:       agent.message.Author.ID,
+		State:        state,
 		GuildTargets: make(map[string]string),
 		Settings: userSettings{
 			Success:  "none",

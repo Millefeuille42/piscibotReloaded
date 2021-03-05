@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func authLinkCreator(id string) string {
+func authLinkCreator(id string) (string, string) {
 	uri := "https://api.intra.42.fr/oauth/authorize"
 
 	agent := discordAgent{
@@ -18,7 +18,7 @@ func authLinkCreator(id string) string {
 	_, err := rand.Read(secureCodeByte)
 	if err != nil {
 		logErrorToChan(agent, err)
-		return ""
+		return "", ""
 	}
 
 	secureCode := ""
@@ -31,5 +31,5 @@ func authLinkCreator(id string) string {
 		"&redirect_uri=http%3A%2F%2F" + os.Getenv("APP_HOST") +
 		"%3A" + os.Getenv("SEGBOT_PORT") + "%2Fauth" +
 		"&response_type=code" + "&scope=public" + "&state=" + secureCode + "-" + id
-	return uri
+	return uri, secureCode
 }
