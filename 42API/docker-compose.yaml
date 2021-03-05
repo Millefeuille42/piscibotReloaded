@@ -5,6 +5,9 @@ services:
     restart: always
     ports:
       - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=password
   api:
     build: .
     image: 42api
@@ -19,3 +22,5 @@ services:
       - UID=${APPUID}
       - SECRET=${SECRET}
       - PORT=3000
+      - DB_PASSWORD=password
+      - DB_USERNAME=user
