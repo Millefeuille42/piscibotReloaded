@@ -8,13 +8,16 @@ import (
 )
 
 // userWriteFile Writes user data to file
-func userWriteFile(data UserData, agent discordAgent) error {
+func userWriteFile(data UserData, agent discordAgent, id string) error {
+	if id == "" {
+		id = agent.message.Author.ID
+	}
 	dataBytes, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
 		logErrorToChan(agent, err)
 		return err
 	}
-	err = ioutil.WriteFile(fmt.Sprintf("./data/users/%s.json", agent.message.Author.ID), dataBytes, 0677)
+	err = ioutil.WriteFile(fmt.Sprintf("./data/users/%s.json", id), dataBytes, 0677)
 	if err != nil {
 		logErrorToChan(agent, err)
 		return err

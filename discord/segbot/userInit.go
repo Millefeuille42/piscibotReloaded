@@ -16,7 +16,7 @@ func targetUntrack(agent discordAgent) {
 	}
 	targetName := user.GuildTargets[agent.message.GuildID]
 	delete(user.GuildTargets, agent.message.GuildID)
-	err = userWriteFile(user, agent)
+	err = userWriteFile(user, agent, "")
 	if err != nil {
 		return
 	}
@@ -50,7 +50,7 @@ func userInit(agent discordAgent) {
 		return
 	}
 
-	link, state := authLinkCreator(agent.message.Author.ID)
+	link, state := authLinkCreator(agent)
 	if link == "" {
 		sendMessageWithMention("Could not generate oauth link", "", agent)
 		return
@@ -68,7 +68,7 @@ func userInit(agent discordAgent) {
 		Verified: false,
 	}
 
-	if userWriteFile(data, agent) != nil {
+	if userWriteFile(data, agent, "") != nil {
 		return
 	}
 	sendMessageWithMention("You are now registered,"+
