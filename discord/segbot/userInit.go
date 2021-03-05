@@ -50,7 +50,7 @@ func userInit(agent discordAgent) {
 		return
 	}
 
-	link := authLinkCreator()
+	link := authLinkCreator(agent.message.Author.ID)
 	if link == "" {
 		sendMessageWithMention("Could not generate oauth link", "", agent)
 		return
@@ -64,6 +64,7 @@ func userInit(agent discordAgent) {
 			Started:  "none",
 			Location: "none",
 		},
+		Verified: false,
 	}
 
 	if userWriteFile(data, agent) != nil {

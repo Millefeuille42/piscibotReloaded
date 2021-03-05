@@ -12,4 +12,5 @@ type UserData struct {
 	UserID       string
 	GuildTargets map[string]string
 	Settings     userSettings
+	Verified     bool
 }
