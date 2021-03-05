@@ -12,7 +12,7 @@ import (
 
 // Exec runs endpoint functions
 func Exec(c *fiber.Ctx, f func(mw.Database, *fiber.Ctx) error) error {
-	if err := Wrapper.Init(MongoURL); err != nil {
+	if err := Wrapper.Init(MongoURL, DBCredentials); err != nil {
 		log.Println(err.Error())
 	}
 	defer Wrapper.Close()

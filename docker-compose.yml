@@ -5,6 +5,11 @@ services:
     restart: always
     ports:
       - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - dbData:/data/db
   api:
     build: 42API/
     image: 42api
@@ -16,9 +21,11 @@ services:
     environment:
       - DB_NAME=users
       - DB_URL=db
-      - UID=${UID}
+      - UID=${APPUID}
       - SECRET=${SECRET}
       - PORT=${API_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
   segbot:
     build: discord/
     image: segbot
@@ -32,6 +39,8 @@ services:
       - BOT_DEV_CHANNEL=${BOT_DEV_CHANNEL}
       - API_PORT=${API_PORT}
       - API_HOST=api
+    volumes:
+      - segbotData:/segbot/data
   checker:
     build: APICheck/
     image: checker
@@ -40,6 +49,10 @@ services:
       - api
       - segbot
     environment:
-      - SEGBOT_URL="http://segbot:${SEGBOT_PORT}"
-    volumes:
-      - segbotData:/segbot/data
+      - SEGBOT_URL=http://segbot:${SEGBOT_PORT}
+      - UID=${APPUID}
+      - SECRET=${SECRET}
+      - USER_API_URL=http://api:${API_PORT}
+volumes:
+  segbotData: {}
+  dbData: {}
