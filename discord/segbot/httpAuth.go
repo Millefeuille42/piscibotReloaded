@@ -44,6 +44,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		w.WriteHeader(200)
+		_, _ = w.Write([]byte("Authentication successful, you can now close this window"))
 	}
 }
 
