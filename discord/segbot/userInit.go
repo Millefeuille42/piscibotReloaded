@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/bwmarrin/discordgo"
 )
 
 // targetUntrack Un-tracks target for user on guild
@@ -67,11 +68,19 @@ func userInit(agent discordAgent) {
 		},
 		Verified: false,
 	}
-
 	if userWriteFile(data, agent, "") != nil {
 		return
 	}
-	sendMessageWithMention("You are now registered,"+
-		" validate your profile with the link below", "", agent)
-	_, _ = agent.session.ChannelMessageSend(agent.channel, link)
+
+	sendMessageWithMention("", "", agent)
+	_, err = agent.session.ChannelMessageSendEmbed(agent.channel, &discordgo.MessageEmbed{
+		URL:   link,
+		Type:  "link",
+		Title: "Verification Link",
+		Description: "You are now registered, validate your profile with the link provided.\n" +
+			"You will not be able to perform actions until you validate your profile through 42",
+		Thumbnail: &discordgo.MessageEmbedThumbnail{
+			URL: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/1200px-42_Logo.svg.png",
+		},
+	})
 }
