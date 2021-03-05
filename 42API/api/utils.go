@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	apiclient "github.com/BoyerDamien/42APIClient"
 	mw "github.com/BoyerDamien/mongodbWrapper"
@@ -28,4 +29,15 @@ func IsExists(db mw.Database, user *apiclient.User) bool {
 		return false
 	}
 	return true
+}
+
+// CheckEnvVariables tests the existence of required env variables
+func CheckEnvVariables() {
+	envVariables := []string{"DB_NAME", "DB_URL", "UID", "SECRET", "PORT", "DB_USERNAME", "DB_PASSWORD"}
+	for _, val := range envVariables {
+		if os.Getenv(val) == "" {
+			log.Fatalf("Missing %s env variable", val)
+		}
+		log.Printf("%s env variable [OK]", val)
+	}
 }
