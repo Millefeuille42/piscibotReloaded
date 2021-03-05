@@ -86,6 +86,15 @@ func userInitialCheck(agent discordAgent) bool {
 	}
 	_, err := os.Stat(fmt.Sprintf("./data/users/%s.json", agent.message.Author.ID))
 	if !os.IsNotExist(err) {
+		user, err := userLoadFile("", agent)
+		if err != nil {
+			return false
+		}
+		if !user.Verified {
+			sendMessageWithMention("You are registered,"+
+				" but your account is not verified!", "", agent)
+			return false
+		}
 		return true
 	}
 	sendMessageWithMention("You are not registered, register with !start", "", agent)
