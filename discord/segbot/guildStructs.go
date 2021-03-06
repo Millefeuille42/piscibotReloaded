@@ -11,10 +11,9 @@ type guildSettingsChannels struct {
 
 // guildSettingsRoles Internal, Contains Roles associations
 type guildSettingsRoles struct {
-	Admin        string
-	Registered   string
-	Unregistered string
-	Spectator    string
+	Admin      string
+	Registered string
+	Spectator  string
 }
 
 // guildSettings Internal, Contains structs of the Channels and Roles

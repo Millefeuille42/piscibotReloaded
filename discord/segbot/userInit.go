@@ -31,6 +31,24 @@ func targetUntrack(agent discordAgent) {
 	if err != nil {
 		return
 	}
+	_ = discordRoleSetLoad("", "spectator", agent)
+	sendMessageWithMention("You are not tracking someone on this server anymore!", "", agent)
+}
+
+func userSetSpectator(agent discordAgent) {
+	if !userInitialCheck(agent) {
+		return
+	}
+	user, err := userLoadFile("", agent)
+	if err != nil {
+		return
+	}
+	if _, isExist := user.GuildTargets[agent.message.GuildID]; isExist {
+		sendMessageWithMention("You can't be a spectator if you are tracking someone!", "", agent)
+		return
+	}
+	_ = discordRoleSetLoad("", "spectator", agent)
+	sendMessageWithMention("You are now spectating", "", agent)
 }
 
 // userInit Initializes user

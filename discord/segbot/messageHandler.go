@@ -33,7 +33,7 @@ func userRouter(agent discordAgent) bool {
 		userInit(agent)
 		return true
 	case strings.HasPrefix(agent.message.Content, "!track"):
-		targetRegister(agent)
+		targetTrack(agent)
 		return true
 	case strings.HasPrefix(agent.message.Content, "!ping"):
 		userSetPings(agent)
@@ -43,6 +43,9 @@ func userRouter(agent discordAgent) bool {
 		return true
 	case agent.message.Content == "!untrack":
 		targetUntrack(agent)
+		return true
+	case agent.message.Content == "!spectate":
+		userSetSpectator(agent)
 		return true
 	}
 	return false
