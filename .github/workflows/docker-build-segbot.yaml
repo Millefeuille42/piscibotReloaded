@@ -1,0 +1,17 @@
+name: Docker Build Discord
+
+on:
+  push:
+    branches: [ discord, master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Segbot
+        run: (cd ./discord ; docker build . --tag segbot:$(date +%s))
