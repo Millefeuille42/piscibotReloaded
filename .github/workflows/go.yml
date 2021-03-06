@@ -1,14 +1,14 @@
-name: Go
+name: Go Build Discord
 
 on:
   push:
-    branches: [ master ]
+    branches: [ discord, master]
   pull_request:
-    branches: [ master ]
+    branches: [ discord ]
   workflow_dispatch:
 
 jobs:
-  build-1-16:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -18,20 +18,55 @@ jobs:
       with:
         go-version: 1.16
 
-    - name: Build Checker
-      run: (cd ./APICheck/checker ; go install .)
-    - name: Build Segbot
+    - name: Build Discord
       run: (cd ./discord/segbot ; go install .)
-    
-  build-1-15:
+
+---
+
+name: Go Build Checker
+
+on:
+  push:
+    branches: [ checker, master ]
+  pull_request:
+    branches: [ checker ]
+  workflow_dispatch:
+
+jobs:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.15
-        
-    - name: Build API
-      run: (cd ./42API/api ; go install .)
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+
+      - name: Build Checker
+        run: (cd ./APICheck/checker ; go install .)
+
+---
+
+name: Go Build 42API
+
+on:
+  push:
+    branches: [ 42api, master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.15
+
+      - name: Build 42API
+        run: (cd ./42API/api ; go install .)

@@ -1,8 +1,8 @@
-name: Docker
+name: Docker Build Discord
 
 on:
   push:
-    branches: [ master ]
+    branches: [ discord, master ]
   pull_request:
     branches: [ master ]
   workflow_dispatch:
@@ -13,9 +13,45 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Build Checker
-      run: (cd ./APICheck ; docker build . --tag checker:$(date +%s))
     - name: Build Segbot
       run: (cd ./discord ; docker build . --tag segbot:$(date +%s))
-    - name: Build API
-      run: (cd ./42API ; docker build . --tag api:$(date +%s))
+
+---
+
+name: Docker Build Checker
+
+on:
+  push:
+    branches: [ checker, master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Checker
+        run: (cd ./APICheck ; docker build . --tag checker:$(date +%s))
+
+---
+
+name: Docker Build 42API
+
+on:
+  push:
+    branches: [ 42api, master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build 42API
+        run: (cd ./42API ; docker build . --tag api:$(date +%s))
