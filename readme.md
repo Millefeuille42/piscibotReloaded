@@ -2,7 +2,7 @@
 
 ![Website](https://img.shields.io/website?down_color=lightgrey&down_message=Offline&label=Bot%20Status&up_color=blue&up_message=Up&url=http%3A%2F%2Flocalhost%3A8000%2Fauth)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Millefeuille42/piscibotReloaded)
-![GitHub branch checks state](https://img.shields.io/github/checks-status/Millefeuille42/piscibotReloaded/discord?label=Checks)  [![DeepSource](https://deepsource.io/gh/Millefeuille42/piscibotReloaded.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/Millefeuille42/piscibotReloaded/?ref=repository-badge)
+![GitHub branch checks state](https://img.shields.io/github/checks-status/Millefeuille42/piscibotReloaded/master?label=Checks)  [![DeepSource](https://deepsource.io/gh/Millefeuille42/piscibotReloaded.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/Millefeuille42/piscibotReloaded/?ref=repository-badge)
 
 The perfect tool to track your progress and compare with your friends or to organize contests for the piscines!
 
