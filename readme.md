@@ -1,6 +1,5 @@
 # Segbot 
 
----
 ![Website](https://img.shields.io/website?down_color=lightgrey&down_message=Offline&label=Bot%20Status&up_color=blue&up_message=Up&url=http%3A%2F%2Flocalhost%3A8000%2Fauth)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Millefeuille42/piscibotReloaded)
 ![GitHub branch checks state](https://img.shields.io/github/checks-status/Millefeuille42/piscibotReloaded/discord?label=Checks)  [![DeepSource](https://deepsource.io/gh/Millefeuille42/piscibotReloaded.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/Millefeuille42/piscibotReloaded/?ref=repository-badge)
@@ -22,8 +21,6 @@ The perfect tool to track your progress and compare with your friends or to orga
     * Multi-server support
 
 ## How to use
-
----
 
 ### Getting started
 
@@ -56,8 +53,6 @@ to your own server
 
 ## Host your own
 
----
-
 You can host your own version of the bot, 
 you'll need to set up a discord bot, and a 42 bot.
 
@@ -74,7 +69,6 @@ Then, run the app with `docker-compose up --env-file <.env file> -d` and shut it
 
 ## Code overview
 
----
 ![GitHub repo size](https://img.shields.io/github/repo-size/Millefeuille42/piscibotReloaded)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/Millefeuille42/piscibotReloaded)
 ![Lines of code](https://img.shields.io/tokei/lines/github/Millefeuille42/piscibotReloaded)
@@ -86,4 +80,3 @@ Then, run the app with `docker-compose up --env-file <.env file> -d` and shut it
 | ![ GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/Millefeuille42/piscibotReloaded?filename=discord%2Fsegbot%2Fgo.mod&label=Go%20Version)    ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Millefeuille42/piscibotReloaded/Go%20Build%20Segbot?label=Go%20Build)  ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Millefeuille42/piscibotReloaded/Docker%20Build%20Segbot?label=Docker%20Build)    	| ![ GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/Millefeuille42/piscibotReloaded?filename=42API%2Fapi%2Fgo.mod&label=Go%20Version)    ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Millefeuille42/piscibotReloaded/Go%20Build%2042API?label=Go%20Build)  ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Millefeuille42/piscibotReloaded/Docker%20Build%2042API?label=Docker%20Build)    	| ![ GitHub go.mod Go version (subdirectory of monorepo)](https://img.shields.io/github/go-mod/go-version/Millefeuille42/piscibotReloaded?filename=APICheck%2Fchecker%2Fgo.mod&label=Go%20Version)    ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Millefeuille42/piscibotReloaded/Go%20Build%20Checker?label=Go%20Build)  ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/Millefeuille42/piscibotReloaded/Docker%20Build%20Checker?label=Docker%20Build)    	|
 | ![GitHub last commit](https://img.shields.io/github/last-commit/Millefeuille42/piscibotReloaded/discord)  ![GitHub branch checks state](https://img.shields.io/github/checks-status/Millefeuille42/piscibotReloaded/discord?label=Checks)                                                                                                                                                                                                                                                                 	| ![GitHub last commit](https://img.shields.io/github/last-commit/Millefeuille42/piscibotReloaded/42api)  ![GitHub branch checks state](https://img.shields.io/github/checks-status/Millefeuille42/piscibotReloaded/42api?label=Checks)                                                                                                                                                                                                                                                              	| ![GitHub last commit](https://img.shields.io/github/last-commit/Millefeuille42/piscibotReloaded/checker)  ![GitHub branch checks state](https://img.shields.io/github/checks-status/Millefeuille42/piscibotReloaded/checker?label=Checks)                                                                                                                                                                                                                                                                     	|
 |                                                                                                                                                                                                                             [Millefeuille](https://github.com/Millefeuille42)                                                                                                                                                                                                                             	|                                                                                                                                                                                                                            [BoyerDamien](https://github.com/BoyerDamien)                                                                                                                                                                                                                           	|                                                                                                                                                                                                                                 [BoyerDamien](https://github.com/BoyerDamien)                                                                                                                                                                                                                                 	|
-
