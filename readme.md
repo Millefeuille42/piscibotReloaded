@@ -46,8 +46,7 @@ to your own server
 - `!untrack` -> Untrack current server's student (Automatically set to spectate)
 - `!spectate` -> Get the spectator role, 
   This role is intended to permit you to see dedicated channels without being tracking someone
-- `!ping /<success | started | location>:<none | dm | channel | all>` -> Edit the notification system for provided message stream(s)
-  `channel` means a mention in the dedicated channel, `all` cumulates `dm` + `mention`
+- `!ping /<success | started | location>:<none | dm | channel | all>` -> Edit the notification system for provided message stream(s), one stream per `/`
 - `!settings` -> Get your notification settings
 
 
