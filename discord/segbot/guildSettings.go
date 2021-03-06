@@ -50,12 +50,12 @@ func adminSet(agent discordAgent) {
 	if len(args) <= 1 {
 		return
 	}
-	settings, err := guildLoadFile(agent, false, "")
+	data, err := guildLoadFile(agent, false, "")
 	if err != nil {
 		return
 	}
 
-	if !Find(settings.Admins, agent.message.Author.ID) {
+	if !Find(data.Admins, agent.message.Author.ID) {
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}
@@ -66,11 +66,12 @@ func adminSet(agent discordAgent) {
 		}
 		user = strings.TrimSpace(user)
 		user = user[3 : len(user)-1]
-		if !Find(settings.Admins, user) {
-			settings.Admins = append(settings.Admins, user)
+		if !Find(data.Admins, user) {
+			data.Admins = append(data.Admins, user)
+			discordRoleSet(data, user, "admin", agent)
 		}
 	}
-	if guildWriteFile(agent, settings) == nil {
+	if guildWriteFile(agent, data) == nil {
 		sendMessageWithMention("Successfully added user(s) as admin", "", agent)
 	}
 }
