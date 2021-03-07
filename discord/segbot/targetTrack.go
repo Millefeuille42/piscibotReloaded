@@ -70,7 +70,7 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 // targetTrack Registers target for user and guild
 func targetTrack(agent discordAgent) {
 	settings := TargetData{}
-	args := strings.Split(agent.message.Content, "-")
+	args := strings.Split(agent.message.Content, " ")
 	if userCheckHasTarget(agent) != nil {
 		return
 	}

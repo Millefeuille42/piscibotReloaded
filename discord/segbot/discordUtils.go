@@ -13,8 +13,16 @@ func sendMessageToUser(message, channel, userID, chanParam string, agent discord
 	case "channel":
 		_, _ = agent.session.ChannelMessageSend(channel, fmt.Sprintf("<@%s>\n%s", userID, message))
 	case "dm":
-
+		dmChan, err := agent.session.UserChannelCreate(userID)
+		if err == nil {
+			_, _ = agent.session.ChannelMessageSend(dmChan.ID, message)
+		}
+		_, _ = agent.session.ChannelMessageSend(channel, message)
 	case "all":
+		dmChan, err := agent.session.UserChannelCreate(userID)
+		if err == nil {
+			_, _ = agent.session.ChannelMessageSend(dmChan.ID, message)
+		}
 		_, _ = agent.session.ChannelMessageSend(channel, fmt.Sprintf("<@%s>\n%s", userID, message))
 	}
 }

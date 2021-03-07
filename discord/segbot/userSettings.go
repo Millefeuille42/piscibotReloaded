@@ -14,7 +14,7 @@ func userSetPings(agent discordAgent) {
 	if err != nil {
 		return
 	}
-	args := strings.Split(agent.message.Content, "-")
+	args := strings.Split(agent.message.Content, " ")
 	if len(args) <= 1 {
 		sendMessageWithMention("I need more arguments", "", agent)
 		return
