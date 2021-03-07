@@ -14,7 +14,7 @@ The perfect tool to track your progress and compare with your friends or to orga
     * Admin list system
 
 - User:
-    * Customizable dms (WIP) and mentions notification settings
+    * Customizable dms and mentions notification settings
     * Track students or pisciners
     * On demand profiles, leaderboards, roadmaps, etc... (WIP)
     * Real-Time alerts about your target
