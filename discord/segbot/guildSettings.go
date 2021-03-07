@@ -46,7 +46,7 @@ func adminSet(agent discordAgent) {
 	if !guildInitialCheck(agent) {
 		return
 	}
-	args := strings.Split(agent.message.Content, "-")
+	args := strings.Split(agent.message.Content, " ")
 	if len(args) <= 1 {
 		return
 	}
@@ -83,7 +83,7 @@ func adminSetChan(agent discordAgent) {
 		return
 	}
 
-	args := strings.Split(agent.message.Content, "-")
+	args := strings.Split(agent.message.Content, " ")
 	settings, err := guildLoadFile(agent, false, "")
 	if err != nil {
 		return

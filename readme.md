@@ -34,19 +34,19 @@ to your own server
 #### Admin
 
 - `!init` -> Register the server
-- `!admin  / @user1 / @user2` -> Give user(s) admin privileges, one user per `/` (don't forget the space)
-- `!channel /<command | leaderboard | success | started | location>` -> Set provided message stream(s) to current channel, one stream per `/`
+- `!admin @user (mention)` -> Give user(s) admin privileges, you can set multiple users at once
+- `!channel <command | leaderboard | success | started | location>` -> Set provided message stream(s) to current channel, you can set multiple streams at once
 - `!params` -> Get the server's settings
 
 #### User
 
 - `!start` -> Create your profile, you'll need to verify your account to complete the registration. 
   The profile is independent of the servers
-- `!track /<login>` -> Track provided student, one user per server
+- `!track <login>` -> Track provided student, one user per server
 - `!untrack` -> Untrack current server's student (Automatically set to spectate)
 - `!spectate` -> Get the spectator role, 
   This role is intended to permit you to see dedicated channels without being tracking someone
-- `!ping /<success | started | location>:<none | dm | channel | all>` -> Edit the notification system for provided message stream(s), one stream per `/`
+- `!ping <success | started | location>:<none | dm | channel | all>` -> Edit the notification system for provided message stream(s), you can set multiple streams at once
 - `!settings` -> Get your notification settings
 
 
