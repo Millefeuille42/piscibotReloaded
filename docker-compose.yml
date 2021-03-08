@@ -1,21 +1,9 @@
 version: "3"
 services:
-  db:
-    image: mongo:latest
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - dbData:/data/db
   api:
     build: 42API/
     image: 42api
     restart: always
-    links:
-      - db
     ports:
       - ${API_PORT}:3000
     environment:
@@ -58,4 +46,3 @@ services:
       - USER_API_URL=http://api:${API_PORT}
 volumes:
   segbotData: {}
-  dbData: {}
