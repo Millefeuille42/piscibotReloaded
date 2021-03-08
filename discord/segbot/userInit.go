@@ -71,7 +71,7 @@ func userInit(agent discordAgent) {
 
 	link, state := authLinkCreator(agent)
 	if link == "" {
-		sendMessageWithMention("Could not generate oauth link", "", agent)
+		sendMessageWithMention("Could not generate OAuth link", "", agent)
 		return
 	}
 
@@ -90,8 +90,10 @@ func userInit(agent discordAgent) {
 		return
 	}
 
-	sendMessageWithMention("", "", agent)
-	_, err = agent.session.ChannelMessageSendEmbed(agent.channel, &discordgo.MessageEmbed{
+	sendMessageWithMention("", "", discordAgent{
+		session: agent.session, message: agent.message, channel: agent.message.ChannelID})
+
+	_, err = agent.session.ChannelMessageSendEmbed(agent.message.ChannelID, &discordgo.MessageEmbed{
 		URL:   link,
 		Type:  "link",
 		Title: "Verification Link",
