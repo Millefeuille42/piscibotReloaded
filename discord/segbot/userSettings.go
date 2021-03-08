@@ -14,7 +14,7 @@ func userSetPings(agent discordAgent) {
 	if err != nil {
 		return
 	}
-	args := strings.Split(agent.message.Content, "-")
+	args := strings.Split(agent.message.Content, " ")
 	if len(args) <= 1 {
 		sendMessageWithMention("I need more arguments", "", agent)
 		return
@@ -35,7 +35,7 @@ func userSetPings(agent discordAgent) {
 		}
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "Ping settings updated for "+subArgs[0])
 	}
-	if userWriteFile(user, agent) == nil {
+	if userWriteFile(user, agent, "") == nil {
 		sendMessageWithMention("Ping settings saved", "", agent)
 	}
 }

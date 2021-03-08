@@ -35,9 +35,12 @@ services:
     ports:
       - ${SEGBOT_PORT}:8000
     environment:
+      - APPUID=${APPUID}
       - BOT_TOKEN=${BOT_TOKEN}
       - BOT_DEV_CHANNEL=${BOT_DEV_CHANNEL}
+      - SEGBOT_PORT=${SEGBOT_PORT}
       - API_PORT=${API_PORT}
+      - APP_HOST=${APP_HOST}
       - API_HOST=api
     volumes:
       - segbotData:/segbot/data

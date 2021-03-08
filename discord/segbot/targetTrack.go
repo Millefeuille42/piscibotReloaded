@@ -50,7 +50,8 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 		}
 		err = json.Unmarshal(data, settings)
 		if err != nil {
-			return err
+			_ = os.Remove(path)
+			return loadOrCreate(path, login, settings, message)
 		}
 	} else {
 		*settings = TargetData{
@@ -66,10 +67,10 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 	return nil
 }
 
-// targetRegister Registers target for user and guild
-func targetRegister(agent discordAgent) {
+// targetTrack Registers target for user and guild
+func targetTrack(agent discordAgent) {
 	settings := TargetData{}
-	args := strings.Split(agent.message.Content, "-")
+	args := strings.Split(agent.message.Content, " ")
 	if userCheckHasTarget(agent) != nil {
 		return
 	}
@@ -100,7 +101,8 @@ func targetRegister(agent discordAgent) {
 	}
 	user.GuildTargets[agent.message.GuildID] = settings.Login
 
-	if targetWriteFile(settings, agent) == nil && userWriteFile(user, agent) == nil {
+	if targetWriteFile(settings, agent) == nil && userWriteFile(user, agent, "") == nil {
 		sendMessageWithMention("You are now tracking "+args[1], "", agent)
+		_ = discordRoleSetLoad("", "registered", agent)
 	}
 }
