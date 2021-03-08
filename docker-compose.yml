@@ -20,7 +20,7 @@ services:
       - ${API_PORT}:3000
     environment:
       - DB_NAME=users
-      - DB_URL=db
+      - DB_URL=${DB_URL}
       - UID=${APPUID}
       - SECRET=${SECRET}
       - PORT=${API_PORT}
