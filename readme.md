@@ -56,6 +56,7 @@ You can host your own version of the bot,
 you'll need to set up a discord bot, and a 42 bot.
 
 You'll also need to define the following environment variables : 
+- `DB_URL` -> The database url
 - `DB_USERNAME` -> The database username of the bot
 - `DB_PASSWORD` -> The database password of the bot
 - `BOT_TOKEN` -> The discord bot token
