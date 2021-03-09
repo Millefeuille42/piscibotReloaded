@@ -1,7 +1,7 @@
 github.com/BoyerDamien/42APIClient v0.0.0-20210302105521-d8e8b21171a2 h1:jrUMjblZ89Na/ptNZbmdr8gp5RNmp/f81BiUuSeCLI8=
 github.com/BoyerDamien/42APIClient v0.0.0-20210302105521-d8e8b21171a2/go.mod h1:YifNxHiYJ4aNZjDekK2J79J1ABMlwuDYG07dBoXz7+I=
-github.com/BoyerDamien/mongodbWrapper v0.0.0-20210305102825-a3fb02a350e3 h1:QLInqiWETRU8rWkPlw/4qFC1IxAJUKP1guHScYNGfW0=
-github.com/BoyerDamien/mongodbWrapper v0.0.0-20210305102825-a3fb02a350e3/go.mod h1:RG83DSWKyixJpL766+mPkI1U3t2yJvgY0GgGQVHFNW4=
+github.com/BoyerDamien/mongodbWrapper v0.0.0-20210309102524-006952351a29 h1:zsd2cGXWOf3RfyPm50Xu7N85h3sF/lF3VrjiF8Ovemk=
+github.com/BoyerDamien/mongodbWrapper v0.0.0-20210309102524-006952351a29/go.mod h1:RG83DSWKyixJpL766+mPkI1U3t2yJvgY0GgGQVHFNW4=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/andybalholm/brotli v1.0.0/go.mod h1:loMXtMfwqflxFJPmdbJO0a3KNoPuLBgiu3qAvBg8x/Y=
 github.com/andybalholm/brotli v1.0.1 h1:KqhlKozYbRtJvsPrrEeXcO+N2l6NYT5A2QAFmSULpEc=
