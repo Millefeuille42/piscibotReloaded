@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/BoyerDamien/42APIClient v0.0.0-20210302105521-d8e8b21171a2
-	github.com/BoyerDamien/mongodbWrapper v0.0.0-20210305102825-a3fb02a350e3
+	github.com/BoyerDamien/mongodbWrapper v0.0.0-20210309102524-006952351a29
 	github.com/aws/aws-sdk-go v1.37.21 // indirect
 	github.com/gofiber/fiber/v2 v2.5.0
 	github.com/golang/snappy v0.0.3 // indirect
