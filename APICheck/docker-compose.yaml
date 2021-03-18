@@ -19,6 +19,7 @@ services:
       - SECRET=${SECRET}
       - PORT=3000
   checker:
+    build: .
     image: checker
     restart: always
     links:

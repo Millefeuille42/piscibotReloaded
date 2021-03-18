@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sort"
 
 	apiclient "github.com/BoyerDamien/42APIClient"
 )
@@ -62,14 +61,13 @@ func (s *Checker) Check(dbUser, apiUser *apiclient.User) []Message {
 		if p1.Validated {
 			return messages
 		}
-		p2Index := sort.Search(len(apiUser.ProjectsUsers), func(i int) bool {
-			return BuildProject(apiUser.ProjectsUsers[i]).Name == p1.Name
-		})
-		if p2Index < len(apiUser.ProjectsUsers) {
-			p2 := BuildProject(apiUser.ProjectsUsers[p2Index])
-			if err := CheckProjectStatus(dbUser.Login, &p1, &p2); err != nil {
-				message := Message{Message: err.Error(), Channel: "success", Login: dbUser.Login}
-				messages = append(messages, message)
+		for _, val := range apiUser.ProjectsUsers {
+			p2 := BuildProject(val)
+			if p2.Name == p1.Name {
+				if err := CheckProjectStatus(dbUser.Login, &p1, &p2); err != nil {
+					message := Message{Message: err.Error(), Channel: "success", Login: dbUser.Login}
+					messages = append(messages, message)
+				}
 			}
 		}
 	}
