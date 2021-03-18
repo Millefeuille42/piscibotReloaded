@@ -1,6 +1,6 @@
 # Segbot 
 
-![Website](https://img.shields.io/website?label=bot&url=http%3A%2F%2Fbot.mlabouri.tech%3A8000%2Fdiscord)
+![Website](https://img.shields.io/website?label=bot&url=http%3A%2F%2Fmlabouri.tech%3A8000%2Fdiscord)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Millefeuille42/piscibotReloaded)
 [![DeepSource](https://deepsource.io/gh/Millefeuille42/piscibotReloaded.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/Millefeuille42/piscibotReloaded/?ref=repository-badge)
 
