@@ -58,9 +58,9 @@ func (s *Checker) Check(dbUser, apiUser *apiclient.User) []Message {
 	dbUserProjectsLen := len(dbUser.ProjectsUsers)
 	for i := 0; i < dbUserProjectsLen; i++ {
 		p1 := BuildProject(dbUser.ProjectsUsers[i])
-		if p1.Validated {
-			return messages
-		}
+//		if p1.Validated { 				// Projects are not sorted,
+//			return messages				// this conditon breaks the validated events
+//		}
 		for _, val := range apiUser.ProjectsUsers {
 			p2 := BuildProject(val)
 			if p2.Name == p1.Name {
