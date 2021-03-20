@@ -15,28 +15,28 @@ jobs:
       
       - name: Build
         env:
-          API_PORT: ${{ piscibotReloaded.API_PORT }}
-          APPUID: ${{ piscibotReloaded.APPUID }}
-          APP_HOST: ${{ piscibotReloaded.APP_HOST }}
-          BOT_DEV_CHANNEL: ${{ piscibotReloaded.BOT_DEV_CHANNEL }}
-          BOT_TOKEN: ${{ piscibotReloaded.BOT_TOKEN }}
-          DB_PASSWORD: ${{ piscibotReloaded.DB_PASSWORD }}
-          DB_URL: ${{ piscibotReloaded.DB_URL }}
-          DB_USERNAME: ${{ piscibotReloaded.DB_USERNAME }}
-          SECRET: ${{ piscibotReloaded.SECRET }}
-          SEGBOT_PORT: ${{ piscibotReloaded.SEGBOT_PORT }}
+          API_PORT: ${{ secrets.API_PORT }}
+          APPUID: ${{ secrets.APPUID }}
+          APP_HOST: ${{ secrets.APP_HOST }}
+          BOT_DEV_CHANNEL: ${{ secrets.BOT_DEV_CHANNEL }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          SECRET: ${{ secrets.SECRET }}
+          SEGBOT_PORT: ${{ secrets.SEGBOT_PORT }}
         run: echo $API_PORT && echo $SEGBOT_PORT && docker-compose build
         
       - name: Deploy
         env:
-          API_PORT: ${{ piscibotReloaded.API_PORT }}
-          APPUID: ${{ piscibotReloaded.APPUID }}
-          APP_HOST: ${{ piscibotReloaded.APP_HOST }}
-          BOT_DEV_CHANNEL: ${{ piscibotReloaded.BOT_DEV_CHANNEL }}
-          BOT_TOKEN: ${{ piscibotReloaded.BOT_TOKEN }}
-          DB_PASSWORD: ${{ piscibotReloaded.DB_PASSWORD }}
-          DB_URL: ${{ piscibotReloaded.DB_URL }}
-          DB_USERNAME: ${{ piscibotReloaded.DB_USERNAME }}
-          SECRET: ${{ piscibotReloaded.SECRET }}
-          SEGBOT_PORT: ${{ piscibotReloaded.SEGBOT_PORT }}
+          API_PORT: ${{ secrets.API_PORT }}
+          APPUID: ${{ secrets.APPUID }}
+          APP_HOST: ${{ secrets.APP_HOST }}
+          BOT_DEV_CHANNEL: ${{ secrets.BOT_DEV_CHANNEL }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          SECRET: ${{ secrets.SECRET }}
+          SEGBOT_PORT: ${{ secrets.SEGBOT_PORT }}
         run: docker-compose up -d
