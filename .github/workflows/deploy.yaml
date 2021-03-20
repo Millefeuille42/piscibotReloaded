@@ -15,6 +15,16 @@ jobs:
       
       - name: Build
         run: docker-compose build
-        
+        env:
+          API_PORT: ${{ secrets.API_PORT }}
+          APPUID: ${{ secrets.APPUID }}
+          APP_HOST: ${{ secrets.APP_HOST }}
+          BOT_DEV_CHANNEL: ${{ secrets.BOT_DEV_CHANNEL }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          SECRET: ${{ secrets.SECRET }}
+          SEGBOT_PORT: ${{ secrets.SEGBOT_PORT }}
       - name: Deploy
         run: docker-compose up -d
