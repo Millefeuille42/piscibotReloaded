@@ -26,6 +26,24 @@ func adminRouter(agent discordAgent) {
 	}
 }
 
+func commandsRouter(agent discordAgent) bool {
+	switch {
+	//	case strings.HasPrefix(agent.message.Content, "!profile"):
+	//		sendTargetProfile(agent)
+	//		return true
+	//	case strings.HasPrefix(agent.message.Content, "!list students"):
+	//		sendStudentsList(agent)
+	//		return true
+	//	case strings.HasPrefix(agent.message.Content, "!list tracked"):
+	//		sendTrackedList(agent)
+	//		return true
+	case strings.HasPrefix(agent.message.Content, "!leaderboard"):
+		sendLeaderboard(agent)
+		return true
+	}
+	return false
+}
+
 // userRouter Router for user commands, returns true if a command was found
 func userRouter(agent discordAgent) bool {
 	switch {
@@ -63,7 +81,7 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 	if message.Author.ID == botID.ID || !strings.HasPrefix(message.Content, "!") {
 		return
 	}
-	if !userRouter(agent) {
+	if !commandsRouter(agent) && !userRouter(agent) {
 		adminRouter(agent)
 	}
 }

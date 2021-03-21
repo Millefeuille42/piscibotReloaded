@@ -1,8 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"io/ioutil"
+	"log"
 )
 
 // sendMessageWithMention Sends a discord message according to user params
@@ -25,6 +28,46 @@ func sendMessageToUser(message, channel, userID, chanParam string, agent discord
 		}
 		_, _ = agent.session.ChannelMessageSend(channel, fmt.Sprintf("<@%s>\n%s", userID, message))
 	}
+}
+
+func getUsersOfGuild(guild string) ([]UserData, error) {
+	var userList = make([]UserData, 0)
+
+	files, err := ioutil.ReadDir("./data/users")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, f := range files {
+		var user = UserData{}
+
+		fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/users/%s", f.Name()))
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal(fileData, &user)
+		if err != nil {
+			return nil, err
+		}
+		if _, ok := user.GuildTargets[guild]; ok {
+			userList = append(userList, user)
+		}
+	}
+	return userList, nil
+}
+
+func getTargetsOfGuild(guild string) ([]string, error) {
+	var targetList = make([]string, 0)
+
+	userList, err := getUsersOfGuild(guild)
+	if err != nil {
+		return nil, err
+	}
+	for _, user := range userList {
+		if target, ok := user.GuildTargets[guild]; ok {
+			targetList = append(targetList, target)
+		}
+	}
+	return targetList, nil
 }
 
 // sendMessageWithMention Sends a discord message prepending a mention + \n to the message, if id == "", id becomes the message author
