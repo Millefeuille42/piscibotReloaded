@@ -64,15 +64,13 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 func createLevelPairList(agent discordAgent, slug string) []targetLevelPair {
 	var pairList = make([]targetLevelPair, 0)
 
-	targetList, err := getTargetsOfGuild(agent.message.GuildID)
+	targetList, err := getTargetsOfGuild(agent, agent.message.GuildID)
 	if err != nil {
-		logErrorToChan(agent, err)
 		return nil
 	}
 	for _, target := range targetList {
 		apiData, err := targetGetData(agent, target)
 		if err != nil {
-			logErrorToChan(agent, err)
 			return nil
 		}
 		for _, cursus := range apiData.CursusUsers {
@@ -111,5 +109,7 @@ func sendLeaderboard(agent discordAgent) {
 		return
 	}
 	leaderboard := createLeaderboard(agent, args[1])
-	sendMessageWithMention("```"+leaderboard+"```", "", agent)
+	if leaderboard != "" {
+		sendMessageWithMention("```"+leaderboard+"```", "", agent)
+	}
 }

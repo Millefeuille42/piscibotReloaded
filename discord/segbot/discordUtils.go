@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
-	"log"
 )
 
 // sendMessageWithMention Sends a discord message according to user params
@@ -30,23 +29,26 @@ func sendMessageToUser(message, channel, userID, chanParam string, agent discord
 	}
 }
 
-func getUsersOfGuild(guild string) ([]UserData, error) {
+func getUsersOfGuild(agent discordAgent, guild string) ([]UserData, error) {
 	var userList = make([]UserData, 0)
 
 	files, err := ioutil.ReadDir("./data/users")
 	if err != nil {
-		log.Fatal(err)
+		logErrorToChan(agent, err)
+		return nil, err
 	}
 	for _, f := range files {
 		var user = UserData{}
 
 		fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/users/%s", f.Name()))
 		if err != nil {
-			return nil, err
+			logError(err)
+			continue
 		}
 		err = json.Unmarshal(fileData, &user)
 		if err != nil {
-			return nil, err
+			logError(err)
+			continue
 		}
 		if _, ok := user.GuildTargets[guild]; ok {
 			userList = append(userList, user)
@@ -55,10 +57,10 @@ func getUsersOfGuild(guild string) ([]UserData, error) {
 	return userList, nil
 }
 
-func getTargetsOfGuild(guild string) ([]string, error) {
+func getTargetsOfGuild(agent discordAgent, guild string) ([]string, error) {
 	var targetList = make([]string, 0)
 
-	userList, err := getUsersOfGuild(guild)
+	userList, err := getUsersOfGuild(agent, guild)
 	if err != nil {
 		return nil, err
 	}
