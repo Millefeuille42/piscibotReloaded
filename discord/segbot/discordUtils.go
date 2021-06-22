@@ -98,7 +98,7 @@ func getChannelName(session *discordgo.Session, id string) string {
 
 // logErrorToChan Sends plain error to command channel
 func logErrorToChan(agent discordAgent, err error) {
-	if err != nil {
+	if err == nil {
 		return
 	}
 	logError(err)
