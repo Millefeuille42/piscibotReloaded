@@ -23,7 +23,7 @@ func channelPurge(agent discordAgent, channel string) error {
 			break
 		}
 	}
-	sendMessageWithMention("Channel #"+channel+" purged!", "", agent)
+	sendMessageWithMention("Channel <#"+channel+"> purged!", "", agent)
 	return nil
 }
 
@@ -37,9 +37,9 @@ func adminPurge(agent discordAgent) {
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}
+	logErrorToChan(agent, channelPurge(agent, data.Settings.Channels.Location))
 	logErrorToChan(agent, channelPurge(agent, data.Settings.Channels.Started))
 	logErrorToChan(agent, channelPurge(agent, data.Settings.Channels.Success))
-	logErrorToChan(agent, channelPurge(agent, data.Settings.Channels.Commands))
-	logErrorToChan(agent, channelPurge(agent, data.Settings.Channels.Location))
 	logErrorToChan(agent, channelPurge(agent, data.Settings.Channels.Leaderboard))
+	logErrorToChan(agent, channelPurge(agent, data.Settings.Channels.Commands))
 }
