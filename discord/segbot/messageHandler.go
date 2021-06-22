@@ -65,6 +65,8 @@ func userRouter(agent discordAgent) bool {
 	case agent.message.Content == "!spectate":
 		userSetSpectator(agent)
 		return true
+	case agent.message.Content == "!help":
+		sendHelp(agent)
 	}
 	return false
 }
