@@ -60,7 +60,6 @@ You'll also need to define the following environment variables :
 - `DB_USERNAME` -> The database username of the bot
 - `DB_PASSWORD` -> The database password of the bot
 - `BOT_TOKEN` -> The discord bot token
-- `BOT_TOKEN` -> The discord bot token
 - `BOT_DEV_CHANNEL` -> The discord bot default error channel
 - `API_PORT` -> The internal 42api port
 - `SEGBOT_PORT` -> The internal discord messaging port, should not be conflicting with the previous one
