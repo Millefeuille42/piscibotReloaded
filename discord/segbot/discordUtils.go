@@ -98,6 +98,9 @@ func getChannelName(session *discordgo.Session, id string) string {
 
 // logErrorToChan Sends plain error to command channel
 func logErrorToChan(agent discordAgent, err error) {
+	if err != nil {
+		return
+	}
 	logError(err)
 	_, _ = agent.session.ChannelMessageSend(agent.channel,
 		fmt.Sprintf("An Error Occured, Please Try Again Later {%s}", err.Error()))
