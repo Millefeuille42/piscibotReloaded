@@ -23,6 +23,8 @@ func adminRouter(agent discordAgent) {
 		adminSet(agent)
 	case agent.message.Content == "!params":
 		adminSendSettings(agent)
+	case agent.message.Content == "!purge":
+		adminPurge(agent)
 	}
 }
 
