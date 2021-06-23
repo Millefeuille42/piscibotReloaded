@@ -18,7 +18,12 @@ type targetLevelPair struct {
 }
 
 type ApiData struct {
-	CursusUsers []struct {
+	Login           string      `json:"login"`
+	UsualFullName   string      `json:"usual_full_name"`
+	CorrectionPoint int         `json:"correction_point"`
+	Location        interface{} `json:"location"`
+	Wallet          int         `json:"wallet"`
+	CursusUsers     []struct {
 		ID       int         `json:"id"`
 		Grade    interface{} `json:"grade"`
 		Level    float64     `json:"level"`
@@ -61,10 +66,10 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 	return apiData, nil
 }
 
-func createLevelPairList(agent discordAgent, slug string) []targetLevelPair {
+func createLevelPairList(agent discordAgent, slug string, guildID string) []targetLevelPair {
 	var pairList = make([]targetLevelPair, 0)
 
-	targetList, err := getTargetsOfGuild(agent, agent.message.GuildID)
+	targetList, err := getTargetsOfGuild(agent, guildID)
 	if err != nil {
 		return nil
 	}
@@ -82,9 +87,13 @@ func createLevelPairList(agent discordAgent, slug string) []targetLevelPair {
 	return pairList
 }
 
-func createLeaderboard(agent discordAgent, slug string) string {
-	leaderBoard := "\t--- c-piscine ---\n"
-	pairList := createLevelPairList(agent, slug)
+func createLeaderboard(agent discordAgent, slug string, guildID string) string {
+	if guildID == "" {
+		guildID = agent.message.GuildID
+	}
+
+	leaderBoard := "\t--- " + slug + " ---\n"
+	pairList := createLevelPairList(agent, slug, guildID)
 	if pairList == nil {
 		return ""
 	}
@@ -108,7 +117,7 @@ func sendLeaderboard(agent discordAgent) {
 		sendMessageWithMention("Invalid Number of Arguments", "", agent)
 		return
 	}
-	leaderboard := createLeaderboard(agent, args[1])
+	leaderboard := createLeaderboard(agent, args[1], "")
 	if leaderboard != "" {
 		sendMessageWithMention("```"+leaderboard+"```", "", agent)
 	}

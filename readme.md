@@ -37,6 +37,7 @@ to your own server
 - `!admin @user (mention)` -> Give user(s) admin privileges, you can set multiple users at once
 - `!channel <command | leaderboard | success | started | location>` -> Set provided message stream(s) to current channel, you can set multiple streams at once
 - `!params` -> Get the server's settings
+- `!purge` -> Delete every message on all the bot's channels
 
 #### User
 
@@ -48,6 +49,7 @@ to your own server
   This role is intended to permit you to see dedicated channels without being tracking someone
 - `!ping <success | started | location>:<none | dm | channel | all>` -> Edit the notification system for provided message stream(s), you can set multiple streams at once
 - `!settings` -> Get your notification settings
+- `!help` -> Send the readme
 
 
 ## Host your own
@@ -59,7 +61,6 @@ You'll also need to define the following environment variables :
 - `DB_URL` -> The database url
 - `DB_USERNAME` -> The database username of the bot
 - `DB_PASSWORD` -> The database password of the bot
-- `BOT_TOKEN` -> The discord bot token
 - `BOT_TOKEN` -> The discord bot token
 - `BOT_DEV_CHANNEL` -> The discord bot default error channel
 - `API_PORT` -> The internal 42api port

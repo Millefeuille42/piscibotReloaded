@@ -23,20 +23,22 @@ func adminRouter(agent discordAgent) {
 		adminSet(agent)
 	case agent.message.Content == "!params":
 		adminSendSettings(agent)
+	case agent.message.Content == "!purge":
+		adminPurge(agent)
 	}
 }
 
 func commandsRouter(agent discordAgent) bool {
 	switch {
-	//	case strings.HasPrefix(agent.message.Content, "!profile"):
-	//		sendTargetProfile(agent)
-	//		return true
-	//	case strings.HasPrefix(agent.message.Content, "!list students"):
-	//		sendStudentsList(agent)
-	//		return true
-	//	case strings.HasPrefix(agent.message.Content, "!list tracked"):
-	//		sendTrackedList(agent)
-	//		return true
+	case strings.HasPrefix(agent.message.Content, "!profile"):
+		sendTargetProfile(agent)
+		return true
+	case strings.HasPrefix(agent.message.Content, "!list students"):
+		sendStudentsList(agent)
+		return true
+	case strings.HasPrefix(agent.message.Content, "!list tracked"):
+		sendTrackedList(agent)
+		return true
 	case strings.HasPrefix(agent.message.Content, "!leaderboard"):
 		sendLeaderboard(agent)
 		return true
@@ -65,6 +67,8 @@ func userRouter(agent discordAgent) bool {
 	case agent.message.Content == "!spectate":
 		userSetSpectator(agent)
 		return true
+	case agent.message.Content == "!help":
+		sendHelp(agent)
 	}
 	return false
 }
