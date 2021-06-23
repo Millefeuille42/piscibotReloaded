@@ -42,13 +42,15 @@ func sendTargetProfile(agent discordAgent) {
 		if data.Location == nil {
 			data.Location = "Offline"
 		}
+		userId := targetFile.GuildUsers[agent.message.GuildID]
+		userId = getUser(agent.session, userId)
 		message += fmt.Sprintf("```"+
-			"Profile of %s\n"+
+			"Profile of %s (%s)\n"+
 			"\tName:              %s\n"+
 			"\tLocation:          %s\n"+
 			"\tCorrection Points: %d\n"+
 			"\tWallet:            %d₳\n",
-			data.Login, data.UsualFullName, data.Location, data.CorrectionPoint, data.Wallet)
+			data.Login, userId, data.UsualFullName, data.Location, data.CorrectionPoint, data.Wallet)
 		for _, cursus := range data.CursusUsers {
 			message += fmt.Sprintf(""+
 				"\t%s\n"+
