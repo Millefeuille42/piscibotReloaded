@@ -18,7 +18,12 @@ type targetLevelPair struct {
 }
 
 type ApiData struct {
-	CursusUsers []struct {
+	Login           string      `json:"login"`
+	UsualFullName   string      `json:"usual_full_name"`
+	CorrectionPoint int         `json:"correction_point"`
+	Location        interface{} `json:"location"`
+	Wallet          int         `json:"wallet"`
+	CursusUsers     []struct {
 		ID       int         `json:"id"`
 		Grade    interface{} `json:"grade"`
 		Level    float64     `json:"level"`
