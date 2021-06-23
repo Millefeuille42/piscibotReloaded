@@ -30,9 +30,9 @@ func adminRouter(agent discordAgent) {
 
 func commandsRouter(agent discordAgent) bool {
 	switch {
-	//	case strings.HasPrefix(agent.message.Content, "!profile"):
-	//		sendTargetProfile(agent)
-	//		return true
+	case strings.HasPrefix(agent.message.Content, "!profile"):
+		sendTargetProfile(agent)
+		return true
 	//	case strings.HasPrefix(agent.message.Content, "!list students"):
 	//		sendStudentsList(agent)
 	//		return true
