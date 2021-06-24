@@ -33,12 +33,18 @@ func commandsRouter(agent discordAgent) bool {
 	case strings.HasPrefix(agent.message.Content, "!profile"):
 		sendTargetProfile(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!list students"):
-		sendStudentsList(agent)
-		return true
-	case strings.HasPrefix(agent.message.Content, "!list tracked"):
-		sendTrackedList(agent)
-		return true
+	case strings.HasPrefix(agent.message.Content, "!list"):
+		switch {
+		case strings.HasPrefix(agent.message.Content[6:], "students"):
+			sendStudentsList(agent)
+			return true
+		case strings.HasPrefix(agent.message.Content[6:], "tracked"):
+			sendTrackedList(agent)
+			return true
+		case strings.HasPrefix(agent.message.Content[6:], "projects"):
+			sendProjectList(agent)
+			return true
+		}
 	case strings.HasPrefix(agent.message.Content, "!leaderboard"):
 		sendLeaderboard(agent)
 		return true
