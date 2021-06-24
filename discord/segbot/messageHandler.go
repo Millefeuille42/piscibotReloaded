@@ -42,6 +42,9 @@ func commandsRouter(agent discordAgent) bool {
 	case strings.HasPrefix(agent.message.Content, "!leaderboard"):
 		sendLeaderboard(agent)
 		return true
+	case strings.HasPrefix(agent.message.Content, "!project"):
+		sendProject(agent)
+		return true
 	}
 	return false
 }
