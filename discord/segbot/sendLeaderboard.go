@@ -33,6 +33,7 @@ type ApiData struct {
 			Slug string `json:"slug"`
 		} `json:"cursus"`
 	} `json:"cursus_users"`
+	ProjectsUsers []map[string]interface{} `json:"projects_users"`
 }
 
 func targetGetData(agent discordAgent, target string) (ApiData, error) {
