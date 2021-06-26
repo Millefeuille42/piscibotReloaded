@@ -24,7 +24,7 @@ func startBot() *discordgo.Session {
 	}
 	hostname, _ := os.Hostname()
 	_, _ = discordBot.ChannelMessageSend(channel.ID, "Bot up - "+
-		time.Now().Format(time.Stamp)+hostname)
+		time.Now().Format(time.Stamp)+" - "+hostname)
 
 	setUpCloseHandler(discordBot)
 
