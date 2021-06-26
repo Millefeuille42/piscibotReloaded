@@ -1,15 +1,17 @@
-package main
+package discord
 
-func discordRoleSetLoad(id, role string, agent discordAgent) error {
+import "piscibotReloaded/discord/segbot/guild"
+
+func RoleSetLoad(id, role string, agent Agent) error {
 	roleId := "none"
 	otherRoleId := "none"
 
-	data, err := guildLoadFile(agent, false, "")
+	data, err := guild.Load(agent, false, "")
 	if err != nil {
 		return err
 	}
 	if id == "" {
-		id = agent.message.Author.ID
+		id = agent.Message.Author.ID
 	}
 
 	switch role {
@@ -24,20 +26,20 @@ func discordRoleSetLoad(id, role string, agent discordAgent) error {
 	}
 
 	if roleId != "none" {
-		_ = agent.session.GuildMemberRoleAdd(agent.message.GuildID, id, roleId)
+		_ = agent.Session.GuildMemberRoleAdd(agent.Message.GuildID, id, roleId)
 	}
 	if otherRoleId != "none" {
-		_ = agent.session.GuildMemberRoleRemove(agent.message.GuildID, id, otherRoleId)
+		_ = agent.Session.GuildMemberRoleRemove(agent.Message.GuildID, id, otherRoleId)
 	}
 	return nil
 }
 
-func discordRoleSet(data GuildData, id, role string, agent discordAgent) {
+func RoleSet(data guild.Guild, id, role string, agent Agent) {
 	roleId := "none"
 	otherRoleId := "none"
 
 	if id == "" {
-		id = agent.message.Author.ID
+		id = agent.Message.Author.ID
 	}
 
 	switch role {
@@ -52,9 +54,9 @@ func discordRoleSet(data GuildData, id, role string, agent discordAgent) {
 	}
 
 	if roleId != "none" {
-		_ = agent.session.GuildMemberRoleAdd(agent.message.GuildID, id, roleId)
+		_ = agent.Session.GuildMemberRoleAdd(agent.Message.GuildID, id, roleId)
 	}
 	if otherRoleId != "none" {
-		_ = agent.session.GuildMemberRoleRemove(agent.message.GuildID, id, roleId)
+		_ = agent.Session.GuildMemberRoleRemove(agent.Message.GuildID, id, roleId)
 	}
 }

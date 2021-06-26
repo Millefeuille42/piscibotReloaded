@@ -1,7 +1,9 @@
-package main
+package commands
 
 import (
 	"fmt"
+	"piscibotReloaded/discord/segbot/discord"
+	"piscibotReloaded/discord/segbot/discordUser"
 	"strings"
 )
 
@@ -21,17 +23,17 @@ func getProjectState(project map[string]interface{}) string {
 	return project["status"].(string)
 }
 
-func sendProject(agent discordAgent) {
-	if !userInitialCheck(agent) {
+func SendProject(agent discord.Agent) {
+	if !discordUser.InitialCheck(agent) {
 		return
 	}
-	targets, err := getTargetsOfGuild(agent, agent.message.GuildID)
+	targets, err := discord.GetTargetsOfGuild(agent, agent.Message.GuildID)
 	if err != nil {
 		return
 	}
-	args := strings.Split(agent.message.Content, " ")
+	args := strings.Split(agent.Message.Content, " ")
 	if len(args) < 2 {
-		sendMessageWithMention("You must provide project(s) to check", "", agent)
+		discord.SendMessageWithMention("You must provide project(s) to check", "", agent)
 		return
 	}
 	message := "```"
@@ -56,8 +58,8 @@ func sendProject(agent discordAgent) {
 		}
 	}
 	if message == "```" {
-		sendMessageWithMention("Nothing to see here...", "", agent)
+		discord.SendMessageWithMention("Nothing to see here...", "", agent)
 		return
 	}
-	sendMessageWithMention(message+"```", "", agent)
+	discord.SendMessageWithMention(message+"```", "", agent)
 }

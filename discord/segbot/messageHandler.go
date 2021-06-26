@@ -2,82 +2,80 @@ package main
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"piscibotReloaded/discord/segbot/commands"
+	"piscibotReloaded/discord/segbot/discord"
+	"piscibotReloaded/discord/segbot/discordUser"
+	"piscibotReloaded/discord/segbot/guild"
+	"piscibotReloaded/discord/segbot/target"
 	"strings"
 )
 
-// discordAgent Contains discord's session and message structs, and the guild's command channel
-type discordAgent struct {
-	session *discordgo.Session
-	message *discordgo.MessageCreate
-	channel string
-}
-
 // adminRouter Router for admin
-func adminRouter(agent discordAgent) {
+func adminRouter(agent discord.Agent) {
 	switch {
-	case strings.HasPrefix(agent.message.Content, "!init"):
-		guildInit(agent)
-	case strings.HasPrefix(agent.message.Content, "!chan"):
-		adminSetChan(agent)
-	case strings.HasPrefix(agent.message.Content, "!admin"):
-		adminSet(agent)
-	case agent.message.Content == "!params":
-		adminSendSettings(agent)
-	case agent.message.Content == "!purge":
-		adminPurge(agent)
+	case strings.HasPrefix(agent.Message.Content, "!init"):
+		guild.GuildInit(agent)
+	case strings.HasPrefix(agent.Message.Content, "!chan"):
+		guild.AdminSetChan(agent)
+	case strings.HasPrefix(agent.Message.Content, "!admin"):
+		guild.AdminSet(agent)
+	case agent.Message.Content == "!params":
+		guild.AdminSendSettings(agent)
+	case agent.Message.Content == "!purge":
+		commands.AdminPurge(agent)
 	}
 }
 
-func commandsRouter(agent discordAgent) bool {
+func commandsRouter(agent discord.Agent) bool {
 	switch {
-	case strings.HasPrefix(agent.message.Content, "!profile"):
-		sendTargetProfile(agent)
+	case strings.HasPrefix(agent.Message.Content, "!profile"):
+		commands.SendTargetProfile(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!list"):
+	case strings.HasPrefix(agent.Message.Content, "!list"):
 		switch {
-		case strings.HasPrefix(agent.message.Content[6:], "students"):
-			sendStudentsList(agent)
+		case strings.HasPrefix(agent.Message.Content[6:], "students"):
+			commands.SendStudentsList(agent)
 			return true
-		case strings.HasPrefix(agent.message.Content[6:], "tracked"):
-			sendTrackedList(agent)
+		case strings.HasPrefix(agent.Message.Content[6:], "tracked"):
+			commands.SendTrackedList(agent)
 			return true
-		case strings.HasPrefix(agent.message.Content[6:], "projects"):
-			sendProjectList(agent)
+		case strings.HasPrefix(agent.Message.Content[6:], "projects"):
+			commands.SendProjectList(agent)
 			return true
 		}
-	case strings.HasPrefix(agent.message.Content, "!leaderboard"):
-		sendLeaderboard(agent)
+	case strings.HasPrefix(agent.Message.Content, "!leaderboard"):
+		commands.SendLeaderboard(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!project"):
-		sendProject(agent)
+	case strings.HasPrefix(agent.Message.Content, "!project"):
+		commands.SendProject(agent)
 		return true
 	}
 	return false
 }
 
 // userRouter Router for user commands, returns true if a command was found
-func userRouter(agent discordAgent) bool {
+func userRouter(agent discord.Agent) bool {
 	switch {
-	case strings.HasPrefix(agent.message.Content, "!start"):
-		userInit(agent)
+	case strings.HasPrefix(agent.Message.Content, "!start"):
+		discordUser.Init(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!track"):
-		targetTrack(agent)
+	case strings.HasPrefix(agent.Message.Content, "!track"):
+		target.Track(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!ping"):
-		userSetPings(agent)
+	case strings.HasPrefix(agent.Message.Content, "!ping"):
+		discordUser.SetPings(agent)
 		return true
-	case agent.message.Content == "!settings":
-		userSendSettings(agent)
+	case agent.Message.Content == "!settings":
+		discordUser.SendSettings(agent)
 		return true
-	case agent.message.Content == "!untrack":
-		targetUntrack(agent)
+	case agent.Message.Content == "!untrack":
+		target.Untrack(agent)
 		return true
-	case agent.message.Content == "!spectate":
-		userSetSpectator(agent)
+	case agent.Message.Content == "!spectate":
+		discordUser.SetSpectator(agent)
 		return true
-	case agent.message.Content == "!help":
-		sendHelp(agent)
+	case agent.Message.Content == "!help":
+		commands.SendHelp(agent)
 	}
 	return false
 }
@@ -85,11 +83,11 @@ func userRouter(agent discordAgent) bool {
 // messageHandler Discord bot message handler
 func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate) {
 	botID, _ := session.User("@me")
-	agent := discordAgent{
-		session: session,
-		message: message,
+	agent := discord.Agent{
+		Session: session,
+		Message: message,
 	}
-	agent.channel = guildGetChannel(agent)
+	agent.Channel = guild.GetChannel(agent)
 
 	if message.Author.ID == botID.ID || !strings.HasPrefix(message.Content, "!") {
 		return

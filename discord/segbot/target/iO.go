@@ -1,40 +1,41 @@
-package main
+package target
 
 import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"piscibotReloaded/discord/segbot/discord"
 )
 
-// targetWriteFile Writes target data to file
-func targetWriteFile(data TargetData, agent discordAgent) error {
+// Write Writes target data to file
+func Write(data Target, agent discord.Agent) error {
 	dataBytes, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
-		logErrorToChan(agent, err)
+		discord.LogErrorToChan(agent, err)
 		return err
 	}
 	err = ioutil.WriteFile(fmt.Sprintf("./data/targets/%s.json", data.Login), dataBytes, 0677)
 	if err != nil {
-		logErrorToChan(agent, err)
+		discord.LogErrorToChan(agent, err)
 		return err
 	}
 	return nil
 }
 
-// targetLoadFile Returns target data from file
-func targetLoadFile(id string, agent discordAgent) (TargetData, error) {
-	target := TargetData{}
+// Load Returns target data from file
+func Load(id string, agent discord.Agent) (Target, error) {
+	target := Target{}
 
 	fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/targets/%s.json", id))
 	if err != nil {
-		logErrorToChan(agent, err)
-		return TargetData{}, err
+		discord.LogErrorToChan(agent, err)
+		return Target{}, err
 	}
 
 	err = json.Unmarshal(fileData, &target)
 	if err != nil {
-		logErrorToChan(agent, err)
-		return TargetData{}, err
+		discord.LogErrorToChan(agent, err)
+		return Target{}, err
 	}
 
 	return target, nil

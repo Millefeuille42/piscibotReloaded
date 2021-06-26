@@ -1,4 +1,4 @@
-package main
+package authenticator
 
 import (
 	"fmt"
@@ -6,6 +6,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"piscibotReloaded/discord/segbot/commands"
+	"piscibotReloaded/discord/segbot/discord"
+	"piscibotReloaded/discord/segbot/discordUser"
+	"piscibotReloaded/discord/segbot/guild"
+	"piscibotReloaded/discord/segbot/target"
 )
 
 type MessageList []struct {
@@ -22,28 +27,28 @@ type Message struct {
 
 // sendMessage Internal, sends the message to concerned user
 func sendMessage(message Message) error {
-	agent := discordAgent{
-		session: gBot,
-		channel: os.Getenv("BOT_DEV_CHANNEL"),
+	agent := discord.Agent{
+		Session: gDiscordBot,
+		Channel: os.Getenv("BOT_DEV_CHANNEL"),
 	}
 
-	target, err := targetLoadFile(message.Login, agent)
+	pisci, err := target.Load(message.Login, agent)
 	if err != nil {
 		return err
 	}
 
-	for guild, user := range target.GuildUsers {
+	for server, user := range pisci.GuildUsers {
 		var channel string
 		var param string
 
-		userData, err := userLoadFile(user, agent)
+		userData, err := discordUser.Load(user, agent)
 		if err != nil {
-			logErrorToChan(agent, err)
+			discord.LogErrorToChan(agent, err)
 			continue
 		}
-		guildData, err := guildLoadFile(agent, true, guild)
+		guildData, err := guild.Load(agent, true, server)
 		if err != nil {
-			logErrorToChan(agent, err)
+			discord.LogErrorToChan(agent, err)
 			continue
 		}
 
@@ -51,8 +56,8 @@ func sendMessage(message Message) error {
 		case "success":
 			param = userData.Settings.Success
 			channel = guildData.Settings.Channels.Success
-			_, _ = agent.session.ChannelMessageSend(guildData.Settings.Channels.Leaderboard,
-				createLeaderboard(agent, "c-piscine", guild))
+			_, _ = agent.Session.ChannelMessageSend(guildData.Settings.Channels.Leaderboard,
+				commands.CreateLeaderboard(agent, "c-piscine", server))
 		case "started":
 			param = userData.Settings.Started
 			channel = guildData.Settings.Channels.Started
@@ -60,7 +65,7 @@ func sendMessage(message Message) error {
 			param = userData.Settings.Location
 			channel = guildData.Settings.Channels.Location
 		}
-		sendMessageToUser(message.Message, channel, userData.UserID, param, agent)
+		discord.SendMessageToUser(message.Message, channel, userData.UserID, param, agent)
 	}
 	return err
 }
@@ -96,7 +101,7 @@ func sendHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // startServer Starts the http endpoint for sending messages
-func startServer() {
+func StartServer() {
 	http.HandleFunc("/discord", sendHandler)
 	http.HandleFunc("/auth", authHandler)
 	fmt.Println("Starting server")

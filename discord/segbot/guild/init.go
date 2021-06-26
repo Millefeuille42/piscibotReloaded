@@ -1,13 +1,15 @@
-package main
+package guild
 
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
+	"piscibotReloaded/discord/segbot/discord"
+	"piscibotReloaded/discord/segbot/utils"
 )
 
 // createRoles Internal, Creates or get appropriate role
-func getOrCreateRole(name string, roles *[]*discordgo.Role, agent discordAgent) (*discordgo.Role, error) {
+func getOrCreateRole(name string, roles *[]*discordgo.Role, agent discord.Agent) (*discordgo.Role, error) {
 	var role *discordgo.Role
 	skip := false
 
@@ -19,12 +21,12 @@ func getOrCreateRole(name string, roles *[]*discordgo.Role, agent discordAgent) 
 		}
 	}
 	if !skip {
-		role, err := agent.session.GuildRoleCreate(agent.message.GuildID)
+		role, err := agent.Session.GuildRoleCreate(agent.Message.GuildID)
 		if err != nil {
 			return nil, err
 		}
-		role, err = agent.session.GuildRoleEdit(
-			agent.message.GuildID, role.ID,
+		role, err = agent.Session.GuildRoleEdit(
+			agent.Message.GuildID, role.ID,
 			name, role.Color, false, role.Permissions, true,
 		)
 		if err != nil {
@@ -39,14 +41,14 @@ func getOrCreateRole(name string, roles *[]*discordgo.Role, agent discordAgent) 
 }
 
 // createRoles Internal, Creates or get appropriate roles, and associate them to data
-func createRoles(agent discordAgent, data *GuildData) error {
+func createRoles(agent discord.Agent, data *Guild) error {
 	names := []string{
 		"SegBot - Admin",
 		"SegBot - Registered",
 		"SegBot - Unregistered",
 		"SegBot - Spectator",
 	}
-	roles, err := agent.session.GuildRoles(agent.message.GuildID) // Set roles list here so not queried every time
+	roles, err := agent.Session.GuildRoles(agent.Message.GuildID) // Set roles list here so not queried every time
 	checkRoles := err == nil
 
 	for _, name := range names {
@@ -71,19 +73,19 @@ func createRoles(agent discordAgent, data *GuildData) error {
 }
 
 // createData Internal, creates and returns data file
-func createData(agent discordAgent) GuildData {
-	data := GuildData{
-		GuildID: agent.message.GuildID,
-		Admins:  append(make([]string, 0), agent.message.Author.ID),
-		Settings: guildSettings{
-			Channels: guildSettingsChannels{
-				Commands:    agent.message.ChannelID,
-				Leaderboard: agent.message.ChannelID,
-				Success:     agent.message.ChannelID,
-				Started:     agent.message.ChannelID,
-				Location:    agent.message.ChannelID,
+func createData(agent discord.Agent) Guild {
+	data := Guild{
+		GuildID: agent.Message.GuildID,
+		Admins:  append(make([]string, 0), agent.Message.Author.ID),
+		Settings: settings{
+			Channels: settingsChannels{
+				Commands:    agent.Message.ChannelID,
+				Leaderboard: agent.Message.ChannelID,
+				Success:     agent.Message.ChannelID,
+				Started:     agent.Message.ChannelID,
+				Location:    agent.Message.ChannelID,
 			},
-			Roles: guildSettingsRoles{
+			Roles: settingsRoles{
 				Admin:      "none",
 				Registered: "none",
 				Spectator:  "none",
@@ -91,33 +93,33 @@ func createData(agent discordAgent) GuildData {
 		},
 	}
 	if createRoles(agent, &data) != nil {
-		_, _ = agent.session.ChannelMessageSend(agent.channel,
+		_, _ = agent.Session.ChannelMessageSend(agent.Channel,
 			"Failed to create roles, you'll have to create and configure the missing ones")
 	}
 	return data
 }
 
 // writeData Internal, checks if guild registered, if not registers guild
-func writeData(agent discordAgent, data GuildData) error {
-	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
+func writeData(agent discord.Agent, data Guild) error {
+	path := fmt.Sprintf("./data/guilds/%s.json", agent.Message.GuildID)
 
-	exists, err := createFileIfNotExist(path)
+	exists, err := utils.CreateFileIfNotExist(path)
 	if err != nil {
-		logErrorToChan(agent, err)
+		discord.LogErrorToChan(agent, err)
 		return err
 	}
 	if exists {
-		sendMessageWithMention("This Guild is already registered!", "", agent)
+		discord.SendMessageWithMention("This Guild is already registered!", "", agent)
 		return os.ErrExist
 	}
-	if guildWriteFile(agent, data) != nil {
+	if Write(agent, data) != nil {
 		return err
 	}
 	return nil
 }
 
-// guildInit Create guild's data file
-func guildInit(agent discordAgent) {
+// GuildInit Create guild's data file
+func GuildInit(agent discord.Agent) {
 	data := createData(agent)
 	if data.GuildID == "" {
 		return
@@ -125,6 +127,6 @@ func guildInit(agent discordAgent) {
 	if writeData(agent, data) != nil {
 		return
 	}
-	discordRoleSet(data, "", "admin", agent)
-	sendMessageWithMention("Guild registered successfully!", "", agent)
+	discord.RoleSet(data, "", "admin", agent)
+	discord.SendMessageWithMention("Guild registered successfully!", "", agent)
 }

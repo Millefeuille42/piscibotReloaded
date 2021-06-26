@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"fmt"
@@ -9,8 +9,8 @@ import (
 	"syscall"
 )
 
-// createDirIfNotExist Check if dir exists, if not create it
-func createDirIfNotExist(path string) error {
+// CreateDirIfNotExist Check if dir exists, if not create it
+func CreateDirIfNotExist(path string) error {
 	_, err := os.Stat(path)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -25,13 +25,13 @@ func createDirIfNotExist(path string) error {
 	return nil
 }
 
-// createFileIfNotExist Check if file exists, if not create it
-func createFileIfNotExist(path string) (bool, error) {
+// CreateFileIfNotExist Check if file exists, if not create it
+func CreateFileIfNotExist(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		_, err := os.Create(path)
 		if err != nil {
-			logError(err)
+			LogError(err)
 			return false, err
 		}
 		return false, nil
@@ -49,22 +49,22 @@ func Find(slice []string, val string) bool {
 	return false
 }
 
-// logError Prints error + StackTrace to stderr if error
-func logError(err error) {
+// LogError Prints error + StackTrace to stderr if error
+func LogError(err error) {
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err, string(debug.Stack()))
 	}
 }
 
-// checkError Panic if error
-func checkError(err error) {
+// CheckError Panic if error
+func CheckError(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
 
-// setUpCloseHandler Set up a handler for Ctrl+C and closing the bot
-func setUpCloseHandler(session *discordgo.Session) {
+// SetUpCloseHandler Set up a handler for Ctrl+C and closing the bot
+func SetUpCloseHandler(session *discordgo.Session) {
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {

@@ -1,18 +1,20 @@
-package main
+package authenticator
 
 import (
 	"crypto/rand"
 	"fmt"
 	"net/http"
 	"os"
+	"piscibotReloaded/discord/segbot/discord"
+	"piscibotReloaded/discord/segbot/discordUser"
 	"strings"
 )
 
 func authHandler(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
-	agent := discordAgent{
-		session: gBot,
-		channel: os.Getenv("BOT_DEV_CHANNEL"),
+	agent := discord.Agent{
+		Session: gDiscordBot,
+		Channel: os.Getenv("BOT_DEV_CHANNEL"),
 	}
 
 	stateMap, stateOk := params["state"]
@@ -28,7 +30,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userFile, err := userLoadFile(state[1], agent)
+	userFile, err := discordUser.Load(state[1], agent)
 	switch {
 	case err != nil:
 		w = writeErrorToResponse(w, http.StatusNotFound, "Not Found")
@@ -38,7 +40,7 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 		w = writeErrorToResponse(w, http.StatusGone, "Link expired")
 	default:
 		userFile.Verified = true
-		err = userWriteFile(userFile, agent, userFile.UserID)
+		err = discordUser.Write(userFile, agent, userFile.UserID)
 		if err != nil {
 			w = writeErrorToResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -48,13 +50,13 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func authLinkCreator(agent discordAgent) (string, string) {
+func LinkCreator(agent discord.Agent) (string, string) {
 	uri := "https://api.intra.42.fr/oauth/authorize"
 
 	secureCodeByte := make([]byte, 8)
 	_, err := rand.Read(secureCodeByte)
 	if err != nil {
-		logErrorToChan(agent, err)
+		discord.LogErrorToChan(agent, err)
 		return "", ""
 	}
 
@@ -68,6 +70,6 @@ func authLinkCreator(agent discordAgent) (string, string) {
 		"&redirect_uri=http%3A%2F%2F" + os.Getenv("APP_HOST") +
 		"%3A" + os.Getenv("SEGBOT_PORT") + "%2Fauth" +
 		"&response_type=code" + "&scope=public" +
-		"&state=" + secureCode + "-" + agent.message.Author.ID
+		"&state=" + secureCode + "-" + agent.Message.Author.ID
 	return uri, secureCode
 }

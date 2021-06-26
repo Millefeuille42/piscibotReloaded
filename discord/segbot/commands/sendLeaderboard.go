@@ -1,4 +1,4 @@
-package main
+package commands
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"piscibotReloaded/discord/segbot/discord"
+	"piscibotReloaded/discord/segbot/discordUser"
 	"sort"
 	"strings"
 )
@@ -36,18 +38,18 @@ type ApiData struct {
 	ProjectsUsers []map[string]interface{} `json:"projects_users"`
 }
 
-func targetGetData(agent discordAgent, target string) (ApiData, error) {
+func targetGetData(agent discord.Agent, target string) (ApiData, error) {
 	apiData := ApiData{}
 
 	uri := fmt.Sprintf("http://%s:%s/user/%s", os.Getenv("API_HOST"), os.Getenv("API_PORT"), target)
 	req, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
-		logErrorToChan(agent, err)
+		discord.LogErrorToChan(agent, err)
 		return apiData, err
 	}
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		logErrorToChan(agent, err)
+		discord.LogErrorToChan(agent, err)
 		return apiData, err
 	}
 	if res.StatusCode == 404 {
@@ -56,21 +58,21 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 	}
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		logErrorToChan(agent, err)
+		discord.LogErrorToChan(agent, err)
 		return apiData, err
 	}
 	err = json.Unmarshal(data, &apiData)
 	if err != nil {
-		logErrorToChan(agent, err)
+		discord.LogErrorToChan(agent, err)
 		return apiData, err
 	}
 	return apiData, nil
 }
 
-func createLevelPairList(agent discordAgent, slug string, guildID string) []targetLevelPair {
+func createLevelPairList(agent discord.Agent, slug string, guildID string) []targetLevelPair {
 	var pairList = make([]targetLevelPair, 0)
 
-	targetList, err := getTargetsOfGuild(agent, guildID)
+	targetList, err := discord.GetTargetsOfGuild(agent, guildID)
 	if err != nil {
 		return nil
 	}
@@ -88,9 +90,9 @@ func createLevelPairList(agent discordAgent, slug string, guildID string) []targ
 	return pairList
 }
 
-func createLeaderboard(agent discordAgent, slug string, guildID string) string {
+func CreateLeaderboard(agent discord.Agent, slug string, guildID string) string {
 	if guildID == "" {
-		guildID = agent.message.GuildID
+		guildID = agent.Message.GuildID
 	}
 
 	leaderBoard := "\t--- " + slug + " ---\n"
@@ -109,17 +111,17 @@ func createLeaderboard(agent discordAgent, slug string, guildID string) string {
 	return leaderBoard
 }
 
-func sendLeaderboard(agent discordAgent) {
-	if !userInitialCheck(agent) {
+func SendLeaderboard(agent discord.Agent) {
+	if !discordUser.InitialCheck(agent) {
 		return
 	}
-	args := strings.Split(agent.message.Content, " ")
+	args := strings.Split(agent.Message.Content, " ")
 	if len(args) != 2 {
-		sendMessageWithMention("Invalid Number of Arguments", "", agent)
+		discord.SendMessageWithMention("Invalid Number of Arguments", "", agent)
 		return
 	}
-	leaderboard := createLeaderboard(agent, args[1], "")
+	leaderboard := CreateLeaderboard(agent, args[1], "")
 	if leaderboard != "" {
-		sendMessageWithMention("```"+leaderboard+"```", "", agent)
+		discord.SendMessageWithMention("```"+leaderboard+"```", "", agent)
 	}
 }
