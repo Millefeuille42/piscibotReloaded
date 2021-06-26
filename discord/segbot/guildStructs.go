@@ -27,4 +27,5 @@ type GuildData struct {
 	GuildID  string
 	Admins   []string
 	Settings guildSettings
+	Locked   bool
 }

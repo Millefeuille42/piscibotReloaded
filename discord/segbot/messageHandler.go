@@ -25,6 +25,10 @@ func adminRouter(agent discordAgent) {
 		adminSendSettings(agent)
 	case agent.message.Content == "!purge":
 		adminPurge(agent)
+	case agent.message.Content == "!lock":
+		adminLock(agent)
+	case agent.message.Content == "!unlock":
+		adminUnlock(agent)
 	}
 }
 

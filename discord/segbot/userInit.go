@@ -7,6 +7,14 @@ import (
 
 // targetUntrack Un-tracks target for user on guild
 func targetUntrack(agent discordAgent) {
+	data, err := guildLoadFile(agent, false, "")
+	if err != nil {
+		return
+	}
+	if data.Locked {
+		sendMessageWithMention("This server is locked, you can't change your tracking settings", "", agent)
+		return
+	}
 	if !userIsTrackingCheck(agent) {
 		return
 	}

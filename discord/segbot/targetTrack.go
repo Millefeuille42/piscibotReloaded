@@ -69,6 +69,14 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 
 // targetTrack Registers target for user and guild
 func targetTrack(agent discordAgent) {
+	data, err := guildLoadFile(agent, false, "")
+	if err != nil {
+		return
+	}
+	if data.Locked {
+		sendMessageWithMention("This server is locked, you can't change your tracking settings", "", agent)
+		return
+	}
 	settings := TargetData{}
 	args := strings.Split(agent.message.Content, " ")
 	if userCheckHasTarget(agent) != nil {
@@ -78,9 +86,8 @@ func targetTrack(agent discordAgent) {
 		sendMessageWithMention("I need more arguments!", "", agent)
 		return
 	}
-
 	path := fmt.Sprintf("./data/targets/%s.json", args[1])
-	err := loadOrCreate(path, args[1], &settings, agent.message)
+	err = loadOrCreate(path, args[1], &settings, agent.message)
 	if err != nil {
 		if err == os.ErrExist {
 			sendMessageWithMention("Someone is already tracking this person"+
