@@ -5,36 +5,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// targetUntrack Un-tracks target for user on guild
-func targetUntrack(agent discordAgent) {
-	if !userIsTrackingCheck(agent) {
-		return
-	}
-
-	user, err := userLoadFile("", agent)
-	if err != nil {
-		return
-	}
-	targetName := user.GuildTargets[agent.message.GuildID]
-	delete(user.GuildTargets, agent.message.GuildID)
-	err = userWriteFile(user, agent, "")
-	if err != nil {
-		return
-	}
-
-	target, err := targetLoadFile(targetName, agent)
-	if err != nil {
-		return
-	}
-	delete(target.GuildUsers, agent.message.GuildID)
-	err = targetWriteFile(target, agent)
-	if err != nil {
-		return
-	}
-	_ = discordRoleSetLoad("", "spectator", agent)
-	sendMessageWithMention("You are not tracking someone on this server anymore!", "", agent)
-}
-
 func userSetSpectator(agent discordAgent) {
 	if !userInitialCheck(agent) {
 		return

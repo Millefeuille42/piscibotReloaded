@@ -89,6 +89,7 @@ func createData(agent discordAgent) GuildData {
 				Spectator:  "none",
 			},
 		},
+		Locked: false,
 	}
 	if createRoles(agent, &data) != nil {
 		_, _ = agent.session.ChannelMessageSend(agent.channel,
