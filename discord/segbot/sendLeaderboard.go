@@ -67,7 +67,7 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 	return apiData, nil
 }
 
-func createLevelPairList(agent discordAgent, slug string, guildID string) []targetLevelPair {
+func createLevelPairList(agent discordAgent, slug, guildID string) []targetLevelPair {
 	var pairList = make([]targetLevelPair, 0)
 
 	targetList, err := getTargetsOfGuild(agent, guildID)
@@ -88,7 +88,7 @@ func createLevelPairList(agent discordAgent, slug string, guildID string) []targ
 	return pairList
 }
 
-func createLeaderboard(agent discordAgent, slug string, guildID string) string {
+func createLeaderboard(agent discordAgent, slug, guildID string) string {
 	if guildID == "" {
 		guildID = agent.message.GuildID
 	}
