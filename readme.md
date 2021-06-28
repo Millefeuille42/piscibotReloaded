@@ -38,6 +38,8 @@ to your own server
 - `!channel <command | leaderboard | success | started | location>` -> Set provided message stream(s) to current channel, you can set multiple streams at once
 - `!params` -> Get the server's settings
 - `!purge` -> Delete every message on all the bot's channels
+- `!lock` -> Lock the registrations, nobody can register anymore
+- `!unlock` -> Unlock the registrations
 
 #### User
 
