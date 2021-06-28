@@ -5,7 +5,9 @@ func sendHelp(agent discordAgent) {
 		"- `!init` -> Register the server\n"+
 		"- `!admin @user (mention)` -> Give user(s) admin privileges, you can set multiple users at once\n"+
 		"- `!channel <command | leaderboard | success | started | location>` -> Set provided message stream(s) to current channel, you can set multiple streams at once\n"+
-		"- `!params` -> Get the server's settings\n\n"+
+		"- `!params` -> Get the server's settings\n"+
+		"- `!lock` -> Lock the registrations, nobody can register anymore\n"+
+		"- `!unlock` -> Unlock the registrations\n"+
 		"#### User\n\n"+
 		"- `!start` -> Create your profile, you'll need to verify your account to complete the registration. \n"+
 		"The profile is independent of the servers\n- `!track <login>` -> Track provided student, one user per server\n"+
