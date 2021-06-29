@@ -42,11 +42,15 @@ func getUsersOfGuild(agent discordAgent, guild string) ([]UserData, error) {
 
 		fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/users/%s", f.Name()))
 		if err != nil {
+			fmt.Println(f.Name())
+			fmt.Println(fileData)
 			logError(err)
 			continue
 		}
 		err = json.Unmarshal(fileData, &user)
 		if err != nil {
+			fmt.Println(f.Name())
+			fmt.Println(fileData)
 			logError(err)
 			continue
 		}
