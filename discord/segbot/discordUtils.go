@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
+	"strings"
 )
 
 // sendMessageWithMention Sends a discord message according to user params
@@ -41,16 +42,19 @@ func getUsersOfGuild(agent discordAgent, guild string) ([]UserData, error) {
 		var user = UserData{}
 
 		fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/users/%s", f.Name()))
+		if !strings.HasSuffix(f.Name(), ".json") {
+			continue
+		}
 		if err != nil {
 			fmt.Println(f.Name())
-			fmt.Println(fileData)
+			fmt.Println(string(fileData))
 			logError(err)
 			continue
 		}
 		err = json.Unmarshal(fileData, &user)
 		if err != nil {
 			fmt.Println(f.Name())
-			fmt.Println(fileData)
+			fmt.Println(string(fileData))
 			logError(err)
 			continue
 		}
