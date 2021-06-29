@@ -9,7 +9,7 @@ func sendProjectList(agent discordAgent) {
 		return
 	}
 	projectList := make([]string, 0)
-	message := "```"
+	message := "```\n"
 
 	for _, target := range targets {
 		data, err := targetGetData(agent, target)

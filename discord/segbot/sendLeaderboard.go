@@ -51,7 +51,7 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 		return apiData, err
 	}
 	if res.StatusCode == 404 {
-		fmt.Println("Not Found")
+		fmt.Println("Not Found " + target)
 		return apiData, os.ErrNotExist
 	}
 	data, err := ioutil.ReadAll(res.Body)
