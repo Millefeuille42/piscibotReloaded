@@ -51,6 +51,8 @@ func sendMessage(message Message) error {
 		case "success":
 			param = userData.Settings.Success
 			channel = guildData.Settings.Channels.Success
+			_, _ = agent.session.ChannelMessageSend(guildData.Settings.Channels.Leaderboard,
+				"```"+createLeaderboard(agent, "c-piscine", guild)+"```")
 		case "started":
 			param = userData.Settings.Started
 			channel = guildData.Settings.Channels.Started
@@ -96,6 +98,7 @@ func sendHandler(w http.ResponseWriter, r *http.Request) {
 // startServer Starts the http endpoint for sending messages
 func startServer() {
 	http.HandleFunc("/discord", sendHandler)
+	http.HandleFunc("/auth", authHandler)
 	fmt.Println("Starting server")
 	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)

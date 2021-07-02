@@ -8,13 +8,16 @@ import (
 )
 
 // userWriteFile Writes user data to file
-func userWriteFile(data UserData, agent discordAgent) error {
+func userWriteFile(data UserData, agent discordAgent, id string) error {
+	if id == "" {
+		id = agent.message.Author.ID
+	}
 	dataBytes, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
 		logErrorToChan(agent, err)
 		return err
 	}
-	err = ioutil.WriteFile(fmt.Sprintf("./data/users/%s.json", agent.message.Author.ID), dataBytes, 0677)
+	err = ioutil.WriteFile(fmt.Sprintf("./data/users/%s.json", id), dataBytes, 0677)
 	if err != nil {
 		logErrorToChan(agent, err)
 		return err
@@ -83,6 +86,15 @@ func userInitialCheck(agent discordAgent) bool {
 	}
 	_, err := os.Stat(fmt.Sprintf("./data/users/%s.json", agent.message.Author.ID))
 	if !os.IsNotExist(err) {
+		user, err := userLoadFile("", agent)
+		if err != nil {
+			return false
+		}
+		if !user.Verified {
+			sendMessageWithMention("You are registered,"+
+				" but your account is not verified!", "", agent)
+			return false
+		}
 		return true
 	}
 	sendMessageWithMention("You are not registered, register with !start", "", agent)

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	apiclient "github.com/BoyerDamien/42APIClient"
@@ -21,7 +20,7 @@ var (
 	}
 
 	// MongoURL url of mongodb
-	MongoURL string = fmt.Sprintf("mongodb://%s", os.Getenv("DB_URL"))
+	MongoURL string = os.Getenv("DB_URL")
 
 	// Wrapper wrapper object
 	Wrapper mw.Wrapper = &mw.WrapperData{}
