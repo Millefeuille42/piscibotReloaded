@@ -98,7 +98,10 @@ func main() {
 		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
 			user, err := db.FindOne(DatabaseName, bson.M{"login": c.Params("login")})
 			if err != nil || user.Err() != nil {
-				return c.Status(404).SendString(fmt.Sprintf("User %s not found", c.Params("login")))
+				if user != nil {
+					return c.Status(500).SendString(fmt.Sprintln(err, user.Err()))
+				}
+				return c.Status(500).SendString(fmt.Sprintln(err))
 			}
 			var response apiclient.User
 			if err = user.Decode(&response); err != nil {
