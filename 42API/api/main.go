@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"sort"
 	"time"
 
 	apiclient "github.com/BoyerDamien/42APIClient"
@@ -120,38 +119,6 @@ func main() {
 				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 			}
 			return c.JSON(response)
-		})
-	})
-
-	App.Get("/commands/leaderboard", func(c *fiber.Ctx) error {
-		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
-			var input LeaderBoardInput
-			if err := c.BodyParser(&input); err != nil {
-				_ = c.Status(fiber.StatusBadRequest).SendString(err.Error())
-			}
-			if input.Cursus != 21 && input.Cursus != 9 {
-				return c.Status(fiber.StatusInternalServerError).SendString("Wrong cursus ID")
-			}
-			resp, err := db.FindMany(DatabaseName, bson.M{"login": bson.M{"$in": input.Users}})
-			if err != nil {
-				return c.Status(404).SendString(err.Error())
-			}
-			var users []apiclient.User
-			if err := resp.All(db.GetContext(), &users); err != nil {
-				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
-			}
-			for _, val := range users {
-				if input.Cursus == 21 && len(val.CursusUsers) < 2 {
-					return c.Status(fiber.StatusBadRequest).SendString(fmt.Sprintf("Wrong cursus ID for user %s", val.Login))
-				}
-			}
-			sort.SliceStable(users, func(i, j int) bool {
-				if input.Cursus == 21 {
-					return users[i].CursusUsers[1].Level >= users[i].CursusUsers[1].Level
-				}
-				return users[i].CursusUsers[0].Level >= users[i].CursusUsers[0].Level
-			})
-			return c.JSON(users)
 		})
 	})
 
