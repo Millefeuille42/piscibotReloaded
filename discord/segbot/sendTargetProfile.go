@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 func sendTargetProfile(agent discordAgent) {
@@ -24,19 +25,23 @@ func sendTargetProfile(agent discordAgent) {
 		}
 		args = append(args, userFile.GuildTargets[agent.message.GuildID])
 	}
+	gAPiMutex.Lock()
 	for _, login := range args[1:] {
 		targetFile, err := targetLoadFile(login, agent)
 		if err != nil {
 			sendMessageWithMention(login+" not found!", "", agent)
+			gAPiMutex.Unlock()
 			return
 		}
 		if _, ok := targetFile.GuildUsers[agent.message.GuildID]; !ok {
 			sendMessageWithMention(login+" not found!", "", agent)
+			gAPiMutex.Unlock()
 			return
 		}
 		data, err := targetGetData(agent, login)
 		if err != nil {
 			logErrorToChan(agent, err)
+			gAPiMutex.Unlock()
 			return
 		}
 		if data.Location == nil {
@@ -58,6 +63,8 @@ func sendTargetProfile(agent discordAgent) {
 				cursus.Cursus.Slug, cursus.Level)
 		}
 		message += "```\n"
+		time.Sleep(time.Millisecond * 500)
 	}
+	gAPiMutex.Unlock()
 	sendMessageWithMention(message, "", agent)
 }

@@ -8,6 +8,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 )
 
 // slugs: c-piscine
@@ -74,9 +75,11 @@ func createLevelPairList(agent discordAgent, slug, guildID string) []targetLevel
 	if err != nil {
 		return nil
 	}
+	gAPiMutex.Lock()
 	for _, target := range targetList {
 		apiData, err := targetGetData(agent, target)
 		if err != nil {
+			gAPiMutex.Unlock()
 			return nil
 		}
 		for _, cursus := range apiData.CursusUsers {
@@ -84,7 +87,9 @@ func createLevelPairList(agent discordAgent, slug, guildID string) []targetLevel
 				pairList = append(pairList, targetLevelPair{name: target, level: cursus.Level})
 			}
 		}
+		time.Sleep(time.Millisecond * 500)
 	}
+	gAPiMutex.Unlock()
 	return pairList
 }
 

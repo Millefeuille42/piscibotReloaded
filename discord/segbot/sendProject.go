@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 func getProjectState(project map[string]interface{}) string {
@@ -35,11 +36,13 @@ func sendProject(agent discordAgent) {
 		return
 	}
 	message := "```"
+	gAPiMutex.Lock()
 	for _, arg := range args[1:] {
 		found := false
 		for _, target := range targets {
 			data, err := targetGetData(agent, target)
 			if err != nil {
+				gAPiMutex.Unlock()
 				return
 			}
 			for _, project := range data.ProjectsUsers {
@@ -53,8 +56,10 @@ func sendProject(agent discordAgent) {
 					break
 				}
 			}
+			time.Sleep(time.Millisecond * 500)
 		}
 	}
+	gAPiMutex.Unlock()
 	if message == "```" {
 		sendMessageWithMention("Nothing to see here...", "", agent)
 		return
