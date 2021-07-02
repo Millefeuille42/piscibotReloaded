@@ -101,7 +101,7 @@ func main() {
 				return c.Status(404).SendString(fmt.Sprintf("User %s not found", c.Params("login")))
 			}
 			var response apiclient.User
-			if err := user.Decode(&response); err != nil {
+			if err = user.Decode(&response); err != nil {
 				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 			}
 			return c.JSON(response)
@@ -115,7 +115,7 @@ func main() {
 				return c.SendStatus(fiber.StatusInternalServerError)
 			}
 			var response []apiclient.User
-			if err := users.All(db.GetContext(), &response); err != nil {
+			if err = users.All(db.GetContext(), &response); err != nil {
 				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 			}
 			return c.JSON(response)
