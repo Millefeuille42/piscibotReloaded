@@ -1,5 +1,7 @@
 package main
 
+import "time"
+
 func sendProjectList(agent discordAgent) {
 	if !userInitialCheck(agent) {
 		return
@@ -11,9 +13,11 @@ func sendProjectList(agent discordAgent) {
 	projectList := make([]string, 0)
 	message := "```\n"
 
+	gAPiMutex.Lock()
 	for _, target := range targets {
 		data, err := targetGetData(agent, target)
 		if err != nil {
+			gAPiMutex.Unlock()
 			return
 		}
 		for _, project := range data.ProjectsUsers {
@@ -23,7 +27,9 @@ func sendProjectList(agent discordAgent) {
 				message += slug.(string) + "\n"
 			}
 		}
+		time.Sleep(time.Millisecond * 500)
 	}
+	gAPiMutex.Unlock()
 	if message == "```" {
 		sendMessageWithMention("Nothing to see here...", "", agent)
 		return
