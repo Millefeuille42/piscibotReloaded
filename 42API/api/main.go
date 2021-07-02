@@ -62,7 +62,7 @@ func main() {
 		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
 			var user apiclient.User
 			if err := c.BodyParser(&user); err != nil {
-				c.Status(fiber.StatusBadRequest).SendString(err.Error())
+				_ = c.Status(fiber.StatusBadRequest).SendString(err.Error())
 			}
 			result, err := db.UpdateOne(DatabaseName, bson.M{"login": user.Login}, bson.M{"$set": user})
 			if err != nil || result.ModifiedCount != 1 {
@@ -127,7 +127,7 @@ func main() {
 		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
 			var input LeaderBoardInput
 			if err := c.BodyParser(&input); err != nil {
-				c.Status(fiber.StatusBadRequest).SendString(err.Error())
+				_ = c.Status(fiber.StatusBadRequest).SendString(err.Error())
 			}
 			if input.Cursus != 21 && input.Cursus != 9 {
 				return c.Status(fiber.StatusInternalServerError).SendString("Wrong cursus ID")
