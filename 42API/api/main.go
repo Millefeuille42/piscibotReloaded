@@ -5,23 +5,22 @@ import (
 	"log"
 	"time"
 
-	apiclient "github.com/BoyerDamien/42APIClient"
-	mw "github.com/BoyerDamien/mongodbWrapper"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func main() {
 
 	CheckEnvVariables()
+	err := createDirIfNotExist("./data")
+	if err != nil {
+		return
+	}
 
 	if err := Client.Auth(); err != nil {
 		log.Fatal(err.Error())
 	}
 	log.Println("42 API authentication [OK]")
-	log.Printf("MongoUrl: %s\n", MongoURL)
-	log.Printf("Database name: %s\n", DatabaseName)
 
 	// Logger middleware
 	App.Use(logger.New())
