@@ -59,20 +59,15 @@ func endpointsLogin() {
 	})
 
 	App.Get("/user/:login", func(c *fiber.Ctx) error {
-		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
-			user, err := db.FindOne(DatabaseName, bson.M{"login": c.Params("login")})
-			if err != nil || user.Err() != nil {
-				if user != nil {
-					return c.Status(500).SendString(fmt.Sprintln(err, user.Err()))
-				}
-				return c.Status(500).SendString(fmt.Sprintln(err))
-			}
-			var response apiclient.User
-			if err = user.Decode(&response); err != nil {
-				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
-			}
-			return c.JSON(response)
-		})
+		_, err := os.Stat(c.Params("login"))
+		if os.IsNotExist(err) {
+			return c.SendStatus(fiber.StatusNotFound)
+		}
+		resp, err := readUserData(c.Params("login"))
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		}
+		return c.JSON(resp)
 	})
 }
 
