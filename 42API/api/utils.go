@@ -113,3 +113,21 @@ func writeUserData(data apiclient.User) error {
 	}
 	return nil
 }
+
+func readUserData(login string) (apiclient.User, error) {
+	target := apiclient.User{}
+
+	fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/targets/%s.json", id))
+	if err != nil {
+		logError(err)
+		return apiclient.User{}, err
+	}
+
+	err = json.Unmarshal(fileData, &target)
+	if err != nil {
+		logError(err)
+		return apiclient.User{}, err
+	}
+
+	return target, nil
+}
