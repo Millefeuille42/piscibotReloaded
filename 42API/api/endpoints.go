@@ -6,6 +6,7 @@ import (
 	mw "github.com/BoyerDamien/mongodbWrapper"
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"os"
 )
 
 func endpointsLogin() {
@@ -24,23 +25,25 @@ func endpointsLogin() {
 		}
 		err = writeUserData(user)
 		if err != nil {
-			return c.Status(fiber.ErrBadRequest.Code).SendString(err.Error())
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 		}
 		return c.SendString(fmt.Sprintf("User %s successfully created", c.Params("login")))
 	})
 
 	App.Put("/user/:login", func(c *fiber.Ctx) error {
-		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
-			var user apiclient.User
-			if err := c.BodyParser(&user); err != nil {
-				_ = c.Status(fiber.StatusBadRequest).SendString(err.Error())
-			}
-			result, err := db.UpdateOne(DatabaseName, bson.M{"login": user.Login}, bson.M{"$set": user})
-			if err != nil || result.ModifiedCount != 1 {
-				return c.SendStatus(fiber.ErrBadRequest.Code)
-			}
-			return c.JSON(user)
-		})
+		var user apiclient.User
+		if err := c.BodyParser(&user); err != nil {
+			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
+		}
+		_, err := os.Stat(user.Login)
+		if os.IsNotExist(err) {
+			return c.SendStatus(fiber.StatusNotFound)
+		}
+		err = writeUserData(user)
+		if err != nil {
+			return c.SendStatus(fiber.StatusInternalServerError)
+		}
+		return c.JSON(user)
 	})
 
 	App.Delete("/user/:login", func(c *fiber.Ctx) error {
