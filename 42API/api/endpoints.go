@@ -1,12 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	apiclient "github.com/BoyerDamien/42APIClient"
-	mw "github.com/BoyerDamien/mongodbWrapper"
 	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson"
+	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func endpointsLogin() {
@@ -77,20 +78,42 @@ func endpointsUsers() {
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 		}
+		err = createDirIfNotExist("./data")
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		}
 		return c.SendString("Users have been deleted")
 	})
 
 	App.Get("/users", func(c *fiber.Ctx) error {
-		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
-			users, err := db.FindMany(DatabaseName, bson.M{})
+		files, err := ioutil.ReadDir("./data/users")
+		if err != nil {
+			logError(err)
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		}
+		response := make([]apiclient.User, 0)
+		for _, f := range files {
+			var user = apiclient.User{}
+
+			fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/%s", f.Name()))
+			if !strings.HasSuffix(f.Name(), ".json") {
+				continue
+			}
 			if err != nil {
-				return c.SendStatus(fiber.StatusInternalServerError)
+				fmt.Println(f.Name())
+				fmt.Println(string(fileData))
+				logError(err)
+				continue
 			}
-			var response []apiclient.User
-			if err = users.All(db.GetContext(), &response); err != nil {
-				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+			err = json.Unmarshal(fileData, &user)
+			if err != nil {
+				fmt.Println(f.Name())
+				fmt.Println(string(fileData))
+				logError(err)
+				continue
 			}
-			return c.JSON(response)
-		})
+			response = append(response, user)
+		}
+		return c.JSON(response)
 	})
 }
