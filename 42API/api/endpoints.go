@@ -1,0 +1,103 @@
+package main
+
+import (
+	"fmt"
+	apiclient "github.com/BoyerDamien/42APIClient"
+	mw "github.com/BoyerDamien/mongodbWrapper"
+	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson"
+)
+
+func endpointsLogin() {
+	App.Post("/user/:login", func(c *fiber.Ctx) error {
+		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
+			user, err := Client.GetUser(c.Params("login"))
+			if err != nil {
+				return c.Status(404).SendString(err.Error())
+			}
+			exist, err := createFileIfNotExist("./data/" + user.Login + ".json")
+			if err != nil {
+				return err
+			}
+			if exist {
+				message := fmt.Sprintf("User %s already exists", c.Params("login"))
+				return c.Status(fiber.ErrBadRequest.Code).SendString(message)
+			}
+			_, err = db.InsertOne(DatabaseName, user)
+			if err != nil {
+				return c.Status(fiber.ErrBadRequest.Code).SendString(err.Error())
+			}
+			return c.SendString(fmt.Sprintf("User %s successfully created", c.Params("login")))
+		})
+	})
+
+	App.Put("/user/:login", func(c *fiber.Ctx) error {
+		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
+			var user apiclient.User
+			if err := c.BodyParser(&user); err != nil {
+				_ = c.Status(fiber.StatusBadRequest).SendString(err.Error())
+			}
+			result, err := db.UpdateOne(DatabaseName, bson.M{"login": user.Login}, bson.M{"$set": user})
+			if err != nil || result.ModifiedCount != 1 {
+				return c.SendStatus(fiber.ErrBadRequest.Code)
+			}
+			return c.JSON(user)
+		})
+	})
+
+	App.Delete("/user/:login", func(c *fiber.Ctx) error {
+		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
+			result, err := db.DeleteOne(DatabaseName, bson.M{"login": c.Params("login")})
+			if err != nil || result.DeletedCount != 1 {
+				return c.Status(404).SendString(fmt.Sprintf("User %s not found", c.Params("login")))
+			}
+			return c.SendString(fmt.Sprintf("User %s successfully deleted", c.Params("login")))
+		})
+	})
+
+	App.Get("/user/:login", func(c *fiber.Ctx) error {
+		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
+			user, err := db.FindOne(DatabaseName, bson.M{"login": c.Params("login")})
+			if err != nil || user.Err() != nil {
+				if user != nil {
+					return c.Status(500).SendString(fmt.Sprintln(err, user.Err()))
+				}
+				return c.Status(500).SendString(fmt.Sprintln(err))
+			}
+			var response apiclient.User
+			if err = user.Decode(&response); err != nil {
+				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+			}
+			return c.JSON(response)
+		})
+	})
+}
+
+func endpointsUsers() {
+	App.Delete("/users", func(c *fiber.Ctx) error {
+		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
+			result, err := db.DeleteMany(DatabaseName, bson.M{})
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+			}
+			if result.DeletedCount == 0 {
+				return c.SendStatus(404)
+			}
+			return c.SendString(fmt.Sprintf("%d users have been deleted", result.DeletedCount))
+		})
+	})
+
+	App.Get("/users", func(c *fiber.Ctx) error {
+		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
+			users, err := db.FindMany(DatabaseName, bson.M{})
+			if err != nil {
+				return c.SendStatus(fiber.StatusInternalServerError)
+			}
+			var response []apiclient.User
+			if err = users.All(db.GetContext(), &response); err != nil {
+				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+			}
+			return c.JSON(response)
+		})
+	})
+}
