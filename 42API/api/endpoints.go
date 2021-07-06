@@ -10,25 +10,23 @@ import (
 
 func endpointsLogin() {
 	App.Post("/user/:login", func(c *fiber.Ctx) error {
-		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
-			user, err := Client.GetUser(c.Params("login"))
-			if err != nil {
-				return c.Status(404).SendString(err.Error())
-			}
-			exist, err := createFileIfNotExist("./data/" + user.Login + ".json")
-			if err != nil {
-				return err
-			}
-			if exist {
-				message := fmt.Sprintf("User %s already exists", c.Params("login"))
-				return c.Status(fiber.ErrBadRequest.Code).SendString(message)
-			}
-			_, err = db.InsertOne(DatabaseName, user)
-			if err != nil {
-				return c.Status(fiber.ErrBadRequest.Code).SendString(err.Error())
-			}
-			return c.SendString(fmt.Sprintf("User %s successfully created", c.Params("login")))
-		})
+		user, err := Client.GetUser(c.Params("login"))
+		if err != nil {
+			return c.Status(404).SendString(err.Error())
+		}
+		exist, err := createFileIfNotExist("./data/" + user.Login + ".json")
+		if err != nil {
+			return err
+		}
+		if exist {
+			message := fmt.Sprintf("User %s already exists", c.Params("login"))
+			return c.Status(fiber.ErrBadRequest.Code).SendString(message)
+		}
+		err = writeUserData(user)
+		if err != nil {
+			return c.Status(fiber.ErrBadRequest.Code).SendString(err.Error())
+		}
+		return c.SendString(fmt.Sprintf("User %s successfully created", c.Params("login")))
 	})
 
 	App.Put("/user/:login", func(c *fiber.Ctx) error {
