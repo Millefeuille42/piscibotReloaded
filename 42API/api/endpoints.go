@@ -47,13 +47,15 @@ func endpointsLogin() {
 	})
 
 	App.Delete("/user/:login", func(c *fiber.Ctx) error {
-		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
-			result, err := db.DeleteOne(DatabaseName, bson.M{"login": c.Params("login")})
-			if err != nil || result.DeletedCount != 1 {
-				return c.Status(404).SendString(fmt.Sprintf("User %s not found", c.Params("login")))
-			}
-			return c.SendString(fmt.Sprintf("User %s successfully deleted", c.Params("login")))
-		})
+		_, err := os.Stat(c.Params("login"))
+		if os.IsNotExist(err) {
+			return c.SendStatus(fiber.StatusNotFound)
+		}
+		err = os.Remove("./data/" + c.Params("login") + ".json")
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		}
+		return c.SendString(fmt.Sprintf("User %s successfully deleted", c.Params("login")))
 	})
 
 	App.Get("/user/:login", func(c *fiber.Ctx) error {
