@@ -41,7 +41,7 @@ func endpointsLogin() {
 		}
 		err = writeUserData(user)
 		if err != nil {
-			return c.SendStatus(fiber.StatusInternalServerError)
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 		}
 		return c.JSON(user)
 	})
@@ -73,16 +73,11 @@ func endpointsLogin() {
 
 func endpointsUsers() {
 	App.Delete("/users", func(c *fiber.Ctx) error {
-		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
-			result, err := db.DeleteMany(DatabaseName, bson.M{})
-			if err != nil {
-				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
-			}
-			if result.DeletedCount == 0 {
-				return c.SendStatus(404)
-			}
-			return c.SendString(fmt.Sprintf("%d users have been deleted", result.DeletedCount))
-		})
+		err := os.Remove("./data")
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		}
+		return c.SendString("Users have been deleted")
 	})
 
 	App.Get("/users", func(c *fiber.Ctx) error {
