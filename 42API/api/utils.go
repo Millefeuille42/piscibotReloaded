@@ -76,7 +76,7 @@ func writeUserData(data apiclient.User) error {
 func readUserData(login string) (apiclient.User, error) {
 	target := apiclient.User{}
 
-	fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/targets/%s.json", id))
+	fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/%s.json", login))
 	if err != nil {
 		logError(err)
 		return apiclient.User{}, err
