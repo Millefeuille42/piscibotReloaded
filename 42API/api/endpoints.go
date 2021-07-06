@@ -12,17 +12,17 @@ import (
 
 func endpointsLogin() {
 	App.Post("/user/:login", func(c *fiber.Ctx) error {
-		user, err := Client.GetUser(c.Params("login"))
+		exist, err := createFileIfNotExist("./data/" + c.Params("login") + ".json")
 		if err != nil {
-			return c.Status(404).SendString(err.Error())
-		}
-		exist, err := createFileIfNotExist("./data/" + user.Login + ".json")
-		if err != nil {
-			return err
+			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 		}
 		if exist {
 			message := fmt.Sprintf("User %s already exists", c.Params("login"))
 			return c.Status(fiber.ErrBadRequest.Code).SendString(message)
+		}
+		user, err := Client.GetUser(c.Params("login"))
+		if err != nil {
+			return c.Status(404).SendString(err.Error())
 		}
 		err = writeUserData(user)
 		if err != nil {
@@ -74,19 +74,22 @@ func endpointsLogin() {
 
 func endpointsUsers() {
 	App.Delete("/users", func(c *fiber.Ctx) error {
-		err := os.Remove("./data")
+		files, err := ioutil.ReadDir("./data/")
 		if err != nil {
+			logError(err)
 			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 		}
-		err = createDirIfNotExist("./data")
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+		for _, f := range files {
+			err = os.Remove("./data/" + f.Name())
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
+			}
 		}
 		return c.SendString("Users have been deleted")
 	})
 
 	App.Get("/users", func(c *fiber.Ctx) error {
-		files, err := ioutil.ReadDir("./data/users")
+		files, err := ioutil.ReadDir("./data/")
 		if err != nil {
 			logError(err)
 			return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
