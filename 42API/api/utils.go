@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"runtime/debug"
@@ -96,4 +98,18 @@ func createFileIfNotExist(path string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+func writeUserData(data apiclient.User) error {
+	dataBytes, err := json.MarshalIndent(data, "", "\t")
+	if err != nil {
+		logError(err)
+		return err
+	}
+	err = ioutil.WriteFile(fmt.Sprintf("./data/%s.json", data.Login), dataBytes, 0677)
+	if err != nil {
+		logError(err)
+		return err
+	}
+	return nil
 }
