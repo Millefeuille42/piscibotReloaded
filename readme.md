@@ -16,7 +16,7 @@ The perfect tool to track your progress and compare with your friends or to orga
 - User:
     * Customizable dms and mentions notification settings
     * Track students or pisciners
-    * On demand profiles, leaderboards, roadmaps, etc... (WIP)
+    * On demand profiles, leaderboards, etc...
     * Real-Time alerts about your target
     * Multi-server support
 
@@ -49,9 +49,21 @@ to your own server
 - `!untrack` -> Untrack current server's student (Automatically set to spectate)
 - `!spectate` -> Get the spectator role, 
   This role is intended to permit you to see dedicated channels without being tracking someone
-- `!ping <success | started | location>:<none | dm | channel | all>` -> Edit the notification system for provided message stream(s), you can set multiple streams at once
+- `!ping <success | started | location>:<none | dm | mention | all>` -> Edit the notification system for provided message stream(s), you can set multiple streams at once
+   - Example -> `!ping started:dm` to get dm'd everytime your target starts a project
 - `!settings` -> Get your notification settings
 - `!help` -> Send the readme
+
+##### Commands
+
+- `!list <tracked | students | location | projects>` -> Send a list according to the provided parameter.
+  - `tracked` -> Send a list of all the targets.
+  - `students` -> Send a list of all the targets, indicating of the target is a student, or not.
+  - `location` -> Send a list of all the targets, indicating their current location.
+  - `projects` -> Send a list of all the currently available projects for the command `project` (see below).
+- `!profile <login>` -> Send the profile of the provided target(s). If none provided, sends the profile of your current target.
+- `!leaderboard <cursus>` -> Send a leaderboard for the provided cursus.
+- `!project <project>` -> Send the completion status for the given project(s) for all the targets on the server.
 
 
 ## Host your own
