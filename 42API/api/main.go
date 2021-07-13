@@ -99,8 +99,10 @@ func main() {
 			user, err := db.FindOne(DatabaseName, bson.M{"login": c.Params("login")})
 			if err != nil || user.Err() != nil {
 				if user != nil {
+					log.Println("ERR HAVE USER")
 					return c.Status(500).SendString(fmt.Sprintln(err, user.Err()))
 				}
+				log.Println("ERR NO USER")
 				return c.Status(500).SendString(fmt.Sprintln(err))
 			}
 			var response apiclient.User
