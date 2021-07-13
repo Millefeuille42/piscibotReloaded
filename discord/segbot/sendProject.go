@@ -6,6 +6,18 @@ import (
 	"time"
 )
 
+func isProjectValidated(project map[string]interface{}) bool {
+	if project["status"].(string) == "finished" {
+		if project["validated?"] == nil {
+			return false
+		}
+		if project["validated?"].(bool) {
+			return true
+		}
+	}
+	return false
+}
+
 func getProjectState(project map[string]interface{}) string {
 	if project["status"].(string) == "finished" {
 		if project["validated?"] == nil {
@@ -116,6 +128,8 @@ func sendUserProject(agent discordAgent) {
 		}
 		message += newMessage + "```\n"
 	}
-	sendMessageWithMention(message, "", agent)
+	if message != "" {
+		sendMessageWithMention(message, "", agent)
+	}
 	gAPiMutex.Unlock()
 }
