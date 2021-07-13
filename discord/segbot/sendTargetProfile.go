@@ -30,19 +30,16 @@ func sendTargetProfile(agent discordAgent) {
 		targetFile, err := targetLoadFile(login, agent)
 		if err != nil {
 			sendMessageWithMention(login+" not found!", "", agent)
-			gAPiMutex.Unlock()
-			return
+			continue
 		}
 		if _, ok := targetFile.GuildUsers[agent.message.GuildID]; !ok {
 			sendMessageWithMention(login+" not found!", "", agent)
-			gAPiMutex.Unlock()
-			return
+			continue
 		}
 		data, err := targetGetData(agent, login)
 		if err != nil {
 			logErrorToChan(agent, err)
-			gAPiMutex.Unlock()
-			return
+			continue
 		}
 		if data.Location == nil {
 			data.Location = "Offline"

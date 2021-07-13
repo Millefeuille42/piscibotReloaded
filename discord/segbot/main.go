@@ -11,6 +11,7 @@ import (
 var gBot *discordgo.Session
 var ownerID string = "268431730967314435" //Please change this when using my bot
 var gAPiMutex = sync.Mutex{}
+var gPrefix = os.Getenv("SEGBOT_PREFIX")
 
 // startBot Starts discord bot
 func startBot() *discordgo.Session {
@@ -20,14 +21,18 @@ func startBot() *discordgo.Session {
 	err = discordBot.Open()
 	checkError(err)
 	fmt.Println("Discord bot created")
-	channel, err := discordBot.UserChannelCreate(ownerID)
-	if err != nil {
-		return nil
+	if os.Getenv("SEGBOT_IN_PROD") == "" {
+		channel, err := discordBot.UserChannelCreate(ownerID)
+		if err != nil {
+			return nil
+		}
+		hostname, _ := os.Hostname()
+		_, _ = discordBot.ChannelMessageSend(channel.ID, "Bot up - "+
+			time.Now().Format(time.Stamp)+" - "+hostname)
 	}
-	hostname, _ := os.Hostname()
-	_, _ = discordBot.ChannelMessageSend(channel.ID, "Bot up - "+
-		time.Now().Format(time.Stamp)+" - "+hostname)
-
+	if gPrefix == "" {
+		gPrefix = "!"
+	}
 	setUpCloseHandler(discordBot)
 
 	return discordBot

@@ -86,7 +86,10 @@ func sendMessageWithMention(message, id string, agent discordAgent) {
 		id = agent.message.Author.ID
 	}
 
-	_, _ = agent.session.ChannelMessageSend(agent.channel, fmt.Sprintf("<@%s>\n%s", id, message))
+	_, err := agent.session.ChannelMessageSend(agent.channel, fmt.Sprintf("<@%s>\n%s", id, message))
+	if err != nil {
+		logError(err)
+	}
 }
 
 // getUser Returns associated user of provided id
