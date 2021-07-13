@@ -80,6 +80,8 @@ func sendTargetProfile(agent discordAgent) {
 		message += "```\n"
 		time.Sleep(time.Millisecond * 500)
 	}
+	if message != "" {
+		sendMessageWithMention(message, "", agent)
+	}
 	gAPiMutex.Unlock()
-	sendMessageWithMention(message, "", agent)
 }

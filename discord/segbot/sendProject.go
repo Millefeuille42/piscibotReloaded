@@ -128,6 +128,8 @@ func sendUserProject(agent discordAgent) {
 		}
 		message += newMessage + "```\n"
 	}
-	sendMessageWithMention(message, "", agent)
+	if message != "" {
+		sendMessageWithMention(message, "", agent)
+	}
 	gAPiMutex.Unlock()
 }
