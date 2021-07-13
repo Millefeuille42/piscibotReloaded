@@ -82,6 +82,7 @@ You'll also need to define the following environment variables :
 - `APP_HOST` -> The hostname / IP of the server hosting the app
 - `APPUID` -> The 42 app UID
 - `SECRET` -> The 42 app secret
+- `SEGBOT_PREFIX` -> Choose a custom prefix (Defaults to `!` if none provided)
 
 Then, run the app with `docker-compose up --env-file <.env file> -d` and shut it down with `docker-compose down`
 
