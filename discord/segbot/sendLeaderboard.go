@@ -52,7 +52,7 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 		return apiData, err
 	}
 	if res.StatusCode == 404 {
-		fmt.Println("Not Found " + target)
+		_, _ = agent.session.ChannelMessageSend(agent.message.ChannelID, target+" not found")
 		return apiData, os.ErrNotExist
 	}
 	data, err := ioutil.ReadAll(res.Body)
