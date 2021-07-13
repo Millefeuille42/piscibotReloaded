@@ -35,9 +35,9 @@ func sendProject(agent discordAgent) {
 		sendMessageWithMention("You must provide project(s) to check", "", agent)
 		return
 	}
-	message := "```"
 	gAPiMutex.Lock()
 	for _, arg := range args[1:] {
+		message := "```"
 		found := false
 		for _, target := range targets {
 			data, err := targetGetData(agent, target)
@@ -58,11 +58,11 @@ func sendProject(agent discordAgent) {
 			}
 			time.Sleep(time.Millisecond * 500)
 		}
+		if message == "```" {
+			sendMessageWithMention("Nothing to see here...", "", agent)
+			return
+		}
+		sendMessageWithMention(message+"```", "", agent)
 	}
 	gAPiMutex.Unlock()
-	if message == "```" {
-		sendMessageWithMention("Nothing to see here...", "", agent)
-		return
-	}
-	sendMessageWithMention(message+"```", "", agent)
 }
