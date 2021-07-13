@@ -23,13 +23,13 @@ func sendLocationList(agent discordAgent) {
 			return
 		}
 		if data.Location == nil {
-			data.Location = "Offline"
+			data.Location = "✘"
 		}
-		message = fmt.Sprintf("%s%-9s- %s", message, data.Login, data.Login)
+		message = fmt.Sprintf("%s%-9s- %s\n", message, data.Login, data.Location)
 		time.Sleep(time.Millisecond * 500)
 	}
 	gAPiMutex.Unlock()
-	if message == "```" {
+	if message == "```\n" {
 		sendMessageWithMention("Nothing to see here...", "", agent)
 		return
 	}
