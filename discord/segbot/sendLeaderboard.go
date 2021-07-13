@@ -60,6 +60,10 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 		logErrorToChan(agent, err)
 		return apiData, err
 	}
+	if res.StatusCode != 200 {
+		fmt.Println(err)
+		return apiData, os.ErrNotExist
+	}
 	err = json.Unmarshal(data, &apiData)
 	if err != nil {
 		logErrorToChan(agent, err)
