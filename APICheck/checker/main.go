@@ -58,6 +58,8 @@ func main() {
 				if err != nil {
 					log.Fatalf("Error: Cannot fetch user %s data\n", checker.UserList[i].Login)
 				}
+				checker.UpdateDB(&apiUser)
+				time.Sleep(time.Millisecond * 250)
 				messages := checker.Check(&checker.UserList[i], &apiUser)
 				if len(messages) > 0 {
 					if err := checker.Send(segbotURL, messages); err != nil {
@@ -68,7 +70,6 @@ func main() {
 				} else {
 					log.Printf("No messages sent for %s\n", apiUser.Login)
 				}
-				checker.UpdateDB(&apiUser)
 				time.Sleep(time.Second * 3)
 			}
 		} else {
