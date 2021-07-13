@@ -113,7 +113,7 @@ func createLeaderboard(agent discordAgent, slug, guildID string) string {
 	})
 
 	for i, pair := range pairList {
-		leaderBoard = fmt.Sprintf("%s\n%d. %-15.15s :  %.2f", leaderBoard, i+1, pair.name, pair.level)
+		leaderBoard = fmt.Sprintf("%s\n%02d. %-15.15s :  %.2f", leaderBoard, i+1, pair.name, pair.level)
 	}
 	return leaderBoard
 }
