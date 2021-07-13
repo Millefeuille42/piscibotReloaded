@@ -57,6 +57,9 @@ func commandsRouter(agent discordAgent) bool {
 	case strings.HasPrefix(agent.message.Content, gPrefix+"project"):
 		sendProject(agent)
 		return true
+	case strings.HasPrefix(agent.message.Content, gPrefix+"user-project"):
+		sendUserProject(agent)
+		return true
 	}
 	return false
 }
