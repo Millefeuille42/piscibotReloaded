@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	apiclient "github.com/BoyerDamien/42APIClient"
@@ -13,19 +12,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func checkEnvVariables() {
-	envVariables := []string{"DB_NAME", "DB_URL", "UID", "SECRET", "PORT", "DB_USERNAME", "DB_PASSWORD"}
-	for _, val := range envVariables {
-		if os.Getenv(val) == "" {
-			log.Fatalf("Missing %s env variable", val)
-		}
-		log.Printf("%s env variable [OK]", val)
-	}
-}
-
 func main() {
 
-	checkEnvVariables()
+	CheckEnvVariables()
+
 	if err := Client.Auth(); err != nil {
 		log.Fatal(err.Error())
 	}
@@ -71,7 +61,7 @@ func main() {
 		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
 			var user apiclient.User
 			if err := c.BodyParser(&user); err != nil {
-				c.Status(fiber.StatusBadRequest).SendString(err.Error())
+				_ = c.Status(fiber.StatusBadRequest).SendString(err.Error())
 			}
 			result, err := db.UpdateOne(DatabaseName, bson.M{"login": user.Login}, bson.M{"$set": user})
 			if err != nil || result.ModifiedCount != 1 {
@@ -108,10 +98,13 @@ func main() {
 		return Exec(c, func(db mw.Database, c *fiber.Ctx) error {
 			user, err := db.FindOne(DatabaseName, bson.M{"login": c.Params("login")})
 			if err != nil || user.Err() != nil {
-				return c.Status(404).SendString(fmt.Sprintf("User %s not found", c.Params("login")))
+				if user != nil {
+					return c.Status(500).SendString(fmt.Sprintln(err, user.Err()))
+				}
+				return c.Status(500).SendString(fmt.Sprintln(err))
 			}
 			var response apiclient.User
-			if err := user.Decode(&response); err != nil {
+			if err = user.Decode(&response); err != nil {
 				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 			}
 			return c.JSON(response)
@@ -125,13 +118,12 @@ func main() {
 				return c.SendStatus(fiber.StatusInternalServerError)
 			}
 			var response []apiclient.User
-			if err := users.All(db.GetContext(), &response); err != nil {
-				fmt.Println(err.Error())
-				return c.SendStatus(fiber.StatusInternalServerError)
+			if err = users.All(db.GetContext(), &response); err != nil {
+				return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 			}
 			return c.JSON(response)
 		})
 	})
 
-	App.Listen(fmt.Sprintf(":%s", AppPort))
+	log.Fatal(App.Listen(fmt.Sprintf(":%s", AppPort)))
 }

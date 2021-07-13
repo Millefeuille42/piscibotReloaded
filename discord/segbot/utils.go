@@ -52,7 +52,7 @@ func Find(slice []string, val string) bool {
 // logError Prints error + StackTrace to stderr if error
 func logError(err error) {
 	if err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, err, debug.Stack())
+		_, _ = fmt.Fprintln(os.Stderr, err, string(debug.Stack()))
 	}
 }
 

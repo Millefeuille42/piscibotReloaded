@@ -1,0 +1,38 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Build
+        env:
+          API_PORT: ${{ secrets.API_PORT }}
+          APPUID: ${{ secrets.APPUID }}
+          APP_HOST: ${{ secrets.APP_HOST }}
+          BOT_DEV_CHANNEL: ${{ secrets.BOT_DEV_CHANNEL }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          SECRET: ${{ secrets.SECRET }}
+          SEGBOT_PORT: ${{ secrets.SEGBOT_PORT }}
+        run: echo $API_PORT && echo $SEGBOT_PORT && docker-compose build
+        
+      - name: Deploy
+        env:
+          API_PORT: ${{ secrets.API_PORT }}
+          APPUID: ${{ secrets.APPUID }}
+          APP_HOST: ${{ secrets.APP_HOST }}
+          BOT_DEV_CHANNEL: ${{ secrets.BOT_DEV_CHANNEL }}
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          SECRET: ${{ secrets.SECRET }}
+          SEGBOT_PORT: ${{ secrets.SEGBOT_PORT }}
+        run: docker-compose up -d
