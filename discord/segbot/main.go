@@ -21,9 +21,14 @@ func startBot() *discordgo.Session {
 	err = discordBot.Open()
 	checkError(err)
 	fmt.Println("Discord bot created")
-	channel, err := discordBot.UserChannelCreate(ownerID)
-	if err != nil {
-		return nil
+	if os.Getenv("SEGBOT_IN_PROD") == "" {
+		channel, err := discordBot.UserChannelCreate(ownerID)
+		if err != nil {
+			return nil
+		}
+		hostname, _ := os.Hostname()
+		_, _ = discordBot.ChannelMessageSend(channel.ID, "Bot up - "+
+			time.Now().Format(time.Stamp)+" - "+hostname)
 	}
 	if gPrefix == "" {
 		gPrefix = "!"
