@@ -34,7 +34,7 @@ func startBot() *discordgo.Session {
 	if gPrefix == "" {
 		gPrefix = "!"
 	}
-	setUpCloseHandler(discordBot)
+	utils.SetUpCloseHandler(discordBot)
 
 	return discordBot
 }

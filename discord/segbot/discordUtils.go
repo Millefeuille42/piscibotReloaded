@@ -89,7 +89,7 @@ func sendMessageWithMention(message, id string, agent discordAgent) {
 
 	_, err := agent.session.ChannelMessageSend(agent.channel, fmt.Sprintf("<@%s>\n%s", id, message))
 	if err != nil {
-		logError(err)
+		utils.LogError(err)
 	}
 }
 
