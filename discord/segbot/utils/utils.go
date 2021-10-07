@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 )
 
@@ -28,4 +29,11 @@ func SetUpCloseHandler(session *discordgo.Session) {
 		_ = session.Close()
 		os.Exit(0)
 	}()
+}
+
+func CleanSplit(s string, sep rune) []string {
+	splitFn := func(c rune) bool {
+		return c == sep
+	}
+	return strings.FieldsFunc(s, splitFn)
 }
