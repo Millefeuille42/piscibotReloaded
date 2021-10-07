@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"os"
 	"piscibotReloaded/discord/segbot/utils"
-	"strings"
 )
 
 // TargetData Contains a target Login, and a GuildUsers map
@@ -117,7 +116,7 @@ func targetTrack(agent discordAgent) {
 		return
 	}
 	settings := TargetData{}
-	args := strings.Split(agent.message.Content, " ")
+	args := utils.CleanSplit(agent.message.Content, ' ')
 	if userCheckHasTarget(agent) != nil {
 		return
 	}

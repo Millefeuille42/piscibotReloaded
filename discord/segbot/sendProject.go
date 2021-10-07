@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"piscibotReloaded/discord/segbot/utils"
 	"time"
 )
 
@@ -30,7 +30,7 @@ func sendProject(agent discordAgent) {
 	if err != nil {
 		return
 	}
-	args := strings.Split(agent.message.Content, " ")
+	args := utils.CleanSplit(agent.message.Content, ' ')
 	if len(args) < 2 {
 		sendMessageWithMention("You must provide project(s) to check", "", agent)
 		return
