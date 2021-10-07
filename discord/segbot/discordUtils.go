@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"io/ioutil"
+	"piscibotReloaded/discord/segbot/utils"
 	"strings"
 )
 
@@ -48,14 +49,14 @@ func getUsersOfGuild(agent discordAgent, guild string) ([]UserData, error) {
 		if err != nil {
 			fmt.Println(f.Name())
 			fmt.Println(string(fileData))
-			logError(err)
+			utils.LogError(err)
 			continue
 		}
 		err = json.Unmarshal(fileData, &user)
 		if err != nil {
 			fmt.Println(f.Name())
 			fmt.Println(string(fileData))
-			logError(err)
+			utils.LogError(err)
 			continue
 		}
 		if _, ok := user.GuildTargets[guild]; ok {
@@ -109,7 +110,7 @@ func logErrorToChan(agent discordAgent, err error) {
 	if err == nil {
 		return
 	}
-	logError(err)
+	utils.LogError(err)
 	_, _ = agent.session.ChannelMessageSend(agent.channel,
 		fmt.Sprintf("An Error Occured, Please Try Again Later {%s}", err.Error()))
 }

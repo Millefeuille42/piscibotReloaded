@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"piscibotReloaded/discord/segbot/utils"
 	"strings"
 )
 
@@ -77,7 +78,7 @@ func makeApiReq(path, login string, agent discordAgent) error {
 
 // loadOrCreate Internal, Loads or creates Target file
 func loadOrCreate(path, login string, settings *TargetData, message *discordgo.MessageCreate) error {
-	exists, err := createFileIfNotExist(path)
+	exists, err := utils.CreateFileIfNotExist(path)
 	if err != nil {
 		return err
 	}

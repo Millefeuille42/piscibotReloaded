@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
+	"piscibotReloaded/discord/segbot/utils"
 	"sync"
 	"time"
 )
@@ -15,10 +16,10 @@ var gAPiMutex = sync.Mutex{}
 // startBot Starts discord bot
 func startBot() *discordgo.Session {
 	discordBot, err := discordgo.New("Bot " + os.Getenv("BOT_TOKEN"))
-	checkError(err)
+	utils.CheckError(err)
 	discordBot.AddHandler(messageHandler)
 	err = discordBot.Open()
-	checkError(err)
+	utils.CheckError(err)
 	fmt.Println("Discord bot created")
 	channel, err := discordBot.UserChannelCreate(ownerID)
 	if err != nil {
@@ -28,26 +29,26 @@ func startBot() *discordgo.Session {
 	_, _ = discordBot.ChannelMessageSend(channel.ID, "Bot up - "+
 		time.Now().Format(time.Stamp)+" - "+hostname)
 
-	setUpCloseHandler(discordBot)
+	utils.SetUpCloseHandler(discordBot)
 
 	return discordBot
 }
 
 // prepFileSystem Create required directories
 func prepFileSystem() error {
-	err := createDirIfNotExist("./data")
+	err := utils.CreateDirIfNotExist("./data")
 	if err != nil {
 		return err
 	}
-	err = createDirIfNotExist("./data/guilds")
+	err = utils.CreateDirIfNotExist("./data/guilds")
 	if err != nil {
 		return err
 	}
-	err = createDirIfNotExist("./data/targets")
+	err = utils.CreateDirIfNotExist("./data/targets")
 	if err != nil {
 		return err
 	}
-	err = createDirIfNotExist("./data/users")
+	err = utils.CreateDirIfNotExist("./data/users")
 	return err
 }
 
@@ -57,7 +58,7 @@ func main() {
 		return
 	}
 
-	checkError(prepFileSystem())
+	utils.CheckError(prepFileSystem())
 	gBot = startBot()
 	startServer()
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"piscibotReloaded/discord/segbot/utils"
 	"strings"
 )
 
@@ -55,7 +56,7 @@ func adminSet(agent discordAgent) {
 		return
 	}
 
-	if !Find(data.Admins, agent.message.Author.ID) {
+	if !utils.Find(data.Admins, agent.message.Author.ID) {
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}
@@ -66,7 +67,7 @@ func adminSet(agent discordAgent) {
 		}
 		user = strings.TrimSpace(user)
 		user = user[3 : len(user)-1]
-		if !Find(data.Admins, user) {
+		if !utils.Find(data.Admins, user) {
 			data.Admins = append(data.Admins, user)
 			discordRoleSet(data, user, "admin", agent)
 		}
@@ -89,7 +90,7 @@ func adminSetChan(agent discordAgent) {
 		return
 	}
 
-	if !Find(settings.Admins, agent.message.Author.ID) {
+	if !utils.Find(settings.Admins, agent.message.Author.ID) {
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}

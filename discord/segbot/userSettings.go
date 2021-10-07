@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"piscibotReloaded/discord/segbot/utils"
 	"strings"
 )
 
@@ -23,7 +24,7 @@ func userSetPings(agent discordAgent) {
 	didSomething := false
 	for _, channel := range args {
 		subArgs := strings.Split(channel, ":")
-		if len(subArgs) <= 1 || !Find([]string{"all", "none", "dm", "channel", "mention"}, subArgs[1]) {
+		if len(subArgs) <= 1 || !utils.Find([]string{"all", "none", "dm", "channel", "mention"}, subArgs[1]) {
 			continue
 		}
 		if subArgs[1] == "mention" {
