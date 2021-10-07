@@ -1,0 +1,17 @@
+name: Docker Build Checker
+
+on:
+  push:
+    branches: [ checker, master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build Checker
+        run: (cd ./APICheck ; docker build . --tag checker:$(date +%s))

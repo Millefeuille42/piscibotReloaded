@@ -16,6 +16,44 @@ type TargetData struct {
 	GuildUsers map[string]string
 }
 
+// targetUntrack Un-tracks target for user on guild
+func targetUntrack(agent discordAgent) {
+	data, err := guildLoadFile(agent, false, "")
+	if err != nil {
+		return
+	}
+	if data.Locked {
+		sendMessageWithMention("This server is locked, you can't change your tracking settings", "", agent)
+		return
+	}
+	if !userIsTrackingCheck(agent) {
+		return
+	}
+
+	user, err := userLoadFile("", agent)
+	if err != nil {
+		return
+	}
+	targetName := user.GuildTargets[agent.message.GuildID]
+	delete(user.GuildTargets, agent.message.GuildID)
+	err = userWriteFile(user, agent, "")
+	if err != nil {
+		return
+	}
+
+	target, err := targetLoadFile(targetName, agent)
+	if err != nil {
+		return
+	}
+	delete(target.GuildUsers, agent.message.GuildID)
+	err = targetWriteFile(target, agent)
+	if err != nil {
+		return
+	}
+	_ = discordRoleSetLoad("", "spectator", agent)
+	sendMessageWithMention("You are not tracking someone on this server anymore!", "", agent)
+}
+
 // makeApiReq Internal, Make calls to the 42API module to start data collecting and check if user exists
 func makeApiReq(path, login string, agent discordAgent) error {
 	uri := fmt.Sprintf("http://%s:%s/user/%s", os.Getenv("API_HOST"), os.Getenv("API_PORT"), login)
@@ -50,7 +88,8 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 		}
 		err = json.Unmarshal(data, settings)
 		if err != nil {
-			return err
+			_ = os.Remove(path)
+			return loadOrCreate(path, login, settings, message)
 		}
 	} else {
 		*settings = TargetData{
@@ -66,10 +105,18 @@ func loadOrCreate(path, login string, settings *TargetData, message *discordgo.M
 	return nil
 }
 
-// targetRegister Registers target for user and guild
-func targetRegister(agent discordAgent) {
+// targetTrack Registers target for user and guild
+func targetTrack(agent discordAgent) {
+	data, err := guildLoadFile(agent, false, "")
+	if err != nil {
+		return
+	}
+	if data.Locked {
+		sendMessageWithMention("This server is locked, you can't change your tracking settings", "", agent)
+		return
+	}
 	settings := TargetData{}
-	args := strings.Split(agent.message.Content, "-")
+	args := strings.Split(agent.message.Content, " ")
 	if userCheckHasTarget(agent) != nil {
 		return
 	}
@@ -77,9 +124,8 @@ func targetRegister(agent discordAgent) {
 		sendMessageWithMention("I need more arguments!", "", agent)
 		return
 	}
-
 	path := fmt.Sprintf("./data/targets/%s.json", args[1])
-	err := loadOrCreate(path, args[1], &settings, agent.message)
+	err = loadOrCreate(path, args[1], &settings, agent.message)
 	if err != nil {
 		if err == os.ErrExist {
 			sendMessageWithMention("Someone is already tracking this person"+
@@ -100,7 +146,8 @@ func targetRegister(agent discordAgent) {
 	}
 	user.GuildTargets[agent.message.GuildID] = settings.Login
 
-	if targetWriteFile(settings, agent) == nil && userWriteFile(user, agent) == nil {
+	if targetWriteFile(settings, agent) == nil && userWriteFile(user, agent, "") == nil {
 		sendMessageWithMention("You are now tracking "+args[1], "", agent)
+		_ = discordRoleSetLoad("", "registered", agent)
 	}
 }

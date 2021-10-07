@@ -63,8 +63,6 @@ func createRoles(agent discordAgent, data *GuildData) error {
 			data.Settings.Roles.Admin = role.ID
 		case "SegBot - Registered":
 			data.Settings.Roles.Registered = role.ID
-		case "SegBot - Unregistered":
-			data.Settings.Roles.Unregistered = role.ID
 		case "SegBot - Spectator":
 			data.Settings.Roles.Spectator = role.ID
 		}
@@ -86,12 +84,12 @@ func createData(agent discordAgent) GuildData {
 				Location:    agent.message.ChannelID,
 			},
 			Roles: guildSettingsRoles{
-				Admin:        "none",
-				Registered:   "none",
-				Unregistered: "none",
-				Spectator:    "none",
+				Admin:      "none",
+				Registered: "none",
+				Spectator:  "none",
 			},
 		},
+		Locked: false,
 	}
 	if createRoles(agent, &data) != nil {
 		_, _ = agent.session.ChannelMessageSend(agent.channel,
@@ -128,5 +126,6 @@ func guildInit(agent discordAgent) {
 	if writeData(agent, data) != nil {
 		return
 	}
+	discordRoleSet(data, "", "admin", agent)
 	sendMessageWithMention("Guild registered successfully!", "", agent)
 }

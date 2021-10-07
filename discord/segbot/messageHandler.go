@@ -23,7 +23,40 @@ func adminRouter(agent discordAgent) {
 		adminSet(agent)
 	case agent.message.Content == "!params":
 		adminSendSettings(agent)
+	case agent.message.Content == "!purge":
+		adminPurge(agent)
+	case agent.message.Content == "!lock":
+		adminLock(agent)
+	case agent.message.Content == "!unlock":
+		adminUnlock(agent)
 	}
+}
+
+func commandsRouter(agent discordAgent) bool {
+	switch {
+	case strings.HasPrefix(agent.message.Content, "!profile"):
+		sendTargetProfile(agent)
+		return true
+	case strings.HasPrefix(agent.message.Content, "!list"):
+		switch {
+		case strings.HasPrefix(agent.message.Content[6:], "students"):
+			sendStudentsList(agent)
+			return true
+		case strings.HasPrefix(agent.message.Content[6:], "tracked"):
+			sendTrackedList(agent)
+			return true
+		case strings.HasPrefix(agent.message.Content[6:], "projects"):
+			sendProjectList(agent)
+			return true
+		}
+	case strings.HasPrefix(agent.message.Content, "!leaderboard"):
+		sendLeaderboard(agent)
+		return true
+	case strings.HasPrefix(agent.message.Content, "!project"):
+		sendProject(agent)
+		return true
+	}
+	return false
 }
 
 // userRouter Router for user commands, returns true if a command was found
@@ -33,7 +66,7 @@ func userRouter(agent discordAgent) bool {
 		userInit(agent)
 		return true
 	case strings.HasPrefix(agent.message.Content, "!track"):
-		targetRegister(agent)
+		targetTrack(agent)
 		return true
 	case strings.HasPrefix(agent.message.Content, "!ping"):
 		userSetPings(agent)
@@ -44,6 +77,11 @@ func userRouter(agent discordAgent) bool {
 	case agent.message.Content == "!untrack":
 		targetUntrack(agent)
 		return true
+	case agent.message.Content == "!spectate":
+		userSetSpectator(agent)
+		return true
+	case agent.message.Content == "!help":
+		sendHelp(agent)
 	}
 	return false
 }
@@ -60,7 +98,7 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 	if message.Author.ID == botID.ID || !strings.HasPrefix(message.Content, "!") {
 		return
 	}
-	if !userRouter(agent) {
+	if !commandsRouter(agent) && !userRouter(agent) {
 		adminRouter(agent)
 	}
 }

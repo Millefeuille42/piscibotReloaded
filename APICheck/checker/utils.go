@@ -8,7 +8,7 @@ import (
 
 // CheckProjectStatus compares the validation status between the old and new project data
 func CheckProjectStatus(username string, p1, p2 *Project) error {
-	if p1.Validated != p2.Validated && p2.Validated {
+	if p1.FinalMark != p2.FinalMark && p2.Validated {
 		return fmt.Errorf("%s a validé le projet %s à %2.f%%! Félicitation à toi!", username, p2.Name, p2.FinalMark)
 	}
 	if p1.FinalMark != p2.FinalMark && !p2.Validated {
@@ -20,7 +20,7 @@ func CheckProjectStatus(username string, p1, p2 *Project) error {
 	return nil
 }
 
-// CheckProjectSubscribed checks whetehr the user has subscribed to a new project or not
+// CheckProjectSubscribed checks whether the user has subscribed to a new project or not
 func CheckProjectSubscribed(dbUser, apiUser *apiclient.User) error {
 	dbUserProjectsLen := len(dbUser.ProjectsUsers)
 	apiUserProjectsLen := len(apiUser.ProjectsUsers)
