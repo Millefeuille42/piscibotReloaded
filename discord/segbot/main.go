@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
+	"piscibotReloaded/discord/segbot/utils"
 	"sync"
 	"time"
 )
@@ -16,10 +17,10 @@ var gPrefix = os.Getenv("SEGBOT_PREFIX")
 // startBot Starts discord bot
 func startBot() *discordgo.Session {
 	discordBot, err := discordgo.New("Bot " + os.Getenv("BOT_TOKEN"))
-	checkError(err)
+	utils.CheckError(err)
 	discordBot.AddHandler(messageHandler)
 	err = discordBot.Open()
-	checkError(err)
+	utils.CheckError(err)
 	fmt.Println("Discord bot created")
 	if os.Getenv("SEGBOT_IN_PROD") == "" {
 		channel, err := discordBot.UserChannelCreate(ownerID)
@@ -40,19 +41,19 @@ func startBot() *discordgo.Session {
 
 // prepFileSystem Create required directories
 func prepFileSystem() error {
-	err := createDirIfNotExist("./data")
+	err := utils.CreateDirIfNotExist("./data")
 	if err != nil {
 		return err
 	}
-	err = createDirIfNotExist("./data/guilds")
+	err = utils.CreateDirIfNotExist("./data/guilds")
 	if err != nil {
 		return err
 	}
-	err = createDirIfNotExist("./data/targets")
+	err = utils.CreateDirIfNotExist("./data/targets")
 	if err != nil {
 		return err
 	}
-	err = createDirIfNotExist("./data/users")
+	err = utils.CreateDirIfNotExist("./data/users")
 	return err
 }
 
@@ -62,7 +63,7 @@ func main() {
 		return
 	}
 
-	checkError(prepFileSystem())
+	utils.CheckError(prepFileSystem())
 	gBot = startBot()
 	startServer()
 

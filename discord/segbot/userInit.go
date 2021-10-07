@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"piscibotReloaded/discord/segbot/utils"
 )
 
 func userSetSpectator(agent discordAgent) {
@@ -29,7 +30,7 @@ func userInit(agent discordAgent) {
 		return
 	}
 
-	exists, err := createFileIfNotExist(path)
+	exists, err := utils.CreateFileIfNotExist(path)
 	if err != nil {
 		logErrorToChan(agent, err)
 		return

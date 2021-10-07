@@ -1,12 +1,14 @@
 package main
 
+import "piscibotReloaded/discord/segbot/utils"
+
 func adminLock(agent discordAgent) {
 	guildInitialCheck(agent)
 	data, err := guildLoadFile(agent, false, "")
 	if err != nil {
 		return
 	}
-	if !Find(data.Admins, agent.message.Author.ID) {
+	if !utils.Find(data.Admins, agent.message.Author.ID) {
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}
@@ -25,7 +27,7 @@ func adminUnlock(agent discordAgent) {
 	if err != nil {
 		return
 	}
-	if !Find(data.Admins, agent.message.Author.ID) {
+	if !utils.Find(data.Admins, agent.message.Author.ID) {
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}
