@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"piscibotReloaded/discord/segbot/utils"
+	"time"
+)
 
 func sendProjectList(agent discordAgent) {
 	if !userInitialCheck(agent) {
@@ -22,7 +25,7 @@ func sendProjectList(agent discordAgent) {
 		}
 		for _, project := range data.ProjectsUsers {
 			slug := project["project"].(map[string]interface{})["slug"]
-			if !Find(projectList, slug.(string)) {
+			if !utils.Find(projectList, slug.(string)) {
 				projectList = append(projectList, slug.(string))
 				message += slug.(string) + "\n"
 			}

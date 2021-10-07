@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"strings"
+	"piscibotReloaded/discord/segbot/utils"
 	"time"
 )
 
@@ -44,7 +44,7 @@ func sendProject(agent discordAgent) {
 	if err != nil {
 		return
 	}
-	args := strings.Split(agent.message.Content, " ")
+	args := utils.CleanSplit(agent.message.Content, ' ')
 	if len(args) < 2 {
 		sendMessageWithMention("You must provide project(s) to check", "", agent)
 		return
@@ -92,7 +92,7 @@ func sendUserProject(agent discordAgent) {
 		logErrorToChan(agent, err)
 		return
 	}
-	args := strings.Split(agent.message.Content, " ")
+	args := utils.CleanSplit(agent.message.Content, ' ')
 	if len(args) < 2 {
 		if _, ok := userFile.GuildTargets[agent.message.GuildID]; !ok {
 			sendMessageWithMention("You must be tracking someone or provide login(s)", "", agent)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"piscibotReloaded/discord/segbot/utils"
 	"time"
 )
 
@@ -33,7 +34,7 @@ func adminPurge(agent discordAgent) {
 	if err != nil {
 		return
 	}
-	if !Find(data.Admins, agent.message.Author.ID) {
+	if !utils.Find(data.Admins, agent.message.Author.ID) {
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
 		return
 	}
