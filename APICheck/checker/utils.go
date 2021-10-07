@@ -9,7 +9,13 @@ import (
 // CheckProjectStatus compares the validation status between the old and new project data
 func CheckProjectStatus(username string, p1, p2 *Project) error {
 	if p1.Validated != p2.Validated && p2.Validated {
-		return fmt.Errorf("%s a validé le projet %s à %f%%!. Félicitation à toi!", username, p2.Name, p2.FinalMark)
+		return fmt.Errorf("%s a validé le projet %s à %2.f%%! Félicitation à toi!", username, p2.Name, p2.FinalMark)
+	}
+	if p1.FinalMark != p2.FinalMark && !p2.Validated {
+		return fmt.Errorf("%s a raté le projet %s à %2.f%%! Boooh!", username, p2.Name, p2.FinalMark)
+	}
+	if p1.FinalMark != p2.FinalMark && p1.FinalMark == -42 {
+		return fmt.Errorf("@everyone %s a triché au projet %s! Quelle honte!", username, p2.Name, p2.FinalMark)
 	}
 	return nil
 }
