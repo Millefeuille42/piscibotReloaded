@@ -24,12 +24,6 @@ func adminForceUntrack(agent discordAgent) {
 			sendMessageWithMention(target+" not found!", "", agent)
 			return
 		}
-		delete(targetFile.GuildUsers, agent.message.GuildID)
-		err = targetWriteFile(targetFile, agent)
-		if err != nil {
-			return
-		}
-
 		userId := targetFile.GuildUsers[agent.message.GuildID]
 		user, err := userLoadFile(userId, agent)
 		if err != nil {
@@ -38,6 +32,11 @@ func adminForceUntrack(agent discordAgent) {
 		}
 		delete(user.GuildTargets, agent.message.GuildID)
 		err = userWriteFile(user, agent, "")
+		if err != nil {
+			return
+		}
+		delete(targetFile.GuildUsers, agent.message.GuildID)
+		err = targetWriteFile(targetFile, agent)
 		if err != nil {
 			return
 		}
