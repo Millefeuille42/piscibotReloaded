@@ -29,6 +29,8 @@ func adminRouter(agent discordAgent) {
 		adminLock(agent)
 	case agent.message.Content == gPrefix+"unlock":
 		adminUnlock(agent)
+	case agent.message.Content == gPrefix+"force-untrack":
+		adminForceUntrack(agent)
 	}
 }
 
