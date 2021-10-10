@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"os"
+	"piscibotReloaded/discord/segbot/utils"
 )
 
-// createRoles Internal, Creates or get appropriate role
+// getOrCreateRole Internal, Creates or get appropriate role
 func getOrCreateRole(name string, roles *[]*discordgo.Role, agent discordAgent) (*discordgo.Role, error) {
 	var role *discordgo.Role
 	skip := false
@@ -102,7 +103,7 @@ func createData(agent discordAgent) GuildData {
 func writeData(agent discordAgent, data GuildData) error {
 	path := fmt.Sprintf("./data/guilds/%s.json", agent.message.GuildID)
 
-	exists, err := createFileIfNotExist(path)
+	exists, err := utils.CreateFileIfNotExist(path)
 	if err != nil {
 		logErrorToChan(agent, err)
 		return err

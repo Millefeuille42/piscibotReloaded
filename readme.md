@@ -16,7 +16,7 @@ The perfect tool to track your progress and compare with your friends or to orga
 - User:
     * Customizable dms and mentions notification settings
     * Track students or pisciners
-    * On demand profiles, leaderboards, roadmaps, etc... (WIP)
+    * On demand profiles, leaderboards, etc...
     * Real-Time alerts about your target
     * Multi-server support
 
@@ -33,25 +33,38 @@ to your own server
 
 #### Admin
 
-- `!init` -> Register the server
-- `!admin @user (mention)` -> Give user(s) admin privileges, you can set multiple users at once
-- `!channel <command | leaderboard | success | started | location>` -> Set provided message stream(s) to current channel, you can set multiple streams at once
-- `!params` -> Get the server's settings
-- `!purge` -> Delete every message on all the bot's channels
-- `!lock` -> Lock the registrations, nobody can register anymore
-- `!unlock` -> Unlock the registrations
+- `init` -> Register the server
+- `admin @user (mention)` -> Give user(s) admin privileges, you can set multiple users at once
+- `channel <command | leaderboard | success | started | location>` -> Set provided message stream(s) to current channel, you can set multiple streams at once
+- `params` -> Get the server's settings
+- `purge` -> Delete every message on all the bot's channels
+- `lock` -> Lock the registrations, nobody can register anymore
+- `unlock` -> Unlock the registrations
 
 #### User
 
-- `!start` -> Create your profile, you'll need to verify your account to complete the registration. 
+- `start` -> Create your profile, you'll need to verify your account to complete the registration. 
   The profile is independent of the servers
-- `!track <login>` -> Track provided student, one user per server
-- `!untrack` -> Untrack current server's student (Automatically set to spectate)
-- `!spectate` -> Get the spectator role, 
+- `track <login>` -> Track provided student, one user per server
+- `untrack` -> Untrack current server's student (Automatically set to spectate)
+- `spectate` -> Get the spectator role, 
   This role is intended to permit you to see dedicated channels without being tracking someone
-- `!ping <success | started | location>:<none | dm | channel | all>` -> Edit the notification system for provided message stream(s), you can set multiple streams at once
-- `!settings` -> Get your notification settings
-- `!help` -> Send the readme
+- `ping <success | started | location>:<none | dm | mention | all>` -> Edit the notification system for provided message stream(s), you can set multiple streams at once
+   - Example -> `ping started:dm` to get dm'd everytime your target starts a project
+- `settings` -> Get your notification settings
+- `help` -> Send the readme
+
+##### Commands
+
+- `list <tracked | students | location | projects>` -> Send a list according to the provided parameter.
+  - `tracked` -> Send a list of all the targets.
+  - `students` -> Send a list of all the targets, indicating of the target is a student, or not.
+  - `location` -> Send a list of all the targets, indicating their current location.
+  - `projects` -> Send a list of all the currently available projects for the command `project` (see below).
+- `profile <login>` -> Send the profile of the provided target(s). If none provided, sends the profile of your current target.
+- `leaderboard <cursus>` -> Send a leaderboard for the provided cursus.
+- `project <project>` -> Send the completion status for the given project(s) for all the targets on the server.
+- `user-project <login>` -> Send the completion status of the projects for the provided target(s). If none provided, sends the profile of your current target.
 
 
 ## Host your own
@@ -70,6 +83,7 @@ You'll also need to define the following environment variables :
 - `APP_HOST` -> The hostname / IP of the server hosting the app
 - `APPUID` -> The 42 app UID
 - `SECRET` -> The 42 app secret
+- `SEGBOT_PREFIX` -> Choose a custom prefix (Defaults to `!` if none provided)
 
 Then, run the app with `docker-compose up --env-file <.env file> -d` and shut it down with `docker-compose down`
 

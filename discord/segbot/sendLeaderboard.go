@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"piscibotReloaded/discord/segbot/utils"
 	"sort"
-	"strings"
 	"time"
 )
 
@@ -52,13 +52,17 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 		return apiData, err
 	}
 	if res.StatusCode == 404 {
-		fmt.Println("Not Found " + target)
+		_, _ = agent.session.ChannelMessageSend(agent.message.ChannelID, target+" not found")
 		return apiData, os.ErrNotExist
 	}
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		logErrorToChan(agent, err)
 		return apiData, err
+	}
+	if res.StatusCode != 200 {
+		fmt.Println(err)
+		return apiData, os.ErrNotExist
 	}
 	err = json.Unmarshal(data, &apiData)
 	if err != nil {
@@ -109,7 +113,7 @@ func createLeaderboard(agent discordAgent, slug, guildID string) string {
 	})
 
 	for i, pair := range pairList {
-		leaderBoard = fmt.Sprintf("%s\n%d. %-15.15s :  %.2f", leaderBoard, i+1, pair.name, pair.level)
+		leaderBoard = fmt.Sprintf("%s\n%02d. %-15.15s :  %.2f", leaderBoard, i+1, pair.name, pair.level)
 	}
 	return leaderBoard
 }
@@ -118,7 +122,7 @@ func sendLeaderboard(agent discordAgent) {
 	if !userInitialCheck(agent) {
 		return
 	}
-	args := strings.Split(agent.message.Content, " ")
+	args := utils.CleanSplit(agent.message.Content, ' ')
 	if len(args) != 2 {
 		sendMessageWithMention("Invalid Number of Arguments", "", agent)
 		return

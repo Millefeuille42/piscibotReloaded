@@ -15,29 +15,29 @@ type discordAgent struct {
 // adminRouter Router for admin
 func adminRouter(agent discordAgent) {
 	switch {
-	case strings.HasPrefix(agent.message.Content, "!init"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"init"):
 		guildInit(agent)
-	case strings.HasPrefix(agent.message.Content, "!chan"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"chan"):
 		adminSetChan(agent)
-	case strings.HasPrefix(agent.message.Content, "!admin"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"admin"):
 		adminSet(agent)
-	case agent.message.Content == "!params":
+	case agent.message.Content == gPrefix+"params":
 		adminSendSettings(agent)
-	case agent.message.Content == "!purge":
+	case agent.message.Content == gPrefix+"purge":
 		adminPurge(agent)
-	case agent.message.Content == "!lock":
+	case agent.message.Content == gPrefix+"lock":
 		adminLock(agent)
-	case agent.message.Content == "!unlock":
+	case agent.message.Content == gPrefix+"unlock":
 		adminUnlock(agent)
 	}
 }
 
 func commandsRouter(agent discordAgent) bool {
 	switch {
-	case strings.HasPrefix(agent.message.Content, "!profile"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"profile"):
 		sendTargetProfile(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!list"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"list"):
 		switch {
 		case strings.HasPrefix(agent.message.Content[6:], "students"):
 			sendStudentsList(agent)
@@ -48,12 +48,17 @@ func commandsRouter(agent discordAgent) bool {
 		case strings.HasPrefix(agent.message.Content[6:], "projects"):
 			sendProjectList(agent)
 			return true
+		case strings.HasPrefix(agent.message.Content[6:], "location"):
+			sendLocationList(agent)
 		}
-	case strings.HasPrefix(agent.message.Content, "!leaderboard"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"leaderboard"):
 		sendLeaderboard(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!project"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"project"):
 		sendProject(agent)
+		return true
+	case strings.HasPrefix(agent.message.Content, gPrefix+"user-project"):
+		sendUserProject(agent)
 		return true
 	}
 	return false
@@ -62,25 +67,25 @@ func commandsRouter(agent discordAgent) bool {
 // userRouter Router for user commands, returns true if a command was found
 func userRouter(agent discordAgent) bool {
 	switch {
-	case strings.HasPrefix(agent.message.Content, "!start"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"start"):
 		userInit(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!track"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"track"):
 		targetTrack(agent)
 		return true
-	case strings.HasPrefix(agent.message.Content, "!ping"):
+	case strings.HasPrefix(agent.message.Content, gPrefix+"ping"):
 		userSetPings(agent)
 		return true
-	case agent.message.Content == "!settings":
+	case agent.message.Content == gPrefix+"settings":
 		userSendSettings(agent)
 		return true
-	case agent.message.Content == "!untrack":
+	case agent.message.Content == gPrefix+"untrack":
 		targetUntrack(agent)
 		return true
-	case agent.message.Content == "!spectate":
+	case agent.message.Content == gPrefix+"spectate":
 		userSetSpectator(agent)
 		return true
-	case agent.message.Content == "!help":
+	case agent.message.Content == gPrefix+"help":
 		sendHelp(agent)
 	}
 	return false
@@ -95,7 +100,7 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 	}
 	agent.channel = guildGetChannel(agent)
 
-	if message.Author.ID == botID.ID || !strings.HasPrefix(message.Content, "!") {
+	if message.Author.ID == botID.ID || !strings.HasPrefix(message.Content, gPrefix) {
 		return
 	}
 	if !commandsRouter(agent) && !userRouter(agent) {
