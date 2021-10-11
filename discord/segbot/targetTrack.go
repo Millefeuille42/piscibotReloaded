@@ -35,6 +35,9 @@ func targetUntrack(agent discordAgent) {
 		return
 	}
 	targetName := user.GuildTargets[agent.message.GuildID]
+	if user.ExGuildTargets == nil {
+		user.ExGuildTargets = make(map[string]string)
+	}
 	user.ExGuildTargets[agent.message.GuildID] = targetName
 	delete(user.GuildTargets, agent.message.GuildID)
 	err = userWriteFile(user, agent, "")

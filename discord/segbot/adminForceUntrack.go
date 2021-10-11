@@ -31,6 +31,9 @@ func adminForceUntrack(agent discordAgent) {
 			return
 		}
 		delete(user.GuildTargets, agent.message.GuildID)
+		if user.ExGuildTargets == nil {
+			user.ExGuildTargets = make(map[string]string)
+		}
 		user.ExGuildTargets[agent.message.GuildID] = target
 		err = userWriteFile(user, agent, userId)
 		if err != nil {
