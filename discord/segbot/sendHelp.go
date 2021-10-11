@@ -23,7 +23,7 @@ func sendHelp(agent discordAgent) {
 			"- `help` -> Send the readme\n\n")
 	_, _ = agent.session.ChannelMessageSend(agent.message.ChannelID,
 		"---\n##### Commands\n\n"+
-			"- `list <tracked | students | location | projects>` -> Send a list according to the provided parameter.\n"+
+			"- `list -<tracked | students | location | projects>` -> Send a list according to the provided parameter. (don't forget the dash!)\n"+
 			"  - `tracked` -> Send a list of all the targets.\n"+
 			"  - `students` -> Send a list of all the targets, indicating of the target is a student, or not.\n"+
 			"  - `location` -> Send a list of all the targets, indicating their current location.\n"+

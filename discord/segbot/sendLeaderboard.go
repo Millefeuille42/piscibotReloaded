@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"piscibotReloaded/discord/segbot/utils"
 	"sort"
 	"time"
 )
@@ -122,7 +121,7 @@ func sendLeaderboard(agent discordAgent) {
 	if !userInitialCheck(agent) {
 		return
 	}
-	args := utils.CleanSplit(agent.message.Content, ' ')
+	args := agent.args
 	if len(args) != 2 {
 		sendMessageWithMention("Invalid Number of Arguments", "", agent)
 		return
