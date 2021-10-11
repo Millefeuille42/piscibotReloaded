@@ -47,9 +47,10 @@ func userInit(agent discordAgent) {
 	}
 
 	data := UserData{
-		UserID:       agent.message.Author.ID,
-		State:        state,
-		GuildTargets: make(map[string]string),
+		UserID:         agent.message.Author.ID,
+		State:          state,
+		GuildTargets:   make(map[string]string),
+		ExGuildTargets: make(map[string]string),
 		Settings: userSettings{
 			Success:  "none",
 			Started:  "none",

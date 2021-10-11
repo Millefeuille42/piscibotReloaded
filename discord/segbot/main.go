@@ -10,9 +10,43 @@ import (
 )
 
 var gBot *discordgo.Session
-var ownerID string = "268431730967314435" //Please change this when using my bot
+var ownerID = "268431730967314435" //Please change this when using my bot
 var gAPiMutex = sync.Mutex{}
 var gPrefix = os.Getenv("SEGBOT_PREFIX")
+var commandMap = make(map[string]commandHandler)
+
+func setupFunctionsMap() {
+	//AdminCommands no args
+	commandMap["init"] = guildInit
+	commandMap["params"] = adminSendSettings
+	commandMap["purge"] = adminPurge
+	commandMap["lock"] = adminLock
+	commandMap["unlock"] = adminUnlock
+	commandMap["force-untrack"] = adminForceUntrack
+	//ARGS
+	commandMap["chan"] = adminSetChan
+	commandMap["admin"] = adminSet
+
+	//UserCommands no args
+	commandMap["start"] = userInit
+	commandMap["settings"] = userSendSettings
+	commandMap["untrack"] = targetUntrack
+	commandMap["spectate"] = userSetSpectator
+	commandMap["help"] = sendHelp
+	//ARGS
+	commandMap["track"] = targetTrack
+	commandMap["ping"] = userSetPings
+
+	//Commands
+	commandMap["profile"] = sendTargetProfile
+	commandMap["list-students"] = sendStudentsList
+	commandMap["list-tracked"] = sendTrackedList
+	commandMap["list-projects"] = sendProjectList
+	commandMap["list-location"] = sendLocationList
+	commandMap["leaderboard"] = sendLeaderboard
+	commandMap["project"] = sendProject
+	commandMap["user-project"] = sendUserProject
+}
 
 // startBot Starts discord bot
 func startBot() *discordgo.Session {
@@ -64,6 +98,7 @@ func main() {
 	}
 
 	utils.CheckError(prepFileSystem())
+	setupFunctionsMap()
 	gBot = startBot()
 	startServer()
 
