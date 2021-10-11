@@ -22,6 +22,7 @@ func setupFunctionsMap() {
 	commandMap["purge"] = adminPurge
 	commandMap["lock"] = adminLock
 	commandMap["unlock"] = adminUnlock
+	commandMap["force-untrack"] = adminForceUntrack
 	//ARGS
 	commandMap["chan"] = adminSetChan
 	commandMap["admin"] = adminSet
