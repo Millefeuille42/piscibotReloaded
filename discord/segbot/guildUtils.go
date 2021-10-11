@@ -64,6 +64,6 @@ func guildInitialCheck(agent discordAgent) bool {
 		return true
 	}
 
-	sendMessageWithMention("This guild doesn't exist, create it with !init", "", agent)
+	sendMessageWithMention("This guild doesn't exist, create it with "+gPrefix+"init", "", agent)
 	return false
 }

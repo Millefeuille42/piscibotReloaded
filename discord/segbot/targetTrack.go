@@ -117,7 +117,7 @@ func targetTrack(agent discordAgent) {
 		return
 	}
 	settings := TargetData{}
-	args := utils.CleanSplit(agent.message.Content, ' ')
+	args := agent.args
 	if userCheckHasTarget(agent) != nil {
 		return
 	}
