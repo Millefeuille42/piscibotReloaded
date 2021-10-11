@@ -33,7 +33,7 @@ func (s *Checker) FetchUsers() error {
 	if err != nil {
 		return err
 	}
-	json.Unmarshal(body, &s.UserList)
+	_ = json.Unmarshal(body, &s.UserList)
 	return nil
 }
 
@@ -55,12 +55,17 @@ func (s *Checker) Check(dbUser, apiUser *apiclient.User) []Message {
 		messages = append(messages, message)
 	}
 
+	if err := CheckUserStudent(dbUser, apiUser); err != nil {
+		message := Message{Message: err.Error(), Channel: "student", Login: dbUser.Login}
+		messages = append(messages, message)
+	}
+
 	dbUserProjectsLen := len(dbUser.ProjectsUsers)
 	for i := 0; i < dbUserProjectsLen; i++ {
 		p1 := BuildProject(dbUser.ProjectsUsers[i])
-//		if p1.Validated { 				// Projects are not sorted,
-//			return messages				// this conditon breaks the validated events
-//		}
+		//		if p1.Validated { 				// Projects are not sorted,
+		//			return messages				// this conditon breaks the validated events
+		//		}
 		for _, val := range apiUser.ProjectsUsers {
 			p2 := BuildProject(val)
 			if p2.Name == p1.Name {

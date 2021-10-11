@@ -41,3 +41,17 @@ func CheckUserLocation(dbUser, apiUser *apiclient.User) error {
 	}
 	return nil
 }
+
+func CheckUserStudent(dbUser, apiUser *apiclient.User) error {
+	for _, cursus := range dbUser.CursusUsers {
+		if cursus.Cursus.Slug != "c-piscine" {
+			return nil
+		}
+	}
+	for _, cursus := range apiUser.CursusUsers {
+		if cursus.Cursus.Slug != "c-piscine" {
+			return fmt.Errorf("%s est maintenant student! Bienvenue à 42", apiUser.Login)
+		}
+	}
+	return nil
+}
