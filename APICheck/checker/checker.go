@@ -43,7 +43,7 @@ func (s *Checker) Length() int {
 }
 
 // Check does all checks between old and new user data
-func (s *Checker) Check(dbUser, apiUser *apiclient.User) []Message {
+func (_ *Checker) Check(dbUser, apiUser *apiclient.User) []Message {
 	var messages []Message
 
 	if err := CheckProjectSubscribed(dbUser, apiUser); err != nil {
@@ -102,7 +102,7 @@ func (s *Checker) UpdateDB(apiUser *apiclient.User) {
 }
 
 // Send sends a list of messages to discord API
-func (s *Checker) Send(apiURL string, messages []Message) error {
+func (_ *Checker) Send(apiURL string, messages []Message) error {
 	url := fmt.Sprintf("%s/discord", apiURL)
 	body, err := json.Marshal(messages)
 	if err != nil {
