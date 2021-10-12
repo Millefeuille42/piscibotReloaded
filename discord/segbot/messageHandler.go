@@ -19,7 +19,7 @@ type discordAgent struct {
 type commandHandler func(agent discordAgent)
 
 func commandRouter(agent discordAgent) {
-	agent.content = strings.Replace(agent.message.Content, "?", "", 1)
+	agent.content = strings.Replace(agent.message.Content, gPrefix, "", 1)
 	splitBuffer := utils.CleanSplit(agent.content, ' ')
 	if len(splitBuffer) < 1 {
 		return
