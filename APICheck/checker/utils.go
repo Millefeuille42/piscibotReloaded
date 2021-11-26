@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	apiclient "github.com/BoyerDamien/42APIClient"
 )
@@ -12,6 +13,9 @@ func CheckProjectStatus(username string, p1, p2 *Project) error {
 		return fmt.Errorf("%s a validé le projet %s à %2.f%%! Félicitation à toi!", username, p2.Name, p2.FinalMark)
 	}
 	if p1.FinalMark != p2.FinalMark && !p2.Validated {
+		if strings.Contains(p2.Name, "Exam") {
+			return nil
+		}
 		return fmt.Errorf("%s a raté le projet %s à %2.f%%! Boooh!", username, p2.Name, p2.FinalMark)
 	}
 	if p1.FinalMark != p2.FinalMark && p1.FinalMark == -42 {
