@@ -56,7 +56,7 @@ to your own server
 
 ##### Commands
 
-- `list -<tracked | students | location | projects>` -> Send a list according to the provided parameter. (don't forget the dash!)
+- `list-<tracked | students | location | projects>` -> Send a list according to the provided parameter. (don't forget the dash!)
   - `tracked` -> Send a list of all the targets.
   - `students` -> Send a list of all the targets, indicating of the target is a student, or not.
   - `location` -> Send a list of all the targets, indicating their current location.

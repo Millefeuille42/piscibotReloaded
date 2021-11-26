@@ -25,9 +25,7 @@ func commandRouter(agent discordAgent) {
 		return
 	}
 	agent.command = splitBuffer[0]
-	if len(splitBuffer) > 1 {
-		agent.args = splitBuffer
-	}
+	agent.args = splitBuffer
 	if fc, ok := commandMap[agent.command]; ok {
 		fc(agent)
 	}
