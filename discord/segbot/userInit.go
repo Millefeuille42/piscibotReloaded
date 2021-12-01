@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"piscibotReloaded/discord/segbot/utils"
 )
 
 func userSetSpectator(agent discordAgent) {
@@ -29,7 +30,7 @@ func userInit(agent discordAgent) {
 		return
 	}
 
-	exists, err := createFileIfNotExist(path)
+	exists, err := utils.CreateFileIfNotExist(path)
 	if err != nil {
 		logErrorToChan(agent, err)
 		return
@@ -46,9 +47,10 @@ func userInit(agent discordAgent) {
 	}
 
 	data := UserData{
-		UserID:       agent.message.Author.ID,
-		State:        state,
-		GuildTargets: make(map[string]string),
+		UserID:         agent.message.Author.ID,
+		State:          state,
+		GuildTargets:   make(map[string]string),
+		ExGuildTargets: make(map[string]string),
 		Settings: userSettings{
 			Success:  "none",
 			Started:  "none",

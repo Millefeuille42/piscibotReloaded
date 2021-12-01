@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"piscibotReloaded/discord/segbot/utils"
 	"strings"
 )
 
@@ -14,16 +15,20 @@ func userSetPings(agent discordAgent) {
 	if err != nil {
 		return
 	}
-	args := strings.Split(agent.message.Content, " ")
+	args := agent.args
 	if len(args) <= 1 {
 		sendMessageWithMention("I need more arguments", "", agent)
 		return
 	}
 
+	didSomething := false
 	for _, channel := range args {
 		subArgs := strings.Split(channel, ":")
-		if len(subArgs) <= 1 || !Find([]string{"all", "none", "dm", "channel"}, subArgs[1]) {
+		if len(subArgs) <= 1 || !utils.Find([]string{"all", "none", "dm", "channel", "mention"}, subArgs[1]) {
 			continue
+		}
+		if subArgs[1] == "mention" {
+			subArgs[1] = "channel"
 		}
 		switch subArgs[0] {
 		case "success":
@@ -33,9 +38,10 @@ func userSetPings(agent discordAgent) {
 		case "location":
 			user.Settings.Location = subArgs[1]
 		}
+		didSomething = true
 		_, _ = agent.session.ChannelMessageSend(agent.channel, "Ping settings updated for "+subArgs[0])
 	}
-	if userWriteFile(user, agent, "") == nil {
+	if didSomething && userWriteFile(user, agent, "") == nil {
 		sendMessageWithMention("Ping settings saved", "", agent)
 	}
 }

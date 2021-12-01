@@ -1,11 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"piscibotReloaded/discord/segbot/utils"
+	"strings"
 )
 
 type MessageList []struct {
@@ -20,11 +23,60 @@ type Message struct {
 	Login   string `json:"login"`
 }
 
+func sendMessageToOld(agent discordAgent, message Message) error {
+	files, err := ioutil.ReadDir("./data/users")
+	if err != nil {
+		logErrorToChan(agent, err)
+		return err
+	}
+
+	for _, f := range files {
+		var user = UserData{}
+		var channel string
+		var param string
+
+		fileData, err := ioutil.ReadFile(fmt.Sprintf("./data/users/%s", f.Name()))
+		if !strings.HasSuffix(f.Name(), ".json") {
+			continue
+		}
+		if err != nil {
+			fmt.Println(f.Name())
+			fmt.Println(string(fileData))
+			utils.LogError(err)
+			continue
+		}
+		err = json.Unmarshal(fileData, &user)
+		if err != nil {
+			fmt.Println(f.Name())
+			fmt.Println(string(fileData))
+			utils.LogError(err)
+			continue
+		}
+		for guild, target := range user.ExGuildTargets {
+			if target == message.Login {
+				guildData, err := guildLoadFile(agent, true, guild)
+				if err != nil {
+					logErrorToChan(agent, err)
+					continue
+				}
+				param = user.Settings.Success
+				channel = guildData.Settings.Channels.Commands
+			}
+			sendMessageToUser(message.Message, channel, user.UserID, param, agent)
+		}
+	}
+	return err
+}
+
 // sendMessage Internal, sends the message to concerned user
 func sendMessage(message Message) error {
 	agent := discordAgent{
 		session: gBot,
 		channel: os.Getenv("BOT_DEV_CHANNEL"),
+	}
+
+	if message.Channel == "student" {
+		return sendMessageToOld(agent, message)
 	}
 
 	target, err := targetLoadFile(message.Login, agent)

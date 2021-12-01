@@ -1,11 +1,11 @@
 package main
 
 import (
-	"piscibotReloaded/discord/segbot/utils"
+	"fmt"
 	"time"
 )
 
-func sendProjectList(agent discordAgent) {
+func sendLocationList(agent discordAgent) {
 	if !userInitialCheck(agent) {
 		return
 	}
@@ -13,7 +13,6 @@ func sendProjectList(agent discordAgent) {
 	if err != nil {
 		return
 	}
-	projectList := make([]string, 0)
 	message := "```\n"
 
 	gAPiMutex.Lock()
@@ -23,17 +22,14 @@ func sendProjectList(agent discordAgent) {
 			gAPiMutex.Unlock()
 			return
 		}
-		for _, project := range data.ProjectsUsers {
-			slug := project["project"].(map[string]interface{})["slug"]
-			if !utils.Find(projectList, slug.(string)) {
-				projectList = append(projectList, slug.(string))
-				message += slug.(string) + "\n"
-			}
+		if data.Location == nil {
+			data.Location = "✘"
 		}
+		message = fmt.Sprintf("%s%-9s- %s\n", message, data.Login, data.Location)
 		time.Sleep(time.Millisecond * 500)
 	}
 	gAPiMutex.Unlock()
-	if message == "```" {
+	if message == "```\n" {
 		sendMessageWithMention("Nothing to see here...", "", agent)
 		return
 	}

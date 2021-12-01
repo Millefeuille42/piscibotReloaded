@@ -9,9 +9,10 @@ type userSettings struct {
 
 // UserData Contains UserID a GuildTargets map and the Settings
 type UserData struct {
-	UserID       string
-	State        string
-	GuildTargets map[string]string
-	Settings     userSettings
-	Verified     bool
+	UserID         string
+	State          string
+	GuildTargets   map[string]string
+	ExGuildTargets map[string]string
+	Settings       userSettings
+	Verified       bool
 }

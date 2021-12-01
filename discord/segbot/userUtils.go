@@ -97,6 +97,6 @@ func userInitialCheck(agent discordAgent) bool {
 		}
 		return true
 	}
-	sendMessageWithMention("You are not registered, register with !start", "", agent)
+	sendMessageWithMention("You are not registered, register with "+gPrefix+"start", "", agent)
 	return false
 }

@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"strings"
+	"piscibotReloaded/discord/segbot/utils"
 )
 
 // TargetData Contains a target Login, and a GuildUsers map
@@ -35,6 +35,10 @@ func targetUntrack(agent discordAgent) {
 		return
 	}
 	targetName := user.GuildTargets[agent.message.GuildID]
+	if user.ExGuildTargets == nil {
+		user.ExGuildTargets = make(map[string]string)
+	}
+	user.ExGuildTargets[agent.message.GuildID] = targetName
 	delete(user.GuildTargets, agent.message.GuildID)
 	err = userWriteFile(user, agent, "")
 	if err != nil {
@@ -77,7 +81,7 @@ func makeApiReq(path, login string, agent discordAgent) error {
 
 // loadOrCreate Internal, Loads or creates Target file
 func loadOrCreate(path, login string, settings *TargetData, message *discordgo.MessageCreate) error {
-	exists, err := createFileIfNotExist(path)
+	exists, err := utils.CreateFileIfNotExist(path)
 	if err != nil {
 		return err
 	}
@@ -116,7 +120,7 @@ func targetTrack(agent discordAgent) {
 		return
 	}
 	settings := TargetData{}
-	args := strings.Split(agent.message.Content, " ")
+	args := agent.args
 	if userCheckHasTarget(agent) != nil {
 		return
 	}
