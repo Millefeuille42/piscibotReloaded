@@ -36,7 +36,7 @@ func endpointsLogin() {
 		if err := c.BodyParser(&user); err != nil {
 			return c.Status(fiber.StatusBadRequest).SendString(err.Error())
 		}
-		_, err := os.Stat(user.Login)
+		_, err := os.Stat("./data/" + user.Login + ".json")
 		if os.IsNotExist(err) {
 			return c.SendStatus(fiber.StatusNotFound)
 		}
@@ -48,7 +48,7 @@ func endpointsLogin() {
 	})
 
 	App.Delete("/user/:login", func(c *fiber.Ctx) error {
-		_, err := os.Stat(c.Params("login"))
+		_, err := os.Stat("./data/" + c.Params("login") + ".json")
 		if os.IsNotExist(err) {
 			return c.SendStatus(fiber.StatusNotFound)
 		}
@@ -60,7 +60,7 @@ func endpointsLogin() {
 	})
 
 	App.Get("/user/:login", func(c *fiber.Ctx) error {
-		_, err := os.Stat(c.Params("login"))
+		_, err := os.Stat("./data/" + c.Params("login") + ".json")
 		if os.IsNotExist(err) {
 			return c.SendStatus(fiber.StatusNotFound)
 		}
