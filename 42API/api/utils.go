@@ -34,6 +34,7 @@ func IsExists(db mw.Database, user *apiclient.User) bool {
 // CheckEnvVariables tests the existence of required env variables
 func CheckEnvVariables() {
 	envVariables := []string{"DB_NAME", "DB_URL", "UID", "SECRET", "PORT", "DB_USERNAME", "DB_PASSWORD"}
+	log.Println("Checking:", envVariables)
 	for _, val := range envVariables {
 		if os.Getenv(val) == "" {
 			log.Fatalf("Missing %s env variable", val)
