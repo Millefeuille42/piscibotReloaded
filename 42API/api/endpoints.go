@@ -112,6 +112,9 @@ func endpointsUsers() {
 			if err != nil {
 				fmt.Println(f.Name())
 				fmt.Println(string(fileData))
+				if err.Error() == "unexpected end of JSON input" {
+					continue
+				}
 				logError(err)
 				continue
 			}

@@ -152,7 +152,7 @@ func startServer() {
 	http.HandleFunc("/discord", sendHandler)
 	http.HandleFunc("/auth", authHandler)
 	fmt.Println("Starting server")
-	if err := http.ListenAndServe(":8000", nil); err != nil {
+	if err := http.ListenAndServe(":"+os.Getenv("SEGBOT_PORT"), nil); err != nil {
 		log.Fatal(err)
 	}
 }
