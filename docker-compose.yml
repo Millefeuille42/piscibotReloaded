@@ -5,7 +5,7 @@ services:
     image: 42api
     restart: always
     ports:
-      - ${API_PORT}:3000
+      - ${API_PORT:-3003}:3000
     environment:
       - DB_NAME=users
       - DB_URL=${DB_URL}
@@ -21,7 +21,7 @@ services:
     links:
       - api
     ports:
-      - ${SEGBOT_PORT}:8000
+      - ${SEGBOT_PORT:-8008}:8000
     environment:
       - APPUID=${APPUID}
       - BOT_TOKEN=${BOT_TOKEN}
