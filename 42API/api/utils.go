@@ -14,6 +14,7 @@ import (
 // CheckEnvVariables tests the existence of required env variables
 func CheckEnvVariables() {
 	envVariables := []string{"UID", "SECRET", "PORT"}
+	log.Println("Checking:", envVariables)
 	for _, val := range envVariables {
 		if os.Getenv(val) == "" {
 			log.Fatalf("Missing %s env variable", val)
