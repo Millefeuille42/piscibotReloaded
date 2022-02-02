@@ -7,13 +7,11 @@ services:
     ports:
       - ${API_PORT}:3000
     environment:
-      - DB_NAME=users
-      - DB_URL=${DB_URL}
       - UID=${APPUID}
       - SECRET=${SECRET}
       - PORT=${API_PORT}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - segbotApiData:/api/data
   segbot:
     build: discord/
     image: segbot
