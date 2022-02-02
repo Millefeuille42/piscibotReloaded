@@ -44,3 +44,4 @@ services:
       - USER_API_URL=http://api:${API_PORT}
 volumes:
   segbotData: {}
+  segbotApiData: {}
