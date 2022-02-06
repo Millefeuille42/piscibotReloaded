@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"math/rand"
 	"os"
 	"piscibotReloaded/discord/segbot/utils"
 	"sync"
@@ -92,6 +93,7 @@ func prepFileSystem() error {
 }
 
 func main() {
+	rand.Seed(time.Now().Unix())
 	if len(os.Args) < 2 {
 		_, _ = fmt.Fprintln(os.Stderr, "You must provide and env file")
 		return
