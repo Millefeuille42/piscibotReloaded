@@ -94,6 +94,10 @@ func sendMessageWrapper(session *discordgo.Session, channel, message string) err
 func sendMessageWithMention(message, id string, agent discordAgent) {
 	var err error
 
+	if len(message) > 1950 {
+		_, err = agent.session.ChannelFileSend(agent.channel, "text.txt", strings.NewReader(message))
+	}
+
 	if agent.message != nil && agent.message.ChannelID == agent.channel {
 		_, err = agent.session.ChannelMessageSendReply(agent.channel, message, agent.message.Reference())
 	} else {
