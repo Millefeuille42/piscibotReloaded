@@ -94,7 +94,7 @@ func sendMessageWrapper(session *discordgo.Session, channel, message string) err
 func sendMessageWithMention(message, id string, agent discordAgent) {
 	var err error
 
-	if agent.message != nil {
+	if agent.message != nil && agent.message.ChannelID == agent.channel {
 		_, err = agent.session.ChannelMessageSendReply(agent.channel, message, agent.message.Reference())
 	} else {
 		if id == "" {
