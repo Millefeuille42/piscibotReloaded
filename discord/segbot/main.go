@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"math/rand"
 	"os"
 	"piscibotReloaded/discord/segbot/utils"
 	"sync"
@@ -24,7 +25,7 @@ func setupFunctionsMap() {
 	commandMap["unlock"] = adminUnlock
 	commandMap["force-untrack"] = adminForceUntrack
 	//ARGS
-	commandMap["chan"] = adminSetChan
+	commandMap["channel"] = adminSetChan
 	commandMap["admin"] = adminSet
 
 	//UserCommands no args
@@ -62,7 +63,7 @@ func startBot() *discordgo.Session {
 			return nil
 		}
 		hostname, _ := os.Hostname()
-		_, _ = discordBot.ChannelMessageSend(channel.ID, "Bot up - "+
+		_ = sendMessageWrapper(discordBot, channel.ID, "Bot up - "+
 			time.Now().Format(time.Stamp)+" - "+hostname)
 	}
 	if gPrefix == "" {
@@ -92,6 +93,7 @@ func prepFileSystem() error {
 }
 
 func main() {
+	rand.Seed(time.Now().Unix())
 	if len(os.Args) < 2 {
 		_, _ = fmt.Fprintln(os.Stderr, "You must provide and env file")
 		return

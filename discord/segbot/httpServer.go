@@ -103,7 +103,7 @@ func sendMessage(message Message) error {
 		case "success":
 			param = userData.Settings.Success
 			channel = guildData.Settings.Channels.Success
-			_, _ = agent.session.ChannelMessageSend(guildData.Settings.Channels.Leaderboard,
+			err = sendMessageWrapper(agent.session, guildData.Settings.Channels.Leaderboard,
 				"```"+createLeaderboard(agent, "c-piscine", guild)+"```")
 		case "started":
 			param = userData.Settings.Started

@@ -51,7 +51,7 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 		return apiData, err
 	}
 	if res.StatusCode == 404 {
-		_, _ = agent.session.ChannelMessageSend(agent.message.ChannelID, target+" not found")
+		err = sendMessageWrapper(agent.session, agent.message.ChannelID, target+" not found")
 		return apiData, os.ErrNotExist
 	}
 	data, err := ioutil.ReadAll(res.Body)

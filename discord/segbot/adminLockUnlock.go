@@ -9,11 +9,11 @@ func adminLock(agent discordAgent) {
 		return
 	}
 	if !utils.Find(data.Admins, agent.message.Author.ID) {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
+		err = sendMessageWrapper(agent.session, agent.channel, "You are not an admin")
 		return
 	}
 	if data.Locked {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "The guild is already locked")
+		err = sendMessageWrapper(agent.session, agent.channel, "The guild is already locked")
 		return
 	}
 	data.Locked = true
@@ -28,11 +28,11 @@ func adminUnlock(agent discordAgent) {
 		return
 	}
 	if !utils.Find(data.Admins, agent.message.Author.ID) {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
+		err = sendMessageWrapper(agent.session, agent.channel, "You are not an admin")
 		return
 	}
 	if !data.Locked {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "The guild is already unlocked")
+		err = sendMessageWrapper(agent.session, agent.channel, "The guild is already unlocked")
 		return
 	}
 	data.Locked = false
