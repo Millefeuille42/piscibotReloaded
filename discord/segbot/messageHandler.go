@@ -38,6 +38,7 @@ func messageHandler(session *discordgo.Session, message *discordgo.MessageCreate
 		session: session,
 		message: message,
 	}
+	sendMessageWithMention("TEST", ownerID, discordAgent{})
 	agent.channel = guildGetChannel(agent)
 
 	if message.Author.ID == botID.ID || !strings.HasPrefix(message.Content, gPrefix) {

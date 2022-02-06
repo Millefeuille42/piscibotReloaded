@@ -39,7 +39,7 @@ func userSetPings(agent discordAgent) {
 			user.Settings.Location = subArgs[1]
 		}
 		didSomething = true
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "Ping settings updated for "+subArgs[0])
+		err = sendMessageWrapper(agent.session, agent.channel, "Ping settings updated for "+subArgs[0])
 	}
 	if didSomething && userWriteFile(user, agent, "") == nil {
 		sendMessageWithMention("Ping settings saved", "", agent)

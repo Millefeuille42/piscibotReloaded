@@ -93,7 +93,7 @@ func createData(agent discordAgent) GuildData {
 		Locked: false,
 	}
 	if createRoles(agent, &data) != nil {
-		_, _ = agent.session.ChannelMessageSend(agent.channel,
+		_ = sendMessageWrapper(agent.session, agent.channel,
 			"Failed to create roles, you'll have to create and configure the missing ones")
 	}
 	return data

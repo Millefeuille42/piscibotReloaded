@@ -57,7 +57,7 @@ func adminSet(agent discordAgent) {
 	}
 
 	if !utils.Find(data.Admins, agent.message.Author.ID) {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
+		err = sendMessageWrapper(agent.session, agent.channel, "You are not an admin")
 		return
 	}
 
@@ -91,7 +91,7 @@ func adminSetChan(agent discordAgent) {
 	}
 
 	if !utils.Find(settings.Admins, agent.message.Author.ID) {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
+		err = sendMessageWrapper(agent.session, agent.channel, "You are not an admin")
 		return
 	}
 

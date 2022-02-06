@@ -9,7 +9,7 @@ func sendHelp(agent discordAgent) {
 		"- `purge` -> Delete every message on all the bot's channels\n"+
 		"- `lock` -> Lock the registrations, nobody can register anymore\n"+
 		"- `unlock` -> Unlock the registrations\n\n", "", agent)
-	_, _ = agent.session.ChannelMessageSend(agent.channel,
+	_ = sendMessageWrapper(agent.session, agent.channel,
 		"---\n#### User\n\n"+
 			"- `start` -> Create your profile, you'll need to verify your account to complete the registration. \n"+
 			"  The profile is independent of the servers\n"+
@@ -21,7 +21,7 @@ func sendHelp(agent discordAgent) {
 			"   - Example -> `ping started:dm` to get dm'd everytime your target starts a project\n"+
 			"- `settings` -> Get your notification settings\n"+
 			"- `help` -> Send the readme\n\n")
-	_, _ = agent.session.ChannelMessageSend(agent.channel,
+	_ = sendMessageWrapper(agent.session, agent.channel,
 		"---\n##### Commands\n\n"+
 			"- `list-<tracked | students | location | projects>` -> Send a list according to the provided parameter. (don't forget the dash!)\n"+
 			"  - `tracked` -> Send a list of all the targets.\n"+
