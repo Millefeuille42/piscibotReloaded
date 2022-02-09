@@ -23,7 +23,7 @@ func endpointsLogin() {
 		user, err := Client.GetUser(c.Params("login"))
 		if err != nil {
 			path := "./data/" + c.Params("login") + ".json"
-			err = os.Remove(path)
+			_ = os.Remove(path)
 			return c.Status(404).SendString(err.Error())
 		}
 		err = writeUserData(user)
