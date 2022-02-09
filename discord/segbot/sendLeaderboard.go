@@ -101,6 +101,10 @@ func createLeaderboard(agent discordAgent, slug, guildID string) string {
 		guildID = agent.message.GuildID
 	}
 
+	if slug == "" {
+		slug = "c-piscine"
+	}
+
 	leaderBoard := "\t--- " + slug + " ---\n"
 	pairList := createLevelPairList(agent, slug, guildID)
 	if pairList == nil {

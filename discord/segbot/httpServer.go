@@ -15,12 +15,14 @@ type MessageList []struct {
 	Message string `json:"message"`
 	Channel string `json:"channel"`
 	Login   string `json:"login"`
+	Cursus  string `json:"cursus"`
 }
 
 type Message struct {
 	Message string `json:"message"`
 	Channel string `json:"channel"`
 	Login   string `json:"login"`
+	Cursus  string `json:"cursus"`
 }
 
 func sendMessageToOld(agent discordAgent, message Message) error {
@@ -104,7 +106,7 @@ func sendMessage(message Message) error {
 			param = userData.Settings.Success
 			channel = guildData.Settings.Channels.Success
 			err = sendMessageWrapper(agent.session, guildData.Settings.Channels.Leaderboard,
-				"```"+createLeaderboard(agent, "c-piscine", guild)+"```")
+				"```"+createLeaderboard(agent, message.Cursus, guild)+"```")
 		case "started":
 			param = userData.Settings.Started
 			channel = guildData.Settings.Channels.Started
