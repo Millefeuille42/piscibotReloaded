@@ -115,8 +115,13 @@ func createLeaderboard(agent discordAgent, slug, guildID string) string {
 		return pairList[i].level > pairList[j].level
 	})
 
+	oldPair := targetLevelPair{}
 	for i, pair := range pairList {
+		if oldPair.name != "" && oldPair.level == pair.level {
+			i--
+		}
 		leaderBoard = fmt.Sprintf("%s\n%02d. %-15.15s :  %.2f", leaderBoard, i+1, pair.name, pair.level)
+		oldPair = pair
 	}
 	return leaderBoard
 }
