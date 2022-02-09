@@ -62,7 +62,7 @@ func userInit(agent discordAgent) {
 		return
 	}
 
-	sendMessageWithMention("", "", discordAgent{
+	sendMessageWithMention("here", "", discordAgent{
 		session: agent.session, message: agent.message, channel: agent.message.ChannelID})
 
 	_, err = agent.session.ChannelMessageSendEmbed(agent.message.ChannelID, &discordgo.MessageEmbed{
