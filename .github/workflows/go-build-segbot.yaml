@@ -2,9 +2,9 @@ name: Go Build Segbot
 
 on:
   push:
-    branches: [devel, master]
+    branches: [ devel, master ]
   pull_request:
-    branches: [devel]
+    branches: [ devel, master ]
   workflow_dispatch:
 
 jobs:

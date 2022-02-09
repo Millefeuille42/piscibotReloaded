@@ -2,9 +2,9 @@ name: Docker Build Segbot
 
 on:
   push:
-    branches: [ discord, master ]
+    branches: [ devel, master ]
   pull_request:
-    branches: [ master ]
+    branches: [ devel, master ]
   workflow_dispatch:
 
 jobs:
