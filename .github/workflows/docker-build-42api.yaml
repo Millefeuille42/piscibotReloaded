@@ -2,9 +2,9 @@ name: Docker Build 42API
 
 on:
   push:
-    branches: [ 42api, master ]
+    branches: [ devel, master ]
   pull_request:
-    branches: [ master ]
+    branches: [ devel, master ]
   workflow_dispatch:
 
 jobs:
