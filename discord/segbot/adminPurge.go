@@ -35,7 +35,7 @@ func adminPurge(agent discordAgent) {
 		return
 	}
 	if !utils.Find(data.Admins, agent.message.Author.ID) {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "You are not an admin")
+		err = sendMessageWrapper(agent.session, agent.channel, "You are not an admin")
 		return
 	}
 	logErrorToChan(agent, channelPurge(agent, data.Settings.Channels.Location))

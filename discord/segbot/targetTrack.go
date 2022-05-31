@@ -72,7 +72,7 @@ func makeApiReq(path, login string, agent discordAgent) error {
 		return err
 	}
 	if res.StatusCode == 404 {
-		_, _ = agent.session.ChannelMessageSend(agent.channel, "This login doesn't exist")
+		err = sendMessageWrapper(agent.session, agent.channel, "This login doesn't exist")
 		_ = os.Remove(path)
 		return os.ErrNotExist
 	}

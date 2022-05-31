@@ -15,12 +15,14 @@ type MessageList []struct {
 	Message string `json:"message"`
 	Channel string `json:"channel"`
 	Login   string `json:"login"`
+	Cursus  string `json:"cursus"`
 }
 
 type Message struct {
 	Message string `json:"message"`
 	Channel string `json:"channel"`
 	Login   string `json:"login"`
+	Cursus  string `json:"cursus"`
 }
 
 func sendMessageToOld(agent discordAgent, message Message) error {
@@ -103,8 +105,8 @@ func sendMessage(message Message) error {
 		case "success":
 			param = userData.Settings.Success
 			channel = guildData.Settings.Channels.Success
-			_, _ = agent.session.ChannelMessageSend(guildData.Settings.Channels.Leaderboard,
-				"```"+createLeaderboard(agent, "c-piscine", guild)+"```")
+			err = sendMessageWrapper(agent.session, guildData.Settings.Channels.Leaderboard,
+				"```"+createLeaderboard(agent, message.Cursus, guild)+"```")
 		case "started":
 			param = userData.Settings.Started
 			channel = guildData.Settings.Channels.Started
@@ -152,7 +154,7 @@ func startServer() {
 	http.HandleFunc("/discord", sendHandler)
 	http.HandleFunc("/auth", authHandler)
 	fmt.Println("Starting server")
-	if err := http.ListenAndServe(":8000", nil); err != nil {
+	if err := http.ListenAndServe(":"+os.Getenv("SEGBOT_PORT"), nil); err != nil {
 		log.Fatal(err)
 	}
 }

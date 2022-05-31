@@ -51,7 +51,7 @@ func targetGetData(agent discordAgent, target string) (ApiData, error) {
 		return apiData, err
 	}
 	if res.StatusCode == 404 {
-		_, _ = agent.session.ChannelMessageSend(agent.message.ChannelID, target+" not found")
+		err = sendMessageWrapper(agent.session, agent.message.ChannelID, target+" not found")
 		return apiData, os.ErrNotExist
 	}
 	data, err := ioutil.ReadAll(res.Body)
@@ -101,6 +101,10 @@ func createLeaderboard(agent discordAgent, slug, guildID string) string {
 		guildID = agent.message.GuildID
 	}
 
+	if slug == "" {
+		slug = "c-piscine"
+	}
+
 	leaderBoard := "\t--- " + slug + " ---\n"
 	pairList := createLevelPairList(agent, slug, guildID)
 	if pairList == nil {
@@ -111,8 +115,15 @@ func createLeaderboard(agent discordAgent, slug, guildID string) string {
 		return pairList[i].level > pairList[j].level
 	})
 
+	oldPair := targetLevelPair{}
+	var lastPosition = 0
 	for i, pair := range pairList {
-		leaderBoard = fmt.Sprintf("%s\n%02d. %-15.15s :  %.2f", leaderBoard, i+1, pair.name, pair.level)
+		if oldPair.name != "" && oldPair.level == pair.level {
+			i = lastPosition
+		}
+		lastPosition = i
+		leaderBoard = fmt.Sprintf("%s\n%02d. %-15.15s :  %.2f", leaderBoard, lastPosition+1, pair.name, pair.level)
+		oldPair = pair
 	}
 	return leaderBoard
 }

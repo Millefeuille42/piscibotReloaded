@@ -68,7 +68,7 @@ func (_ *Checker) Check(dbUser, apiUser *apiclient.User) []Message {
 		//		}
 		for _, val := range apiUser.ProjectsUsers {
 			p2 := BuildProject(val)
-			if p2.Name == p1.Name {
+			if p2.Slug == p1.Slug {
 				if err := CheckProjectStatus(dbUser.Login, &p1, &p2); err != nil {
 					message := Message{Message: err.Error(), Channel: "success", Login: dbUser.Login}
 					messages = append(messages, message)
