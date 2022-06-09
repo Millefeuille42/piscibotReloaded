@@ -4,8 +4,6 @@ services:
     build: 42API/
     image: 42api
     restart: always
-    ports:
-      - ${API_PORT:-3003}:${API_PORT:-3003}
     environment:
       - UID=${APPUID}
       - SECRET=${SECRET}
