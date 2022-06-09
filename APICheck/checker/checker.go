@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	apiclient "github.com/BoyerDamien/42APIClient"
 	"log"
 	"net/http"
-
-	apiclient "github.com/BoyerDamien/42APIClient"
 )
 
 // Checker model
@@ -21,6 +20,7 @@ type Message struct {
 	Message string `json:"message"`
 	Channel string `json:"channel"`
 	Login   string `json:"login"`
+	Cursus  string `json:"cursus"`
 }
 
 // FetchUsers retrieve 42 users stored in user database
@@ -71,6 +71,11 @@ func (_ *Checker) Check(dbUser, apiUser *apiclient.User) []Message {
 			if p2.Slug == p1.Slug {
 				if err := CheckProjectStatus(dbUser.Login, &p1, &p2); err != nil {
 					message := Message{Message: err.Error(), Channel: "success", Login: dbUser.Login}
+					if val["cursus_ids"] != nil && len(val["cursus_ids"].([]interface{})) > 0 { // To be done a better way, ex. by grabbing cursus slug with API
+						if val["cursus_ids"].([]interface{})[0].(float64) == 21 {
+							message.Cursus = "42cursus"
+						}
+					}
 					messages = append(messages, message)
 				}
 			}
