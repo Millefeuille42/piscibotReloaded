@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"log"
 	"math/rand"
 	"os"
 	"piscibotReloaded/discord/segbot/utils"
@@ -15,6 +16,7 @@ var ownerID = "268431730967314435" //Please change this when using my bot
 var gAPiMutex = sync.Mutex{}
 var gPrefix = os.Getenv("SEGBOT_PREFIX")
 var commandMap = make(map[string]commandHandler)
+var Client APIClient
 
 func setupFunctionsMap() {
 	//AdminCommands no args
@@ -47,6 +49,7 @@ func setupFunctionsMap() {
 	commandMap["leaderboard"] = sendLeaderboard
 	commandMap["project"] = sendProject
 	commandMap["user-project"] = sendUserProject
+	commandMap["list-piscineux"] = sendPiscineuxList
 }
 
 // startBot Starts discord bot
@@ -93,6 +96,11 @@ func prepFileSystem() error {
 }
 
 func main() {
+	Client = APIClient{Url: "https://api.intra.42.fr", Uid: os.Getenv("UID"), Secret: os.Getenv("SECRET")}
+	if err := Client.Auth(); err != nil {
+		log.Fatal(err.Error())
+	}
+
 	rand.Seed(time.Now().Unix())
 	if len(os.Args) < 2 {
 		_, _ = fmt.Fprintln(os.Stderr, "You must provide and env file")
