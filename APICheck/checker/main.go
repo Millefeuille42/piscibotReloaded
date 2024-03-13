@@ -56,7 +56,7 @@ func main() {
 			for i := 0; i < checker.Length(); i++ {
 				apiUser, err := api.GetUser(checker.UserList[i].Login)
 				if err != nil {
-					log.Fatalf("Error: Cannot fetch user %s data\n", checker.UserList[i].Login)
+					log.Printf("Error: Cannot fetch user %s data\n", checker.UserList[i].Login)
 				}
 				checker.UpdateDB(&apiUser)
 				time.Sleep(time.Millisecond * 250)
